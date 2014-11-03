@@ -1,0 +1,287 @@
+fileFormatVersion: 2
+guid: f08c651cbd00ee04c854cd5fbdb31c9f
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: _m_l_ngsstreben_ Zylinder42
+    100004: _m_l_ngsstreben_ Zylinder43
+    100006: _m_l_ngsstreben_ Zylinder44
+    100008: _m_querstreben_o Zylinder36
+    100010: _m_querstreben_o Zylinder37
+    100012: _m_querstreben_o Zylinder38
+    100014: _m_querstreben_u Zylinder39
+    100016: _m_querstreben_u Zylinder40
+    100018: _m_querstreben_u Zylinder41
+    100020: _m_schr_gstreben _0cm Zylinder
+    100022: _m_schr_gstreben _0cm Zylinder1
+    100024: _m_schr_gstreben _0cm Zylinder2
+    100026: _m_schr_gstreben _0cm Zylinder3
+    100028: _m_schr_gstreben _0cm Zylinder4
+    100030: _m_schr_gstreben _0cm Zylinder5
+    100032: _m_schr_gstreben _0cm1 Zylinder10
+    100034: _m_schr_gstreben _0cm1 Zylinder11
+    100036: _m_schr_gstreben _0cm1 Zylinder6
+    100038: _m_schr_gstreben _0cm1 Zylinder7
+    100040: _m_schr_gstreben _0cm1 Zylinder8
+    100042: _m_schr_gstreben _0cm1 Zylinder9
+    100044: _m_schr_gstreben _0cm2 Zylinder12
+    100046: _m_schr_gstreben _0cm2 Zylinder13
+    100048: _m_schr_gstreben _0cm2 Zylinder14
+    100050: _m_schr_gstreben _0cm2 Zylinder15
+    100052: _m_schr_gstreben _0cm2 Zylinder16
+    100054: _m_schr_gstreben _0cm2 Zylinder17
+    100056: _m_schr_gstreben _0cm3 Zylinder18
+    100058: _m_schr_gstreben _0cm3 Zylinder19
+    100060: _m_schr_gstreben _0cm3 Zylinder20
+    100062: _m_schr_gstreben _0cm3 Zylinder21
+    100064: _m_schr_gstreben _0cm3 Zylinder22
+    100066: _m_schr_gstreben _0cm3 Zylinder23
+    100068: _m_schr_gstreben _m1 Zylinder24
+    100070: _m_schr_gstreben _m1 Zylinder25
+    100072: _m_schr_gstreben _m1 Zylinder26
+    100074: _m_schr_gstreben _m1 Zylinder27
+    100076: _m_schr_gstreben _m1 Zylinder28
+    100078: _m_schr_gstreben _m1 Zylinder29
+    100080: _m_schr_gstreben _m1 Zylinder30
+    100082: _m_schr_gstreben _m1 Zylinder31
+    100084: _m_schr_gstreben _m1 Zylinder32
+    100086: _m_schr_gstreben _m1 Zylinder33
+    100088: _m_schr_gstreben _m1 Zylinder34
+    100090: _m_schr_gstreben _m1 Zylinder35
+    400000: //RootNode
+    400002: _m_l_ngsstreben_ Zylinder42
+    400004: _m_l_ngsstreben_ Zylinder43
+    400006: _m_l_ngsstreben_ Zylinder44
+    400008: _m_querstreben_o Zylinder36
+    400010: _m_querstreben_o Zylinder37
+    400012: _m_querstreben_o Zylinder38
+    400014: _m_querstreben_u Zylinder39
+    400016: _m_querstreben_u Zylinder40
+    400018: _m_querstreben_u Zylinder41
+    400020: _m_schr_gstreben _0cm Zylinder
+    400022: _m_schr_gstreben _0cm Zylinder1
+    400024: _m_schr_gstreben _0cm Zylinder2
+    400026: _m_schr_gstreben _0cm Zylinder3
+    400028: _m_schr_gstreben _0cm Zylinder4
+    400030: _m_schr_gstreben _0cm Zylinder5
+    400032: _m_schr_gstreben _0cm1 Zylinder10
+    400034: _m_schr_gstreben _0cm1 Zylinder11
+    400036: _m_schr_gstreben _0cm1 Zylinder6
+    400038: _m_schr_gstreben _0cm1 Zylinder7
+    400040: _m_schr_gstreben _0cm1 Zylinder8
+    400042: _m_schr_gstreben _0cm1 Zylinder9
+    400044: _m_schr_gstreben _0cm2 Zylinder12
+    400046: _m_schr_gstreben _0cm2 Zylinder13
+    400048: _m_schr_gstreben _0cm2 Zylinder14
+    400050: _m_schr_gstreben _0cm2 Zylinder15
+    400052: _m_schr_gstreben _0cm2 Zylinder16
+    400054: _m_schr_gstreben _0cm2 Zylinder17
+    400056: _m_schr_gstreben _0cm3 Zylinder18
+    400058: _m_schr_gstreben _0cm3 Zylinder19
+    400060: _m_schr_gstreben _0cm3 Zylinder20
+    400062: _m_schr_gstreben _0cm3 Zylinder21
+    400064: _m_schr_gstreben _0cm3 Zylinder22
+    400066: _m_schr_gstreben _0cm3 Zylinder23
+    400068: _m_schr_gstreben _m1 Zylinder24
+    400070: _m_schr_gstreben _m1 Zylinder25
+    400072: _m_schr_gstreben _m1 Zylinder26
+    400074: _m_schr_gstreben _m1 Zylinder27
+    400076: _m_schr_gstreben _m1 Zylinder28
+    400078: _m_schr_gstreben _m1 Zylinder29
+    400080: _m_schr_gstreben _m1 Zylinder30
+    400082: _m_schr_gstreben _m1 Zylinder31
+    400084: _m_schr_gstreben _m1 Zylinder32
+    400086: _m_schr_gstreben _m1 Zylinder33
+    400088: _m_schr_gstreben _m1 Zylinder34
+    400090: _m_schr_gstreben _m1 Zylinder35
+    2300000: _m_l_ngsstreben_ Zylinder42
+    2300002: _m_l_ngsstreben_ Zylinder43
+    2300004: _m_l_ngsstreben_ Zylinder44
+    2300006: _m_querstreben_o Zylinder36
+    2300008: _m_querstreben_o Zylinder37
+    2300010: _m_querstreben_o Zylinder38
+    2300012: _m_querstreben_u Zylinder39
+    2300014: _m_querstreben_u Zylinder40
+    2300016: _m_querstreben_u Zylinder41
+    2300018: _m_schr_gstreben _0cm Zylinder
+    2300020: _m_schr_gstreben _0cm Zylinder1
+    2300022: _m_schr_gstreben _0cm Zylinder2
+    2300024: _m_schr_gstreben _0cm Zylinder3
+    2300026: _m_schr_gstreben _0cm Zylinder4
+    2300028: _m_schr_gstreben _0cm Zylinder5
+    2300030: _m_schr_gstreben _0cm1 Zylinder10
+    2300032: _m_schr_gstreben _0cm1 Zylinder11
+    2300034: _m_schr_gstreben _0cm1 Zylinder6
+    2300036: _m_schr_gstreben _0cm1 Zylinder7
+    2300038: _m_schr_gstreben _0cm1 Zylinder8
+    2300040: _m_schr_gstreben _0cm1 Zylinder9
+    2300042: _m_schr_gstreben _0cm2 Zylinder12
+    2300044: _m_schr_gstreben _0cm2 Zylinder13
+    2300046: _m_schr_gstreben _0cm2 Zylinder14
+    2300048: _m_schr_gstreben _0cm2 Zylinder15
+    2300050: _m_schr_gstreben _0cm2 Zylinder16
+    2300052: _m_schr_gstreben _0cm2 Zylinder17
+    2300054: _m_schr_gstreben _0cm3 Zylinder18
+    2300056: _m_schr_gstreben _0cm3 Zylinder19
+    2300058: _m_schr_gstreben _0cm3 Zylinder20
+    2300060: _m_schr_gstreben _0cm3 Zylinder21
+    2300062: _m_schr_gstreben _0cm3 Zylinder22
+    2300064: _m_schr_gstreben _0cm3 Zylinder23
+    2300066: _m_schr_gstreben _m1 Zylinder24
+    2300068: _m_schr_gstreben _m1 Zylinder25
+    2300070: _m_schr_gstreben _m1 Zylinder26
+    2300072: _m_schr_gstreben _m1 Zylinder27
+    2300074: _m_schr_gstreben _m1 Zylinder28
+    2300076: _m_schr_gstreben _m1 Zylinder29
+    2300078: _m_schr_gstreben _m1 Zylinder30
+    2300080: _m_schr_gstreben _m1 Zylinder31
+    2300082: _m_schr_gstreben _m1 Zylinder32
+    2300084: _m_schr_gstreben _m1 Zylinder33
+    2300086: _m_schr_gstreben _m1 Zylinder34
+    2300088: _m_schr_gstreben _m1 Zylinder35
+    3300000: _m_l_ngsstreben_ Zylinder42
+    3300002: _m_l_ngsstreben_ Zylinder43
+    3300004: _m_l_ngsstreben_ Zylinder44
+    3300006: _m_querstreben_o Zylinder36
+    3300008: _m_querstreben_o Zylinder37
+    3300010: _m_querstreben_o Zylinder38
+    3300012: _m_querstreben_u Zylinder39
+    3300014: _m_querstreben_u Zylinder40
+    3300016: _m_querstreben_u Zylinder41
+    3300018: _m_schr_gstreben _0cm Zylinder
+    3300020: _m_schr_gstreben _0cm Zylinder1
+    3300022: _m_schr_gstreben _0cm Zylinder2
+    3300024: _m_schr_gstreben _0cm Zylinder3
+    3300026: _m_schr_gstreben _0cm Zylinder4
+    3300028: _m_schr_gstreben _0cm Zylinder5
+    3300030: _m_schr_gstreben _0cm1 Zylinder10
+    3300032: _m_schr_gstreben _0cm1 Zylinder11
+    3300034: _m_schr_gstreben _0cm1 Zylinder6
+    3300036: _m_schr_gstreben _0cm1 Zylinder7
+    3300038: _m_schr_gstreben _0cm1 Zylinder8
+    3300040: _m_schr_gstreben _0cm1 Zylinder9
+    3300042: _m_schr_gstreben _0cm2 Zylinder12
+    3300044: _m_schr_gstreben _0cm2 Zylinder13
+    3300046: _m_schr_gstreben _0cm2 Zylinder14
+    3300048: _m_schr_gstreben _0cm2 Zylinder15
+    3300050: _m_schr_gstreben _0cm2 Zylinder16
+    3300052: _m_schr_gstreben _0cm2 Zylinder17
+    3300054: _m_schr_gstreben _0cm3 Zylinder18
+    3300056: _m_schr_gstreben _0cm3 Zylinder19
+    3300058: _m_schr_gstreben _0cm3 Zylinder20
+    3300060: _m_schr_gstreben _0cm3 Zylinder21
+    3300062: _m_schr_gstreben _0cm3 Zylinder22
+    3300064: _m_schr_gstreben _0cm3 Zylinder23
+    3300066: _m_schr_gstreben _m1 Zylinder24
+    3300068: _m_schr_gstreben _m1 Zylinder25
+    3300070: _m_schr_gstreben _m1 Zylinder26
+    3300072: _m_schr_gstreben _m1 Zylinder27
+    3300074: _m_schr_gstreben _m1 Zylinder28
+    3300076: _m_schr_gstreben _m1 Zylinder29
+    3300078: _m_schr_gstreben _m1 Zylinder30
+    3300080: _m_schr_gstreben _m1 Zylinder31
+    3300082: _m_schr_gstreben _m1 Zylinder32
+    3300084: _m_schr_gstreben _m1 Zylinder33
+    3300086: _m_schr_gstreben _m1 Zylinder34
+    3300088: _m_schr_gstreben _m1 Zylinder35
+    4300000: _m_l_ngsstreben_ Zylinder42
+    4300002: _m_l_ngsstreben_ Zylinder43
+    4300004: _m_l_ngsstreben_ Zylinder44
+    4300006: _m_querstreben_o Zylinder36
+    4300008: _m_querstreben_o Zylinder37
+    4300010: _m_querstreben_o Zylinder38
+    4300012: _m_querstreben_u Zylinder39
+    4300014: _m_querstreben_u Zylinder40
+    4300016: _m_querstreben_u Zylinder41
+    4300018: _m_schr_gstreben _0cm Zylinder
+    4300020: _m_schr_gstreben _0cm Zylinder1
+    4300022: _m_schr_gstreben _0cm Zylinder2
+    4300024: _m_schr_gstreben _0cm Zylinder3
+    4300026: _m_schr_gstreben _0cm Zylinder4
+    4300028: _m_schr_gstreben _0cm Zylinder5
+    4300030: _m_schr_gstreben _0cm1 Zylinder10
+    4300032: _m_schr_gstreben _0cm1 Zylinder11
+    4300034: _m_schr_gstreben _0cm1 Zylinder6
+    4300036: _m_schr_gstreben _0cm1 Zylinder7
+    4300038: _m_schr_gstreben _0cm1 Zylinder8
+    4300040: _m_schr_gstreben _0cm1 Zylinder9
+    4300042: _m_schr_gstreben _0cm2 Zylinder12
+    4300044: _m_schr_gstreben _0cm2 Zylinder13
+    4300046: _m_schr_gstreben _0cm2 Zylinder14
+    4300048: _m_schr_gstreben _0cm2 Zylinder15
+    4300050: _m_schr_gstreben _0cm2 Zylinder16
+    4300052: _m_schr_gstreben _0cm2 Zylinder17
+    4300054: _m_schr_gstreben _0cm3 Zylinder18
+    4300056: _m_schr_gstreben _0cm3 Zylinder19
+    4300058: _m_schr_gstreben _0cm3 Zylinder20
+    4300060: _m_schr_gstreben _0cm3 Zylinder21
+    4300062: _m_schr_gstreben _0cm3 Zylinder22
+    4300064: _m_schr_gstreben _0cm3 Zylinder23
+    4300066: _m_schr_gstreben _m1 Zylinder24
+    4300068: _m_schr_gstreben _m1 Zylinder25
+    4300070: _m_schr_gstreben _m1 Zylinder26
+    4300072: _m_schr_gstreben _m1 Zylinder27
+    4300074: _m_schr_gstreben _m1 Zylinder28
+    4300076: _m_schr_gstreben _m1 Zylinder29
+    4300078: _m_schr_gstreben _m1 Zylinder30
+    4300080: _m_schr_gstreben _m1 Zylinder31
+    4300082: _m_schr_gstreben _m1 Zylinder32
+    4300084: _m_schr_gstreben _m1 Zylinder33
+    4300086: _m_schr_gstreben _m1 Zylinder34
+    4300088: _m_schr_gstreben _m1 Zylinder35
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
