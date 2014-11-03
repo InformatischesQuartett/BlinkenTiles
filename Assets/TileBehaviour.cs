@@ -15,6 +15,7 @@ public class TileBehaviour : MonoBehaviour
     private Boolean _isOn;
     private Transform _people;
     private Rect _positionRect;
+    private GameObject _soundEmitter;
 
 	// Use this for initialization
 	void Start ()
@@ -37,6 +38,8 @@ public class TileBehaviour : MonoBehaviour
         _isOn = false;
         _originPosition = transform.position;
         _originRotation = transform.rotation;
+
+	    _soundEmitter = findSoundEmitter(transform.position.y);
 	}
 	
 	// Update is called once per frame
@@ -53,6 +56,7 @@ public class TileBehaviour : MonoBehaviour
 	            {
 	                renderer.material = _materialRed;
                     Shake();
+                    _soundEmitter.audio.Play();
                     break;
 	            }
 	        }
@@ -92,5 +96,28 @@ public class TileBehaviour : MonoBehaviour
     {
         _shakeIntensity = 0.8f;
         _shakeDecay = 0.015f;
+    }
+
+    private GameObject findSoundEmitter(float y)
+    {
+        GameObject go = null;
+        if (y == 15)
+        {
+            go = GameObject.Find("Sound1");
+        }
+        else if (y == 5)
+        {
+            go = GameObject.Find("Sound2");
+        }
+        else if (y == -5)
+        {
+            go = GameObject.Find("Sound3");
+        }
+        else if (y == -15)
+        {
+            go = GameObject.Find("Sound4");
+        }
+
+        return go;
     }
 }
