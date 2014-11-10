@@ -16,10 +16,6 @@ public class RenderGui : MonoBehaviour {
 	private Rect RectC;
 	private Rect RectR;
 
-
-
-	public Camera ScreenCam;
-
 	// Use this for initialization
 	void Start () {
 		//Width and Height of the RenderTextures are all the same
