@@ -14,10 +14,8 @@ public class TileDmxBehaviour : MonoBehaviour {
 	void Start () {
         _reference = GameObject.Find("Reference").transform;
         _tileWidth = transform.localScale.x * 10;
-        _materialIdle = new Material(Shader.Find("Sprites/Default"));
-        _materialIdle.SetColor("_Color", new Color(1, 1, 1));
-        _materialOn = new Material(Shader.Find("Sprites/Default"));
-        _materialOn.SetColor("_Color", new Color(0.3f, 0.3f, 1));
+	    _materialIdle = Config.MaterialWhite;
+	    _materialOn = Config.MaterialOrange;
         renderer.material = _materialIdle;
 	    _isOn = false;
 	}

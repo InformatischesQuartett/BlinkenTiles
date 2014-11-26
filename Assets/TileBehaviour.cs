@@ -4,41 +4,50 @@ using Random = UnityEngine.Random;
 
 public class TileBehaviour : MonoBehaviour
 {
-
     private Transform _reference;
+    private Transform _people;
+    
+    private GameObject _soundEmitter;
+
     private float _tileWidth;
     private float _tileHeight;
-    private Material _materialYellow;
-    private Material _materialWhite;
-    private Material _materialRed;
-    private Boolean _isOn;
-    private Transform _people;
     private Rect _positionRect;
-    private GameObject _soundEmitter;
+
+    private Material _materialHighlight;
+    private Material _materialDefault;
+    private Material _materialHit;
+
+    private Boolean _isOn;
+    
+    //Shake stuff
+    private Vector3 _originPosition;
+    private Quaternion _originRotation;
+    private float _shakeDecay;
+    private float _shakeIntensity;
 
 	// Use this for initialization
 	void Start ()
 	{
 	    _reference = GameObject.Find("Reference").transform;
 	    _people = GameObject.Find("People").transform;
-	    _tileWidth = transform.localScale.x*10;
+
+        _soundEmitter = findSoundEmitter(transform.position.y);
+
+        _tileWidth = transform.localScale.x*10;
 	    _tileHeight = transform.localScale.y*10;
-        _materialWhite = new Material(Shader.Find("Sprites/Default"));
-        _materialWhite.SetColor("_Color", new Color(1,1,1));
-        _materialYellow = new Material(Shader.Find("Sprites/Default"));
-        _materialYellow.SetColor("_Color", new Color(1, 1, 0));
-        _materialRed = new Material(Shader.Find("Sprites/Default"));
-        _materialRed.SetColor("_Color", new Color(1, 0, 0));
-        renderer.material = _materialWhite;
-	    _positionRect.x = transform.position.x - _tileWidth/2;
-	    _positionRect.y = transform.position.y - _tileWidth/2;
-	    _positionRect.width = _tileWidth;
-	    _positionRect.height = _tileHeight;
+        _positionRect.x = transform.position.x - _tileWidth / 2;
+        _positionRect.y = transform.position.y - _tileWidth / 2;
+        _positionRect.width = _tileWidth;
+        _positionRect.height = _tileHeight;
+        
+        _materialDefault = Config.MaterialWhite;
+	    _materialHighlight = Config.MaterialYellow;
+	    _materialHit = Config.MaterialRed;
+        renderer.material = _materialDefault;
         _isOn = false;
         _originPosition = transform.position;
         _originRotation = transform.rotation;
 
-	    _soundEmitter = findSoundEmitter(transform.position.y);
 	}
 	
 	// Update is called once per frame
@@ -46,14 +55,14 @@ public class TileBehaviour : MonoBehaviour
 	{
 	    if ((_reference.position.x > transform.position.x - _tileWidth/2) && (_reference.position.x < transform.position.x + _tileWidth/2) && !_isOn)
 	    {
-	        renderer.material = _materialYellow;
+	        renderer.material = _materialHighlight;
 	        _isOn = true;
 	        for (int i = 0; i < _people.transform.childCount; i++)
 	        {
 	            Transform child = _people.GetChild(i);
 	            if (_positionRect.Contains(child.position))
 	            {
-	                renderer.material = _materialRed;
+	                renderer.material = _materialHit;
                     Shake();
                     _soundEmitter.audio.Play();
                     break;
@@ -62,7 +71,7 @@ public class TileBehaviour : MonoBehaviour
 	    }
         else if (((_reference.position.x < transform.position.x - _tileWidth / 2) || (_reference.position.x > transform.position.x + _tileWidth / 2)) && _isOn)
 	    {
-	        renderer.material = _materialWhite;
+	        renderer.material = _materialDefault;
 	        _isOn = false;
 	    }
 
@@ -83,13 +92,6 @@ public class TileBehaviour : MonoBehaviour
 	    }
 
 	}
-
-    // Shake stuff
-
-    private Vector3 _originPosition;
-    private Quaternion _originRotation;
-    private float _shakeDecay;
-    private float _shakeIntensity;
 
     public void Shake()
     {
