@@ -4,10 +4,14 @@ using Random = UnityEngine.Random;
 
 public class TileBehaviour : MonoBehaviour
 {
+    private int col = -1;
+    private int row = -1;
+
     private Transform _reference;
     private Transform _people;
     
-    private GameObject _soundEmitter;
+    private TileController _tileControllerScript;
+    private bool _isRegistered;
 
     private float _tileWidth;
     private float _tileHeight;
@@ -31,7 +35,9 @@ public class TileBehaviour : MonoBehaviour
 	    _reference = GameObject.Find("Reference").transform;
 	    _people = GameObject.Find("People").transform;
 
-        _soundEmitter = findSoundEmitter(transform.position.y);
+        //_soundEmitter = findSoundEmitter(transform.position.y);
+	    _tileControllerScript = transform.parent.GetComponent<TileController>();
+        _isRegistered = _tileControllerScript.RegisterTile(col, row);
 
         _tileWidth = transform.localScale.x*10;
 	    _tileHeight = transform.localScale.y*10;
@@ -47,7 +53,6 @@ public class TileBehaviour : MonoBehaviour
         _isOn = false;
         _originPosition = transform.position;
         _originRotation = transform.rotation;
-
 	}
 	
 	// Update is called once per frame
@@ -64,7 +69,8 @@ public class TileBehaviour : MonoBehaviour
 	            {
 	                renderer.material = _materialHit;
                     Shake();
-                    _soundEmitter.audio.Play();
+	                //GameObject sound = (GameObject) Config.Sound[col];
+                    //sound.audio.Play();
                     break;
 	            }
 	        }
@@ -99,26 +105,9 @@ public class TileBehaviour : MonoBehaviour
         _shakeDecay = 0.015f;
     }
 
-    private GameObject findSoundEmitter(float y)
+    public void SetTilePosition(int col, int row)
     {
-        GameObject go = null;
-        if (y == 15)
-        {
-            go = GameObject.Find("Sound1");
-        }
-        else if (y == 5)
-        {
-            go = GameObject.Find("Sound2");
-        }
-        else if (y == -5)
-        {
-            go = GameObject.Find("Sound3");
-        }
-        else if (y == -15)
-        {
-            go = GameObject.Find("Sound4");
-        }
-
-        return go;
+        this.col = col;
+        this.row = row;
     }
 }
