@@ -5,7 +5,7 @@ RenderTexture:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: rtRight
+  m_Name: rtDummy
   m_Width: 1024
   m_Height: 427
   m_AntiAliasing: 1
@@ -15,7 +15,7 @@ RenderTexture:
   m_GenerateMips: 1
   m_SRGB: 0
   m_TextureSettings:
-    m_FilterMode: 0
+    m_FilterMode: 1
     m_Aniso: 0
     m_MipBias: 0
     m_WrapMode: 1
