@@ -7,11 +7,12 @@ public class TileBehaviour : MonoBehaviour
     private float _tileHeight;
     private Rect _positionRect;
 
-    private Material _materialHighlight;
+    private Material _materialTime;
     private Material _materialDefault;
+    private Material _materialPreview;
     private Material _materialHit;
 
-    private bool _isHighlight;
+    private Highlighttype _isHighlight;
 
     //Shake stuff
     private Vector3 _originPosition;
@@ -19,20 +20,27 @@ public class TileBehaviour : MonoBehaviour
     private float _shakeDecay;
     private float _shakeIntensity;
 
-    public bool Highlight
+    public Highlighttype Highlight
     {
         get { return _isHighlight; }
         set
         {
             if (value != _isHighlight)
             {
-                if (value)
+                switch (value)
                 {
-                    renderer.material = _materialHighlight;
-                }
-                else
-                {
-                    renderer.material = _materialDefault;
+                    case Highlighttype.None:
+                        renderer.material = _materialDefault;
+                        break;
+                    case Highlighttype.Hit:
+                        renderer.material = _materialHit;
+                        break;
+                    case Highlighttype.Preview:
+                        renderer.material = _materialPreview;
+                        break;
+                    case Highlighttype.Time:
+                        renderer.material = _materialTime;
+                        break;
                 }
             }
             _isHighlight = value;
@@ -52,10 +60,11 @@ public class TileBehaviour : MonoBehaviour
         _positionRect.height = _tileHeight;
         
         _materialDefault = Config.MaterialWhite;
-	    _materialHighlight = Config.MaterialYellow;
+	    _materialTime = Config.MaterialYellow;
 	    _materialHit = Config.MaterialRed;
+	    _materialPreview = Config.MaterialOrange;
         renderer.material = _materialDefault;
-	    Highlight = false;
+	    Highlight = Highlighttype.None;
 
         _originPosition = transform.position;
         _originRotation = transform.rotation;

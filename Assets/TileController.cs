@@ -8,8 +8,9 @@ public class TileController : MonoBehaviour
     private GameObject _tileParent;
     public GameObject TileDmxPrefab;
     private GameObject _tileDmxParent;
-    public GameObject _referencePrefab;
+    public GameObject ReferencePrefab;
     private GameObject _reference;
+    private GameObject _peopleParent;
 
     private List<TileCol> _matrix;
 
@@ -18,11 +19,12 @@ public class TileController : MonoBehaviour
 	{
         _tileParent = GameObject.Find("Tiles");
         _tileDmxParent = GameObject.Find("DMX");
+	    _peopleParent = GameObject.Find("People");
 
 	    BuildTiles();
 
 	    float bla = Config.Cols/2*(Config.TileWidth + Config.TileSpaceing);
-        _reference = Instantiate(_referencePrefab, new Vector3(-bla, 0, 0), Quaternion.identity) as GameObject;
+        _reference = Instantiate(ReferencePrefab, new Vector3(-bla, 0, 0), Quaternion.identity) as GameObject;
 	    _reference.name = "Reference";
         _reference.GetComponent<ReferenceBehaviour>().Init(-bla, bla);
 	}
@@ -32,9 +34,31 @@ public class TileController : MonoBehaviour
 	{
 	    foreach (TileCol tileCol in _matrix)
 	    {
-	        foreach (Tile tile in tileCol.tiles)
+	        foreach (Tile tile in tileCol.Tiles)
 	        {
-	            tile.tile.GetComponent<TileBehaviour>().Highlight = Helper.Between(_reference.transform.position.x, tileCol.xMin, tileCol.xMax);
+	            TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
+	            if (Helper.Between(_reference.transform.position.x, tileCol.XMin, tileCol.XMax))
+	            {
+                    Debug.Log(tile.Bounds);
+	                for (int i = 0; i < _peopleParent.transform.childCount; i++)
+	                {
+	                    Transform child = _peopleParent.transform.GetChild(i);
+	                    if (tile.TriggerBounds.Contains(child.position))
+	                    {
+	                        tileScript.Highlight = Highlighttype.Hit;
+                            tileScript.Shake();
+	                        break;
+	                    }
+	                    else
+	                    {
+	                        tileScript.Highlight = Highlighttype.Time;
+	                    }
+	                }
+	            }
+	            else
+	            {
+	                tileScript.Highlight = Highlighttype.None;
+	            }
 	        }
 	    }
 	}
@@ -55,9 +79,9 @@ public class TileController : MonoBehaviour
             float yStartTmp = yStart;
 
             TileCol currentTileCol = new TileCol();
-            currentTileCol.xMin = xStart - Config.TileWidth/2;
-            currentTileCol.xMax = xStart + Config.TileWidth/2;
-            currentTileCol.tiles = new List<Tile>();
+            currentTileCol.XMin = xStart - Config.TileWidth/2;
+            currentTileCol.XMax = xStart + Config.TileWidth/2;
+            currentTileCol.Tiles = new List<Tile>();
 
             for (int j = 0; j < Config.Rows; j++)
             {
@@ -71,11 +95,11 @@ public class TileController : MonoBehaviour
                     current.name = "Tile-" + i + "x" + j;
 
                     Tile currentTile = new Tile();
-                    currentTile.tile = current;
-                    currentTile.bounds = new Rect(currentTileCol.xMin, yStartTmp + Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
-                    currentTile.triggerBounds = new Rect(currentTile.bounds.xMin + Config.TileTriggerOffset, currentTile.bounds.yMin + Config.TileTriggerOffset, Config.TileWidth - Config.TileTriggerOffset*2, Config.TileHeight - Config.TileTriggerOffset*2);
+                    currentTile.TileGo = current;
+                    currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
+                    currentTile.TriggerBounds = new Rect(currentTile.Bounds.xMin + Config.TileTriggerOffset, currentTile.Bounds.yMin + Config.TileTriggerOffset, Config.TileWidth - Config.TileTriggerOffset*2, Config.TileHeight - Config.TileTriggerOffset*2);
 
-                    currentTileCol.tiles.Add(currentTile);
+                    currentTileCol.Tiles.Add(currentTile);
                 }
                 yStartTmp += yInc;
             }
@@ -89,20 +113,4 @@ public class TileController : MonoBehaviour
             xStart += xInc;
         }
     }
-}
-
-struct TileCol
-{
-    public float xMin;
-    public float xMax;
-
-    public List<Tile> tiles;
-}
-
-struct Tile
-{
-    public Rect bounds;
-    public Rect triggerBounds;
-
-    public GameObject tile;
 }

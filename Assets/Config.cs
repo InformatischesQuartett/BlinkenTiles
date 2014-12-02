@@ -25,7 +25,7 @@ public static class Config
         TileWidth = 9;
         TileHeight = 9;
         TileSpaceing = 1;
-        TileTriggerOffset = 0;
+        TileTriggerOffset = 1;
 
         Speed = 20;
 
