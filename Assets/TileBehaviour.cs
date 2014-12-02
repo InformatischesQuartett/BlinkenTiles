@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class TileBehaviour : MonoBehaviour
@@ -11,14 +10,36 @@ public class TileBehaviour : MonoBehaviour
     private Material _materialHighlight;
     private Material _materialDefault;
     private Material _materialHit;
-    
+
+    private bool _isHighlight;
+
     //Shake stuff
     private Vector3 _originPosition;
     private Quaternion _originRotation;
     private float _shakeDecay;
     private float _shakeIntensity;
 
-	// Use this for initialization
+    public bool Highlight
+    {
+        get { return _isHighlight; }
+        set
+        {
+            if (value != _isHighlight)
+            {
+                if (value)
+                {
+                    renderer.material = _materialHighlight;
+                }
+                else
+                {
+                    renderer.material = _materialDefault;
+                }
+            }
+            _isHighlight = value;
+        }
+    }
+
+    // Use this for initialization
 	void Start ()
 	{
         //_soundEmitter = findSoundEmitter(transform.position.y);
@@ -34,6 +55,7 @@ public class TileBehaviour : MonoBehaviour
 	    _materialHighlight = Config.MaterialYellow;
 	    _materialHit = Config.MaterialRed;
         renderer.material = _materialDefault;
+	    Highlight = false;
 
         _originPosition = transform.position;
         _originRotation = transform.rotation;

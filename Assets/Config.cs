@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class Config
 {
@@ -9,6 +8,7 @@ public static class Config
     public static float TileHeight { get; private set; }
     public static float TileSpaceing { get; private set; }
     public static float TileTriggerOffset { get; private set; }
+    public static float Speed { get; private set; }
 
     public static Material MaterialWhite { get; private set; }
     public static Material MaterialYellow { get; private set; }
@@ -16,16 +16,18 @@ public static class Config
     public static Material MaterialBlue { get; private set; }
     public static Material MaterialGreen { get; private set; }
     public static Material MaterialOrange { get; private set; }
-    public static ArrayList Sound { get; private set; }
 
     static Config()
     {
         Cols = 8;
         Rows = 4;
+
         TileWidth = 9;
         TileHeight = 9;
         TileSpaceing = 1;
         TileTriggerOffset = 0;
+
+        Speed = 20;
 
         MaterialWhite = new Material(Shader.Find("Sprites/Default"));
         MaterialWhite.SetColor("_Color", new Color(1, 1, 1));
