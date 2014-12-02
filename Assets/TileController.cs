@@ -21,17 +21,25 @@ public class TileController : MonoBehaviour
         _tileDmxParent = GameObject.Find("DMX");
 	    _peopleParent = GameObject.Find("People");
 
-	    BuildTiles();
-
-	    float bla = Config.Cols/2*(Config.TileWidth + Config.TileSpaceing);
-        _reference = Instantiate(ReferencePrefab, new Vector3(-bla, 0, 0), Quaternion.identity) as GameObject;
+        _reference = Instantiate(ReferencePrefab, new Vector3(Config.Cols / 2 * (Config.TileWidth + Config.TileSpaceing), 0, 0), Quaternion.identity) as GameObject;
 	    _reference.name = "Reference";
-        _reference.GetComponent<ReferenceBehaviour>().Init(-bla, bla);
-	}
+
+        BuildTiles();
+    }
 	
 	// Update is called once per frame
 	void Update ()
 	{
+        if (Input.GetKeyDown(KeyCode.B))
+            BuildTiles();
+
+        if (Input.GetKeyDown(KeyCode.D))
+            DestroyTiles();
+
+        if (Input.GetKeyDown(KeyCode.T))
+            RebuildTiles();
+
+
 	    foreach (TileCol tileCol in _matrix)
 	    {
 	        foreach (Tile tile in tileCol.Tiles)
@@ -39,7 +47,6 @@ public class TileController : MonoBehaviour
 	            TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
 	            if (Helper.Between(_reference.transform.position.x, tileCol.XMin, tileCol.XMax))
 	            {
-                    Debug.Log(tile.Bounds);
 	                for (int i = 0; i < _peopleParent.transform.childCount; i++)
 	                {
 	                    Transform child = _peopleParent.transform.GetChild(i);
@@ -49,10 +56,7 @@ public class TileController : MonoBehaviour
                             tileScript.Shake();
 	                        break;
 	                    }
-	                    else
-	                    {
-	                        tileScript.Highlight = Highlighttype.Time;
-	                    }
+	                    tileScript.Highlight = Highlighttype.Time;
 	                }
 	            }
 	            else
@@ -69,6 +73,8 @@ public class TileController : MonoBehaviour
         float yInc = (Config.TileHeight + Config.TileSpaceing);
         float xStart = -((Config.Cols/2*xInc) - xInc/2);
         float yStart = -((Config.Rows/2*yInc) - yInc/2);
+
+        _reference.GetComponent<ReferenceBehaviour>().Init(-Config.Cols / 2 * (Config.TileWidth + Config.TileSpaceing), Config.Cols / 2 * (Config.TileWidth + Config.TileSpaceing));
 
         _matrix = new List<TileCol>();
 
@@ -112,5 +118,26 @@ public class TileController : MonoBehaviour
 
             xStart += xInc;
         }
+    }
+
+    public void DestroyTiles()
+    {
+        _matrix.Clear();
+
+        for (int i = 0; i < _tileParent.transform.childCount; i++)
+        {
+            Destroy(_tileParent.transform.GetChild(i).gameObject);
+        }
+        for (int i = 0; i < _tileDmxParent.transform.childCount; i++)
+        {
+            Destroy(_tileDmxParent.transform.GetChild(i).gameObject);
+        }
+    }
+
+    public void RebuildTiles()
+    {
+        DestroyTiles();
+//Config changes here
+        BuildTiles();
     }
 }

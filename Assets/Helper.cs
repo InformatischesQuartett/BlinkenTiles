@@ -33,3 +33,9 @@ public enum Highlighttype
     Time,
     Hit
 }
+
+public enum Gamemode
+{
+    Challenge,
+    Freestyle
+}
