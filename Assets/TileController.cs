@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class TileController : MonoBehaviour
@@ -9,8 +8,8 @@ public class TileController : MonoBehaviour
     private GameObject _tileParent;
     public GameObject TileDmxPrefab;
     private GameObject _tileDmxParent;
-
-    private Transform _reference;
+    public GameObject _referencePrefab;
+    private GameObject _reference;
 
     private List<TileCol> _matrix;
 
@@ -19,14 +18,25 @@ public class TileController : MonoBehaviour
 	{
         _tileParent = GameObject.Find("Tiles");
         _tileDmxParent = GameObject.Find("DMX");
-        _reference = GameObject.Find("Reference").transform;
 
 	    BuildTiles();
+
+	    float bla = Config.Cols/2*(Config.TileWidth + Config.TileSpaceing);
+        _reference = Instantiate(_referencePrefab, new Vector3(-bla, 0, 0), Quaternion.identity) as GameObject;
+	    _reference.name = "Reference";
+        _reference.GetComponent<ReferenceBehaviour>().Init(-bla, bla);
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+	    foreach (TileCol tileCol in _matrix)
+	    {
+	        foreach (Tile tile in tileCol.tiles)
+	        {
+	            tile.tile.GetComponent<TileBehaviour>().Highlight = Helper.Between(_reference.transform.position.x, tileCol.xMin, tileCol.xMax);
+	        }
+	    }
 	}
 
     public void BuildTiles()
@@ -47,6 +57,7 @@ public class TileController : MonoBehaviour
             TileCol currentTileCol = new TileCol();
             currentTileCol.xMin = xStart - Config.TileWidth/2;
             currentTileCol.xMax = xStart + Config.TileWidth/2;
+            currentTileCol.tiles = new List<Tile>();
 
             for (int j = 0; j < Config.Rows; j++)
             {
@@ -64,7 +75,6 @@ public class TileController : MonoBehaviour
                     currentTile.bounds = new Rect(currentTileCol.xMin, yStartTmp + Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
                     currentTile.triggerBounds = new Rect(currentTile.bounds.xMin + Config.TileTriggerOffset, currentTile.bounds.yMin + Config.TileTriggerOffset, Config.TileWidth - Config.TileTriggerOffset*2, Config.TileHeight - Config.TileTriggerOffset*2);
 
-                    currentTileCol.tiles = new List<Tile>();
                     currentTileCol.tiles.Add(currentTile);
                 }
                 yStartTmp += yInc;
