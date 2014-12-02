@@ -8,6 +8,7 @@ public static class Config
     public static float TileWidth { get; private set; }
     public static float TileHeight { get; private set; }
     public static float TileSpaceing { get; private set; }
+    public static float TileTriggerOffset { get; private set; }
 
     public static Material MaterialWhite { get; private set; }
     public static Material MaterialYellow { get; private set; }
@@ -21,9 +22,10 @@ public static class Config
     {
         Cols = 8;
         Rows = 4;
-        TileWidth = 270;
-        TileHeight = 90;
-        TileSpaceing = 10;
+        TileWidth = 9;
+        TileHeight = 9;
+        TileSpaceing = 1;
+        TileTriggerOffset = 0;
 
         MaterialWhite = new Material(Shader.Find("Sprites/Default"));
         MaterialWhite.SetColor("_Color", new Color(1, 1, 1));
