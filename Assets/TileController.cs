@@ -1,62 +1,98 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TileController : MonoBehaviour
 {
 
     public GameObject TilePrefab;
-    private GameObject TileParent;
+    private GameObject _tileParent;
+    public GameObject TileDmxPrefab;
+    private GameObject _tileDmxParent;
+
+    private Transform _reference;
+
+    private List<TileCol> _matrix;
 
 	// Use this for initialization
 	void Start ()
 	{
-	    TileParent = GameObject.Find("Tiles");
+        _tileParent = GameObject.Find("Tiles");
+        _tileDmxParent = GameObject.Find("DMX");
+        _reference = GameObject.Find("Reference").transform;
 
 	    BuildTiles();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update ()
+	{
 	}
 
     public void BuildTiles()
     {
-        float xInc = (Config.TileWidth + Config.TileSpaceing) / 10;
-        float yInc = (Config.TileHeight + Config.TileSpaceing) / 10;
+        float xInc = (Config.TileWidth + Config.TileSpaceing);
+        float yInc = (Config.TileHeight + Config.TileSpaceing);
         float xStart = -((Config.Cols/2*xInc) - xInc/2);
         float yStart = -((Config.Rows/2*yInc) - yInc/2);
 
-        Debug.Log(xStart + " : " + yStart + " | " + xInc + " : " + yInc);
+        _matrix = new List<TileCol>();
+
+        //Debug.Log(xStart + " : " + yStart + " | " + xInc + " : " + yInc);
 
         for (int i = 0; i < Config.Cols; i++)
         {
             float yStartTmp = yStart;
+
+            TileCol currentTileCol = new TileCol();
+            currentTileCol.xMin = xStart - Config.TileWidth/2;
+            currentTileCol.xMax = xStart + Config.TileWidth/2;
+
             for (int j = 0; j < Config.Rows; j++)
             {
                 GameObject current = Instantiate(TilePrefab, new Vector3(xStart, yStartTmp, 0), Quaternion.Euler(270, 0, 0)) as GameObject;
-                
-                current.transform.localScale = new Vector3(Config.TileWidth / 100, 1, Config.TileHeight / 100);
-                current.transform.parent = TileParent.transform;
 
-                current.name = "Tile-" + i + "x" + j;
+                if (current != null)
+                {
+                    current.transform.localScale = new Vector3(Config.TileWidth/10, 1, Config.TileHeight/10);
+                    current.transform.parent = _tileParent.transform;
 
-                current.GetComponent<TileBehaviour>().SetTilePosition(i, j);
+                    current.name = "Tile-" + i + "x" + j;
 
+                    Tile currentTile = new Tile();
+                    currentTile.tile = current;
+                    currentTile.bounds = new Rect(currentTileCol.xMin, yStartTmp + Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
+                    currentTile.triggerBounds = new Rect(currentTile.bounds.xMin + Config.TileTriggerOffset, currentTile.bounds.yMin + Config.TileTriggerOffset, Config.TileWidth - Config.TileTriggerOffset*2, Config.TileHeight - Config.TileTriggerOffset*2);
+
+                    currentTileCol.tiles = new List<Tile>();
+                    currentTileCol.tiles.Add(currentTile);
+                }
                 yStartTmp += yInc;
             }
+
+            _matrix.Add(currentTileCol);
+
+            GameObject currentDMX = Instantiate(TileDmxPrefab, new Vector3(xStart, yStartTmp + 1, 0), Quaternion.identity) as GameObject;
+            currentDMX.transform.parent = _tileDmxParent.transform;
+            currentDMX.name = "TileBank-" + i;
+
             xStart += xInc;
         }
     }
+}
 
-    public bool RegisterTile(int col, int row)
-    {
-        if (col >= 0 && col < Config.Cols && row >= 0 && row < Config.Rows)
-        {
-            Debug.Log("Tile registered.");
-            return true;
-        }
-        Debug.LogError("Tile NOT registered!");
-        return false;
-    }
+struct TileCol
+{
+    public float xMin;
+    public float xMax;
+
+    public List<Tile> tiles;
+}
+
+struct Tile
+{
+    public Rect bounds;
+    public Rect triggerBounds;
+
+    public GameObject tile;
 }
