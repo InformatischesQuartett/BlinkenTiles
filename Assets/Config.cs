@@ -8,7 +8,8 @@ public static class Config
     public static float TileHeight { get; private set; }
     public static float TileSpaceing { get; private set; }
     public static float TileTriggerOffset { get; private set; }
-    public static float Speed { get; private set; }
+    public static float Speed { get; set; }
+    public static Gamemode CurrentGamemode { get; set; } 
 
     public static Material MaterialWhite { get; private set; }
     public static Material MaterialYellow { get; private set; }
@@ -28,6 +29,8 @@ public static class Config
         TileTriggerOffset = 1;
 
         Speed = 20;
+
+        CurrentGamemode = Gamemode.Challenge;
 
         MaterialWhite = new Material(Shader.Find("Sprites/Default"));
         MaterialWhite.SetColor("_Color", new Color(1, 1, 1));
