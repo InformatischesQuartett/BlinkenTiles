@@ -37,5 +37,6 @@ public enum Highlighttype
 public enum Gamemode
 {
     Challenge,
-    Freestyle
+    Freestyle,
+    InviteLoop
 }
