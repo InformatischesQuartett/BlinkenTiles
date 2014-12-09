@@ -26,6 +26,16 @@ struct Tile
     public GameObject TileGo;
 }
 
+public struct Song
+{
+    public string Titel;
+    public float BPM;
+    public bool DoubleTiles;
+    public int[] Tileset;
+    public string SoundFilePath;
+    public string[] TileSoundFilePaths;
+}
+
 public enum Highlighttype
 {
     None,
