@@ -9,8 +9,11 @@ public class TileController : MonoBehaviour
     public GameObject TileDmxPrefab;
     private GameObject _tileDmxParent;
     public GameObject ReferencePrefab;
-    private GameObject _reference;
     private GameObject _peopleParent;
+
+    private float _bpm = 120;
+    private float _timer;
+    private int _activeCol;
 
     private List<TileCol> _matrix;
 
@@ -21,8 +24,7 @@ public class TileController : MonoBehaviour
         _tileDmxParent = GameObject.Find("DMX");
 	    _peopleParent = GameObject.Find("People");
 
-        _reference = Instantiate(ReferencePrefab, new Vector3(Config.Cols / 2 * (Config.TileWidth + Config.TileSpaceing), 0, 0), Quaternion.identity) as GameObject;
-	    _reference.name = "Reference";
+	    _activeCol = 0;
 
         BuildTiles();
     }
@@ -39,32 +41,45 @@ public class TileController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
             RebuildTiles();
 
-
-	    foreach (TileCol tileCol in _matrix)
+	    if (_timer > 60/_bpm)
 	    {
-	        foreach (Tile tile in tileCol.Tiles)
-	        {
-	            TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
-	            if (Helper.Between(_reference.transform.position.x, tileCol.XMin, tileCol.XMax))
-	            {
-	                for (int i = 0; i < _peopleParent.transform.childCount; i++)
-	                {
-	                    Transform child = _peopleParent.transform.GetChild(i);
-	                    if (tile.TriggerBounds.Contains(child.position))
-	                    {
-	                        tileScript.Highlight = Highlighttype.Hit;
-                            tileScript.Shake();
-	                        break;
-	                    }
-	                    tileScript.Highlight = Highlighttype.Time;
-	                }
-	            }
-	            else
-	            {
-	                tileScript.Highlight = Highlighttype.None;
-	            }
-	        }
+	        _timer = _timer - (60/_bpm);
+	        _activeCol++;
+	        if (_activeCol >= Config.Cols)
+	            _activeCol = 0;
+
+            for (int i = 0; i < Config.Cols; i++)
+            {
+                TileCol tileCol = _matrix[i];
+                foreach (Tile tile in tileCol.Tiles)
+                {
+                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
+                    if (i == _activeCol)
+                    {
+                        for (int j = 0; j < _peopleParent.transform.childCount; j++)
+                        {
+                            Transform child = _peopleParent.transform.GetChild(j);
+                            if (tile.TriggerBounds.Contains(child.position))
+                            {
+                                tileScript.Highlight = Highlighttype.Hit;
+                                tileScript.Shake();
+                                break;
+                            }
+                            tileScript.Highlight = Highlighttype.Time;
+                        }
+                    }
+                    else
+                    {
+                        tileScript.Highlight = Highlighttype.None;
+                    }
+                }
+            }
 	    }
+	    else
+	    {
+	        _timer += Time.deltaTime;
+	    }
+
 	}
 
     public void BuildTiles()
@@ -74,11 +89,7 @@ public class TileController : MonoBehaviour
         float xStart = -((Config.Cols/2*xInc) - xInc/2);
         float yStart = -((Config.Rows/2*yInc) - yInc/2);
 
-        _reference.GetComponent<ReferenceBehaviour>().Init(-Config.Cols / 2 * (Config.TileWidth + Config.TileSpaceing), Config.Cols / 2 * (Config.TileWidth + Config.TileSpaceing));
-
         _matrix = new List<TileCol>();
-
-        //Debug.Log(xStart + " : " + yStart + " | " + xInc + " : " + yInc);
 
         for (int i = 0; i < Config.Cols; i++)
         {
@@ -112,10 +123,12 @@ public class TileController : MonoBehaviour
 
             _matrix.Add(currentTileCol);
 
+            
+            /*
             GameObject currentDMX = Instantiate(TileDmxPrefab, new Vector3(xStart, yStartTmp + 1, 0), Quaternion.identity) as GameObject;
             currentDMX.transform.parent = _tileDmxParent.transform;
             currentDMX.name = "TileBank-" + i;
-
+            */
             xStart += xInc;
         }
     }

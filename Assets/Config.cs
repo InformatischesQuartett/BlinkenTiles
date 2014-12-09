@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Runtime.InteropServices;
+using UnityEngine;
 
 public static class Config
 {
@@ -8,7 +9,7 @@ public static class Config
     public static float TileHeight { get; private set; }
     public static float TileSpaceing { get; private set; }
     public static float TileTriggerOffset { get; private set; }
-    public static float Speed { get; set; }
+    public static float BPM { get; set; }
     public static Gamemode CurrentGamemode { get; set; } 
 
     public static Material MaterialWhite { get; private set; }
@@ -28,9 +29,9 @@ public static class Config
         TileSpaceing = 1;
         TileTriggerOffset = 1;
 
-        Speed = 20;
+        BPM = 120;
 
-        CurrentGamemode = Gamemode.Challenge;
+        CurrentGamemode = Gamemode.Freestyle;
 
         MaterialWhite = new Material(Shader.Find("Sprites/Default"));
         MaterialWhite.SetColor("_Color", new Color(1, 1, 1));
