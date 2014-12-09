@@ -1,8 +1,14 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using Newtonsoft.Json;
+using UnityEditor.VisualStudioIntegration;
 
 public static class Config
 {
+    private static string _freestylePath = @"Assets\Songs\Freestyle";
+    private static string _challengePath = @"Assets\Songs\Challenge";
+
     public static int Cols { get; private set; }
     public static int Rows { get; private set; }
     public static float TileWidth { get; private set; }
@@ -10,7 +16,10 @@ public static class Config
     public static float TileSpaceing { get; private set; }
     public static float TileTriggerOffset { get; private set; }
     public static float BPM { get; set; }
-    public static Gamemode CurrentGamemode { get; set; } 
+    public static Gamemode CurrentGamemode { get; set; }
+
+    public static List<Song> FreestyleSongs { get; private set; }
+    public static List<Song> ChallengeSongs { get; private set; }
 
     public static Material MaterialWhite { get; private set; }
     public static Material MaterialYellow { get; private set; }
@@ -18,6 +27,7 @@ public static class Config
     public static Material MaterialBlue { get; private set; }
     public static Material MaterialGreen { get; private set; }
     public static Material MaterialOrange { get; private set; }
+
 
     static Config()
     {
@@ -52,5 +62,22 @@ public static class Config
         Sound[2] = GameObject.Find("Sound3");
         Sound[3] = GameObject.Find("Sound4");
         */
+
+        foreach (var file in Directory.GetFiles(_freestylePath))
+        {
+            if (file.EndsWith(".json"))
+            {
+                /*
+                string filecontent = File.ReadAllText(file);
+                var song = JsonConvert.DeserializeObject<Song>(filecontent);
+                FreestyleSongs.Add(song);
+                 */
+            }
+        }
+
+        foreach (var file in Directory.GetFiles(_challengePath))
+        {
+            //challengestuff
+        }
     }
 }
