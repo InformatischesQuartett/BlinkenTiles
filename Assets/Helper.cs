@@ -29,11 +29,11 @@ struct Tile
 public struct Song
 {
     public string Titel;
-    public float BPM;
+    public float Bpm;
     public bool DoubleTiles;
-    public int[] Tileset;
+    public List<int> Tileset;
     public string SoundFilePath;
-    public string[] TileSoundFilePaths;
+    public List<string> TileSoundFilePaths;
 }
 
 public enum Highlighttype
@@ -49,4 +49,10 @@ public enum Gamemode
     Challenge,
     Freestyle,
     InviteLoop
+}
+
+public enum Songtype
+{
+    Freestyle,
+    Challenge
 }

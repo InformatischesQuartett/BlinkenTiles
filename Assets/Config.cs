@@ -2,7 +2,6 @@
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
-using UnityEditor.VisualStudioIntegration;
 
 public static class Config
 {
@@ -56,28 +55,28 @@ public static class Config
         MaterialOrange = new Material(Shader.Find("Sprites/Default"));
         MaterialOrange.SetColor("_Color", new Color(1, 0.5f, 0,5f));
 
-        /*
-         * Sound[0] = GameObject.Find("Sound1");
-        Sound[1] = GameObject.Find("Sound2");
-        Sound[2] = GameObject.Find("Sound3");
-        Sound[3] = GameObject.Find("Sound4");
-        */
+
+        FreestyleSongs = new List<Song>();
+        ChallengeSongs = new List<Song>();
 
         foreach (var file in Directory.GetFiles(_freestylePath))
         {
             if (file.EndsWith(".json"))
             {
-                /*
                 string filecontent = File.ReadAllText(file);
                 var song = JsonConvert.DeserializeObject<Song>(filecontent);
                 FreestyleSongs.Add(song);
-                 */
             }
         }
 
         foreach (var file in Directory.GetFiles(_challengePath))
         {
-            //challengestuff
+            if (file.EndsWith(".json"))
+            {
+                string filecontent = File.ReadAllText(file);
+                var song = JsonConvert.DeserializeObject<Song>(filecontent);
+                ChallengeSongs.Add(song);
+            }
         }
     }
 }
