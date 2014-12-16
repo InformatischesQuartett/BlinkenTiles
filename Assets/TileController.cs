@@ -6,6 +6,7 @@ public class TileController : MonoBehaviour
     public GameObject TilePrefab;
     private GameObject _tileParent;
     private GameObject _peopleParent;
+    private GameObject _tempParent;
 
     private float _bpm = 120;
     private float _timerCol;
@@ -25,9 +26,11 @@ public class TileController : MonoBehaviour
 	    _dmxControllerScript = gameObject.GetComponent<DmxController>();
         _tileParent = GameObject.Find("Tiles");
 	    _peopleParent = GameObject.Find("People");
+        _tempParent = GameObject.Find("Temp");
 
 	    _activeCol = 0;
 
+        LoadSong();
         BuildTiles();
     }
 	
@@ -158,5 +161,19 @@ public class TileController : MonoBehaviour
         DestroyTiles();
         //Config.LoadNextSong();
         BuildTiles();
+    }
+
+    public void LoadSong()
+    {
+        var go = new GameObject();
+        go.name = "Song";
+        go.transform.parent = _tempParent.transform;
+        go.AddComponent<AudioSource>();
+
+        go.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[0].SoundFilePath;
+
+        //Set Config vars
+        //Load Song files
+        //Rebuild Tiles
     }
 }
