@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class TileController : MonoBehaviour
 {
-
     public GameObject TilePrefab;
     private GameObject _tileParent;
     public GameObject TileDmxPrefab;
@@ -21,9 +20,12 @@ public class TileController : MonoBehaviour
     private bool _matrixReady;
     private List<TileCol> _matrix;
 
+    private DmxController _dmxControllerScript;
+
 	// Use this for initialization
 	void Start ()
 	{
+	    _dmxControllerScript = gameObject.GetComponent<DmxController>();
         _tileParent = GameObject.Find("Tiles");
         _tileDmxParent = GameObject.Find("DMX");
 	    _peopleParent = GameObject.Find("People");
@@ -88,6 +90,9 @@ public class TileController : MonoBehaviour
 	    }
 
 	    TimerField = (_activeCol*60/_bpm) + _timerCol;
+	    _dmxControllerScript.TimeReference = TimerField;
+
+        _dmxControllerScript.Tick();
 	}
 
     public void BuildTiles()
@@ -144,6 +149,7 @@ public class TileController : MonoBehaviour
         _timerCol = 0;
         _matrixReady = true;
         FieldWidth = Config.Cols*(Config.TileWidth + Config.TileSpaceing);
+        _dmxControllerScript.FieldSize = FieldWidth;
     }
 
     public void DestroyTiles()
