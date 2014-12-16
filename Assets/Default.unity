@@ -881,6 +881,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1926542677}
   - 114: {fileID: 1926542678}
+  - 114: {fileID: 1926542679}
   m_Layer: 0
   m_Name: Tiles
   m_TagString: Untagged
@@ -912,8 +913,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TilePrefab: {fileID: 100000, guid: 6a1c0e70cc6fee94b91a47b8a7e10e65, type: 2}
-  TileDmxPrefab: {fileID: 100000, guid: 9d4362bee792e1b4a86849474f1637a9, type: 2}
-  ReferencePrefab: {fileID: 100000, guid: be1b336849d7ab14b8ee7bfb6d8035d7, type: 2}
+--- !u!114 &1926542679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1926542676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ee0ba3c97ac594ba0648e74dddca39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2023361154
 GameObject:
   m_ObjectHideFlags: 0
