@@ -79,4 +79,9 @@ public static class Config
             }
         }
     }
+
+    public static void LoadNextSong()
+    {
+        throw new System.NotImplementedException();
+    }
 }

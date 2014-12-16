@@ -12,9 +12,13 @@ public class TileController : MonoBehaviour
     private GameObject _peopleParent;
 
     private float _bpm = 120;
-    private float _timer;
+    private float _timerCol;
     private int _activeCol;
 
+    public float TimerField { get; private set; }
+    public float FieldWidth { get; private set; }
+
+    private bool _matrixReady;
     private List<TileCol> _matrix;
 
 	// Use this for initialization
@@ -41,45 +45,49 @@ public class TileController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
             RebuildTiles();
 
-	    if (_timer > 60/_bpm)
+	    if (_timerCol > 60/_bpm)
 	    {
-	        _timer = _timer - (60/_bpm);
+	        _timerCol = (_timerCol - (60/_bpm)) + Time.deltaTime;
 	        _activeCol++;
 	        if (_activeCol >= Config.Cols)
 	            _activeCol = 0;
 
-            for (int i = 0; i < Config.Cols; i++)
-            {
-                TileCol tileCol = _matrix[i];
-                foreach (Tile tile in tileCol.Tiles)
-                {
-                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
-                    if (i == _activeCol)
-                    {
-                        for (int j = 0; j < _peopleParent.transform.childCount; j++)
-                        {
-                            Transform child = _peopleParent.transform.GetChild(j);
-                            if (tile.TriggerBounds.Contains(child.position))
-                            {
-                                tileScript.Highlight = Highlighttype.Hit;
-                                tileScript.Shake();
-                                break;
-                            }
-                            tileScript.Highlight = Highlighttype.Time;
-                        }
-                    }
-                    else
-                    {
-                        tileScript.Highlight = Highlighttype.None;
-                    }
-                }
-            }
+	        if (_matrixReady)
+	        {
+	            for (int i = 0; i < Config.Cols; i++)
+	            {
+	                TileCol tileCol = _matrix[i];
+	                foreach (Tile tile in tileCol.Tiles)
+	                {
+	                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
+	                    if (i == _activeCol)
+	                    {
+	                        for (int j = 0; j < _peopleParent.transform.childCount; j++)
+	                        {
+	                            Transform child = _peopleParent.transform.GetChild(j);
+	                            if (tile.TriggerBounds.Contains(child.position))
+	                            {
+	                                tileScript.Highlight = Highlighttype.Hit;
+	                                tileScript.Shake();
+	                                break;
+	                            }
+	                            tileScript.Highlight = Highlighttype.Time;
+	                        }
+	                    }
+	                    else
+	                    {
+	                        tileScript.Highlight = Highlighttype.None;
+	                    }
+	                }
+	            }
+	        }
 	    }
 	    else
 	    {
-	        _timer += Time.deltaTime;
+	        _timerCol += Time.deltaTime;
 	    }
 
+	    TimerField = (_activeCol*60/_bpm) + _timerCol;
 	}
 
     public void BuildTiles()
@@ -124,17 +132,23 @@ public class TileController : MonoBehaviour
             _matrix.Add(currentTileCol);
 
             
-            /*
+            
             GameObject currentDMX = Instantiate(TileDmxPrefab, new Vector3(xStart, yStartTmp + 1, 0), Quaternion.identity) as GameObject;
             currentDMX.transform.parent = _tileDmxParent.transform;
             currentDMX.name = "TileBank-" + i;
-            */
+            
             xStart += xInc;
         }
+
+        _activeCol = 0;
+        _timerCol = 0;
+        _matrixReady = true;
+        FieldWidth = Config.Cols*(Config.TileWidth + Config.TileSpaceing);
     }
 
     public void DestroyTiles()
     {
+        _matrixReady = false;
         _matrix.Clear();
 
         for (int i = 0; i < _tileParent.transform.childCount; i++)
@@ -150,7 +164,7 @@ public class TileController : MonoBehaviour
     public void RebuildTiles()
     {
         DestroyTiles();
-//Config changes here
+        //Config.LoadNextSong();
         BuildTiles();
     }
 }
