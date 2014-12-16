@@ -5,9 +5,6 @@ public class TileController : MonoBehaviour
 {
     public GameObject TilePrefab;
     private GameObject _tileParent;
-    public GameObject TileDmxPrefab;
-    private GameObject _tileDmxParent;
-    public GameObject ReferencePrefab;
     private GameObject _peopleParent;
 
     private float _bpm = 120;
@@ -27,7 +24,6 @@ public class TileController : MonoBehaviour
 	{
 	    _dmxControllerScript = gameObject.GetComponent<DmxController>();
         _tileParent = GameObject.Find("Tiles");
-        _tileDmxParent = GameObject.Find("DMX");
 	    _peopleParent = GameObject.Find("People");
 
 	    _activeCol = 0;
@@ -135,12 +131,6 @@ public class TileController : MonoBehaviour
             }
 
             _matrix.Add(currentTileCol);
-
-            
-            
-            GameObject currentDMX = Instantiate(TileDmxPrefab, new Vector3(xStart, yStartTmp + 1, 0), Quaternion.identity) as GameObject;
-            currentDMX.transform.parent = _tileDmxParent.transform;
-            currentDMX.name = "TileBank-" + i;
             
             xStart += xInc;
         }
@@ -160,10 +150,6 @@ public class TileController : MonoBehaviour
         for (int i = 0; i < _tileParent.transform.childCount; i++)
         {
             Destroy(_tileParent.transform.GetChild(i).gameObject);
-        }
-        for (int i = 0; i < _tileDmxParent.transform.childCount; i++)
-        {
-            Destroy(_tileDmxParent.transform.GetChild(i).gameObject);
         }
     }
 

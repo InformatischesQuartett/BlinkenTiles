@@ -10,5 +10,6 @@ public class DmxController : MonoBehaviour
     public void Tick()
     {
         //do DMX stuff here
+        Debug.Log("Tick");
     }
 }
