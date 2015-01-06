@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public static class Helper {
+public static class BlinkHelper {
 
     public static bool Between(this float num, float lower, float upper, bool inclusive = false)
     {
