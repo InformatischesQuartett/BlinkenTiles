@@ -374,6 +374,7 @@ GameObject:
   - 92: {fileID: 163530851}
   - 124: {fileID: 163530850}
   - 81: {fileID: 163530849}
+  - 114: {fileID: 163530854}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -450,6 +451,27 @@ Transform:
   - {fileID: 943526849}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &163530854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 163530848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a09b9a4457e17943a7551345519a598, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Kinect: {fileID: 2800000, guid: b0e2d2c10f97d7b48871d615474c75d4, type: 3}
+  GrayScale: 1
+  MinThr: 140
+  MaxThr: 180
+  DebugImg: 5
+  DebugImgSize: 512
+  GridLoc: {x: 13, y: 140}
+  GridSize: {x: 8, y: 4}
+  FieldSize: {x: 64, y: 64}
+  GridTolerance: 25
 --- !u!1 &288667554
 GameObject:
   m_ObjectHideFlags: 0
