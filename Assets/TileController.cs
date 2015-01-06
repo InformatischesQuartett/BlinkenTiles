@@ -57,23 +57,29 @@ public class TileController : MonoBehaviour
 	        {
 	            for (int i = 0; i < Config.Cols; i++)
 	            {
+					Debug.Log ("0" + _matrix[0].Tiles[1].Active);
+					Debug.Log ("1" + _matrix[1].Tiles[1].Active);
+					Debug.Log ("2" + _matrix[2].Tiles[1].Active);
+
 	                TileCol tileCol = _matrix[i];
 	                foreach (Tile tile in tileCol.Tiles)
 	                {
+						//Debug.Log (tile.Active);
+
 	                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
 	                    if (i == _activeCol)
 	                    {
-	                        for (int j = 0; j < _peopleParent.transform.childCount; j++)
-	                        {
-	                            Transform child = _peopleParent.transform.GetChild(j);
-	                            if (tile.TriggerBounds.Contains(child.position))
+							//Debug.Log ("feld: " + i + ": " + tile.Active);
+					
+	                            if (tile.Active)
 	                            {
+
+
 	                                tileScript.Highlight = Highlighttype.Hit;
 	                                tileScript.Shake();
-	                                break;
+							
 	                            }
 	                            tileScript.Highlight = Highlighttype.Time;
-	                        }
 	                    }
 	                    else
 	                    {
@@ -127,7 +133,7 @@ public class TileController : MonoBehaviour
                     currentTile.TileGo = current;
                     currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
                     currentTile.TriggerBounds = new Rect(currentTile.Bounds.xMin + Config.TileTriggerOffset, currentTile.Bounds.yMin + Config.TileTriggerOffset, Config.TileWidth - Config.TileTriggerOffset*2, Config.TileHeight - Config.TileTriggerOffset*2);
-
+					currentTile.Active = false;
                     currentTileCol.Tiles.Add(currentTile);
                 }
                 yStartTmp += yInc;
@@ -176,4 +182,14 @@ public class TileController : MonoBehaviour
         //Load Song files
         //Rebuild Tiles
     }
+
+	public void SetTileStatus(int col, int row, bool status)
+	{
+		var tile = _matrix[col].Tiles[row];
+		tile.Active = status;
+		_matrix[col].Tiles[row] = tile;
+		if (status)
+			Debug.Log ("Setze: " + col + "/" + row);
+
+	}
 }

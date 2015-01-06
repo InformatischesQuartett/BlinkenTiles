@@ -9,6 +9,8 @@ using CvEnum = Emgu.CV.CvEnum;
 
 public class ObjDetectionScript : MonoBehaviour {
 
+	public TileController tileCtrl;
+
 	public Texture2D Kinect;
 	public bool GrayScale;
 
@@ -25,7 +27,6 @@ public class ObjDetectionScript : MonoBehaviour {
 	public int DebugImgSize;
 
 	public Vector2 GridLoc;
-	public Vector2 GridSize;
 	public Vector2 FieldSize;
 
 	public int GridTolerance;
@@ -138,10 +139,10 @@ public class ObjDetectionScript : MonoBehaviour {
 			lastTex = ConvertToTexture(imgThr.Data, imgThr.Width, imgThr.Height);
 
 		// create grid
-		ObjGrid = new bool[(int) GridSize.x, (int) GridSize.y];
+		ObjGrid = new bool[(int) Config.Cols, (int) Config.Rows];
 		
-		for (int x = 0; x < GridSize.x; x++)
-			for (int y = 0; y < GridSize.y; y++)
+		for (int x = 0; x < Config.Cols; x++)
+			for (int y = 0; y < Config.Rows; y++)
 				ObjGrid[x, y] = false;
 
 		// find contur
@@ -156,8 +157,8 @@ public class ObjDetectionScript : MonoBehaviour {
 					continue;
 
 				// check against grid
-				for (int x = 0; x < GridSize.x; x++) {
-					for (int y = 0; y < GridSize.y; y++)
+				for (int x = 0; x < Config.Cols; x++) {
+					for (int y = 0; y < Config.Rows; y++)
 					{
 						var grRect = new Rectangle((int) (GridLoc.x + x * FieldSize.x + GridTolerance),
 					                         	   (int) (GridLoc.y + y * FieldSize.y + GridTolerance),
@@ -166,8 +167,11 @@ public class ObjDetectionScript : MonoBehaviour {
 
 						imgOrg.Draw(grRect, new Bgr(200, 0, 0), 2);
 
-						if (bdRect.IntersectsWith(grRect))
+						if (bdRect.IntersectsWith(grRect)) {
+							tileCtrl.SetTileStatus(x, y, true);
 							ObjGrid[x, y] = true;
+						} else
+							tileCtrl.SetTileStatus(x, y, false);
 					}
 				}
 
@@ -181,9 +185,9 @@ public class ObjDetectionScript : MonoBehaviour {
 		// draw grid
 		var blendImg = new Image<Bgr, byte>(imgOrg.Width, imgOrg.Height);
 
-		for (int x = 0; x < GridSize.x; x++)
+		for (int x = 0; x < Config.Cols; x++)
 		{
-			for (int y = 0; y < GridSize.y; y++)
+			for (int y = 0; y < Config.Rows; y++)
 			{
 				var grRect = new Rectangle((int) (GridLoc.x + x * FieldSize.x),
 				                          (int) (GridLoc.y + y * FieldSize.y),
