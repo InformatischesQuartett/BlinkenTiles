@@ -22,7 +22,7 @@ struct Tile
 {
     public Rect Bounds;
     public Rect TriggerBounds;
-
+	public bool Active;
     public GameObject TileGo;
 }
 
