@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{9F821EB3-62DF-E672-CFC9-4EB7BDD93B05}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp-Editor-firstpass</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+	<BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_5_3;UNITY_4_5;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="UnityEngine">
+	  <HintPath>D:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>D:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Standard Assets\Editor\KinectCopyPluginDataHelper.cs" />
+     <None Include="Assets\GreenScreen\Materials\GreenScreenShader.shader" />
+ <Reference Include="Emgu.CV.DebuggerVisualizers.VS2008">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.DebuggerVisualizers.VS2008.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.DebuggerVisualizers.VS2010">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.DebuggerVisualizers.VS2010.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.DebuggerVisualizers.VS2012">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.DebuggerVisualizers.VS2012.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.DebuggerVisualizers.VS2013">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.DebuggerVisualizers.VS2013.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.GPU">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.GPU.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.ML">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.ML.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.OCR">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.OCR.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.OpenCL">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.OpenCL.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.Stitching">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.Stitching.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.UI">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.CV.VideoStab">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.CV.VideoStab.dll</HintPath>
+ </Reference>
+ <Reference Include="Emgu.Util">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/Emgu.Util.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Drawing">
+ <HintPath>E:/Development/MatrixTest/Assets/Plugins/System.Drawing.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.Graphs">
+ <HintPath>D:/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{C1D587E4-81D0-DD4B-744A-4A9653399585}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>
