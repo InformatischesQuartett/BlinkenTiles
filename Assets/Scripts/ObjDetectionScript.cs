@@ -11,9 +11,6 @@ public class ObjDetectionScript : MonoBehaviour {
 
 	public TileController tileCtrl;
 
-	public Texture2D Kinect;
-	public bool GrayScale;
-
 	[Range(0,255)]
 	public int MinThr;
 
@@ -33,6 +30,28 @@ public class ObjDetectionScript : MonoBehaviour {
 	
 	private Texture2D lastTex;
 	private bool[,] ObjGrid;
+
+	private DepthSourceManager DepthManager;
+
+	void Start () {
+		lastTex = new Texture2D(512, 512);
+		DepthManager = GetComponent<DepthSourceManager>();
+	}
+
+	void Update()
+	{
+		if (Time.frameCount % 20 == 0)
+			ProcessImg();
+	}
+
+	void OnGUI()
+	{
+		GUI.DrawTexture(new Rect(0, DebugImgSize, DebugImgSize, -DebugImgSize), lastTex);
+		GUI.Label(new Rect(5, DebugImgSize - 20, 100, 20), "Schritt " + DebugImg);
+		
+		if (GUI.Button(new Rect(0, 0, 100, 20), "Process"))
+			ProcessImg();
+	}
 
 	byte[,,] ConvertToImage(Texture2D tex) {
 		var arr = new byte[tex.width, tex.height, 3];
@@ -80,49 +99,16 @@ public class ObjDetectionScript : MonoBehaviour {
 
 		return tex;
 	}
-
-	void OnGUI()
-	{
-		GUI.DrawTexture(new Rect(0, 0, DebugImgSize, DebugImgSize), lastTex);
-		GUI.Label(new Rect(5, DebugImgSize - 20, 100, 20), "Schritt " + DebugImg);
-
-		if (GUI.Button(new Rect(0, 0, 100, 20), "Process"))
-			ProcessImg();
-	}
-
-	void Start () {
-		lastTex = new Texture2D(512, 512);
-	}
-
-	void Update()
-	{
-		if (Time.frameCount % 20 == 0)
-			ProcessImg();
-	}
-
+	
 	void ProcessImg () {
-		byte[,,] arr = ConvertToImage(Kinect);
-
-		var imgOrg = new Image<Bgr, byte>(arr);
-
-		if (DebugImg == 0)
-			lastTex = ConvertToTexture(imgOrg.Data, imgOrg.Width, imgOrg.Height);
-		
-		var imgChan = imgOrg.Split();
-		var imgGr = imgChan[0];
-		
-		if (!GrayScale) {
-			var imgCl = new Image<Bgr, byte>(arr);
-			var hsvImg = imgCl.Convert<Hsv, byte>();
-			imgChan = hsvImg.Split();
-			imgGr = imgChan[0];
-		}
+		var imgGray = new Image<Gray, byte> (DepthManager.GetDepthImg ());
+		var imgOrg = imgGray.Convert<Bgr, byte> ();
 
 		if (DebugImg == 1)
-			lastTex = ConvertToTexture(imgGr.Data, imgGr.Width, imgGr.Height);
+			lastTex = ConvertToTexture(imgGray.Data, imgGray.Width, imgGray.Height);
 		
 		// noise reduction
-		var imgSm = imgGr.PyrDown().PyrUp().SmoothGaussian(3);
+		var imgSm = imgGray.PyrDown().PyrUp().SmoothGaussian(3);
 		
 		var element = new StructuringElementEx(5, 5, 2, 2, Emgu.CV.CvEnum.CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
 		CvInvoke.cvErode(imgSm, imgSm, element, 2);
@@ -167,17 +153,19 @@ public class ObjDetectionScript : MonoBehaviour {
 
 						imgOrg.Draw(grRect, new Bgr(200, 0, 0), 2);
 
-						if (bdRect.IntersectsWith(grRect)) {
-							tileCtrl.SetTileStatus(x, y, true);
+						if (bdRect.IntersectsWith(grRect))
 							ObjGrid[x, y] = true;
-						} else
-							tileCtrl.SetTileStatus(x, y, false);
 					}
 				}
 
 				imgOrg.Draw(currentContour.BoundingRectangle, new Bgr(255, 255, 0), 2);
 			}
 		}
+
+		// set tile status
+		for (int x = 0; x < Config.Cols; x++)
+			for (int y = 0; y < Config.Rows; y++)
+				tileCtrl.SetTileStatus(x, y, ObjGrid[x, y]);
 
 		if (DebugImg == 4)
 			lastTex = ConvertToTexture(imgOrg.Data, imgOrg.Width, imgOrg.Height);
@@ -203,6 +191,6 @@ public class ObjDetectionScript : MonoBehaviour {
 	    if (DebugImg == 5)
 			lastTex = ConvertToTexture(imgOrg.Data, imgOrg.Width, imgOrg.Height);
 
-		//imgOrg.Save(@"E:\Test.jpg");
+		//imgOrg.Save(@"E:\Test.jpg");*/
 	}
 }
