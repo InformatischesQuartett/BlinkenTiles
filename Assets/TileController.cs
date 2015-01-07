@@ -57,9 +57,9 @@ public class TileController : MonoBehaviour
 	        {
 	            for (int i = 0; i < Config.Cols; i++)
 	            {
-					Debug.Log ("0" + _matrix[0].Tiles[1].Active);
-					Debug.Log ("1" + _matrix[1].Tiles[1].Active);
-					Debug.Log ("2" + _matrix[2].Tiles[1].Active);
+					//Debug.Log ("0" + _matrix[0].Tiles[1].Active);
+					//Debug.Log ("1" + _matrix[1].Tiles[1].Active);
+					//Debug.Log ("2" + _matrix[2].Tiles[1].Active);
 
 	                TileCol tileCol = _matrix[i];
 	                foreach (Tile tile in tileCol.Tiles)
@@ -188,8 +188,5 @@ public class TileController : MonoBehaviour
 		var tile = _matrix[col].Tiles[row];
 		tile.Active = status;
 		_matrix[col].Tiles[row] = tile;
-		if (status)
-			Debug.Log ("Setze: " + col + "/" + row);
-
 	}
 }
