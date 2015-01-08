@@ -5,8 +5,8 @@ using Newtonsoft.Json;
 
 public static class Config
 {
-    private static string _freestylePath = @"Assets\Songs\Freestyle";
-    private static string _challengePath = @"Assets\Songs\Challenge";
+    private static string _freestylePath = Application.streamingAssetsPath + @"\Songs\Freestyle";
+    private static string _challengePath = Application.streamingAssetsPath + @"\Songs\Challenge";
 
     public static int Cols { get; private set; }
     public static int Rows { get; private set; }
