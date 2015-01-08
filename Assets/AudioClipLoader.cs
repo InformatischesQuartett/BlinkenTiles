@@ -8,7 +8,8 @@ public class AudioClipLoader : MonoBehaviour {
 
     public void Start()
     {
-        url = "file://" + Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + url;
+        url = "file://" + Application.streamingAssetsPath + url;
+        Debug.Log(url);
         www = new WWW(url);
         StartCoroutine(WaitForAudioClip());
     }
