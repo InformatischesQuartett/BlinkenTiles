@@ -46,7 +46,7 @@ public class ObjDetectionScript : MonoBehaviour {
 
 	void OnGUI()
 	{
-		GUI.DrawTexture(new Rect(0, DebugImgSize, DebugImgSize, -DebugImgSize), lastTex);
+		GUI.DrawTexture(new Rect(0, 0, DebugImgSize, DebugImgSize), lastTex);
 		GUI.Label(new Rect(5, DebugImgSize - 20, 100, 20), "Schritt " + DebugImg);
 		
 		if (GUI.Button(new Rect(0, 0, 100, 20), "Process"))
@@ -101,7 +101,12 @@ public class ObjDetectionScript : MonoBehaviour {
 	}
 	
 	void ProcessImg () {
-		var imgGray = new Image<Gray, byte> (DepthManager.GetDepthImg ());
+		var depthImg = DepthManager.GetDepthImg ();
+
+		if (depthImg == null)
+			return;
+
+		var imgGray = new Image<Gray, byte> (depthImg);
 		var imgOrg = imgGray.Convert<Bgr, byte> ();
 
 		if (DebugImg == 1)

@@ -26,10 +26,11 @@ public class DepthSourceManager : MonoBehaviour
 		
 		return _ColorImage;
 	}
-
+	
 	public byte[,,] GetDepthImg()
 	{
-		CreateDepthImage();
+		if (_DepthData != null)
+			CreateDepthImage();
 		return _DepthImage;
 	}
 	
