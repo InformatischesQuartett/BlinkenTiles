@@ -70,6 +70,10 @@ public class TileController : MonoBehaviour
 	                            {
 	                                tileScript.Highlight = Highlighttype.Hit;
 	                                tileScript.Shake();
+
+	                                var soundGo = GameObject.Find("Temp/TileSounds/" + tile.soundIndex);
+                                    soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
+
 	                                break;
 	                            }
 	                            tileScript.Highlight = Highlighttype.Time;
@@ -125,6 +129,7 @@ public class TileController : MonoBehaviour
 
                     Tile currentTile = new Tile();
                     currentTile.TileGo = current;
+                    currentTile.soundIndex = j;
                     currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
                     currentTile.TriggerBounds = new Rect(currentTile.Bounds.xMin + Config.TileTriggerOffset, currentTile.Bounds.yMin + Config.TileTriggerOffset, Config.TileWidth - Config.TileTriggerOffset*2, Config.TileHeight - Config.TileTriggerOffset*2);
 
@@ -172,6 +177,20 @@ public class TileController : MonoBehaviour
 
         go.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[0].SoundFilePath;
 
+        var goTileSounds = new GameObject();
+        goTileSounds.name = "TileSounds";
+        goTileSounds.transform.parent = _tempParent.transform;
+
+        for (int i = 0; i < Config.ChallengeSongs[0].TileSoundFilePaths.Count; i++)
+        {
+            var tilesounds = new GameObject();
+            tilesounds.name = i.ToString();
+            tilesounds.transform.parent = goTileSounds.transform;
+            tilesounds.AddComponent<AudioSource>();
+            tilesounds.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[0].TileSoundFilePaths[i];
+        }
+
+        go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
         //Set Config vars
         //Load Song files
         //Rebuild Tiles
