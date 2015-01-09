@@ -24,6 +24,7 @@ struct Tile
     public Rect TriggerBounds;
 	public bool Active;
     public GameObject TileGo;
+    public int soundIndex;
 }
 
 public struct Song
@@ -55,4 +56,10 @@ public enum Songtype
 {
     Freestyle,
     Challenge
+}
+
+public enum AudioPlayMode
+{
+    Loop,
+    Once
 }

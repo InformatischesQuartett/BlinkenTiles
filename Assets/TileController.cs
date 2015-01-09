@@ -57,29 +57,28 @@ public class TileController : MonoBehaviour
 	        {
 	            for (int i = 0; i < Config.Cols; i++)
 	            {
-					//Debug.Log ("0" + _matrix[0].Tiles[1].Active);
-					//Debug.Log ("1" + _matrix[1].Tiles[1].Active);
-					//Debug.Log ("2" + _matrix[2].Tiles[1].Active);
-
 	                TileCol tileCol = _matrix[i];
 	                foreach (Tile tile in tileCol.Tiles)
 	                {
-						//Debug.Log (tile.Active);
-
 	                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
 	                    if (i == _activeCol)
 	                    {
-							//Debug.Log ("feld: " + i + ": " + tile.Active);
-					
-	                            if (tile.Active)
+	                        for (int j = 0; j < _peopleParent.transform.childCount; j++)
+	                        {
+	                            Transform child = _peopleParent.transform.GetChild(j);
+	                            if (tile.TriggerBounds.Contains(child.position))
 	                            {
-
-
 	                                tileScript.Highlight = Highlighttype.Hit;
 	                                tileScript.Shake();
-							
+
+	                                var soundGo = GameObject.Find("Temp/TileSounds/" + tile.soundIndex);
+                                    soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
+
+	                                break;
 	                            }
+								Debug.Log("Blub");
 	                            tileScript.Highlight = Highlighttype.Time;
+	                        }
 	                    }
 	                    else
 	                    {
@@ -131,8 +130,10 @@ public class TileController : MonoBehaviour
 
                     Tile currentTile = new Tile();
                     currentTile.TileGo = current;
+                    currentTile.soundIndex = j;
                     currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
                     currentTile.TriggerBounds = new Rect(currentTile.Bounds.xMin + Config.TileTriggerOffset, currentTile.Bounds.yMin + Config.TileTriggerOffset, Config.TileWidth - Config.TileTriggerOffset*2, Config.TileHeight - Config.TileTriggerOffset*2);
+
 					currentTile.Active = false;
                     currentTileCol.Tiles.Add(currentTile);
                 }
@@ -178,6 +179,20 @@ public class TileController : MonoBehaviour
 
         go.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[0].SoundFilePath;
 
+        var goTileSounds = new GameObject();
+        goTileSounds.name = "TileSounds";
+        goTileSounds.transform.parent = _tempParent.transform;
+
+        for (int i = 0; i < Config.ChallengeSongs[0].TileSoundFilePaths.Count; i++)
+        {
+            var tilesounds = new GameObject();
+            tilesounds.name = i.ToString();
+            tilesounds.transform.parent = goTileSounds.transform;
+            tilesounds.AddComponent<AudioSource>();
+            tilesounds.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[0].TileSoundFilePaths[i];
+        }
+
+        go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
         //Set Config vars
         //Load Song files
         //Rebuild Tiles
