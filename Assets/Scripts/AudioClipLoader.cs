@@ -36,7 +36,7 @@ public class AudioClipLoader : MonoBehaviour {
         }
     }
 
-    public void Play(AudioPlayMode audioPlayMode)
+    public void Play(AudioPlayMode audioPlayMode=AudioPlayMode.Once)
     {
 
         switch (audioPlayMode)

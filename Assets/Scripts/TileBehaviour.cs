@@ -9,6 +9,7 @@ public class TileBehaviour : MonoBehaviour
 
     private Material _materialTime;
     private Material _materialDefault;
+    private Material _materialOccupied;
     private Material _materialPreview;
     private Material _materialHit;
 
@@ -31,6 +32,9 @@ public class TileBehaviour : MonoBehaviour
                 {
                     case Highlighttype.None:
                         renderer.material = _materialDefault;
+                        break;
+                    case Highlighttype.Occupied:
+                        renderer.material = _materialOccupied;
                         break;
                     case Highlighttype.Hit:
                         renderer.material = _materialHit;
@@ -63,6 +67,7 @@ public class TileBehaviour : MonoBehaviour
 	    _materialTime = Config.MaterialYellow;
 	    _materialHit = Config.MaterialRed;
 	    _materialPreview = Config.MaterialOrange;
+	    _materialOccupied = Config.MaterialGreen;
         renderer.material = _materialDefault;
 	    Highlight = Highlighttype.None;
 
