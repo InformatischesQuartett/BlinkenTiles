@@ -21,6 +21,10 @@ public class DepthSourceManager : MonoBehaviour
 	private byte[] _ColorData;
 	private Texture2D _ColorImage;
 
+	[Range(0, 15)]
+	public int SampleDepthData = 1;
+	private int lastSampleData = 0;
+
 	public Texture2D GetColorImg()
 	{
 		_ColorImage.LoadRawTextureData(_ColorData);
@@ -29,10 +33,10 @@ public class DepthSourceManager : MonoBehaviour
 		return _ColorImage;
 	}
 	
-	public byte[,,] GetDepthImg()
+	public byte[,,] GetDepthImg(int low, int high)
 	{
 		if (_DepthData != null)
-			CreateDepthImage();
+			CreateDepthImage(low, high);
 		return _DepthImage;
 	}
 
@@ -44,23 +48,49 @@ public class DepthSourceManager : MonoBehaviour
 		var randObj = new System.Random();
 		var name = randObj.Next(10000, 99999);
 		var path = "Assets/Samples/DepthFile" + name;
+		var file = File.Open(path, FileMode.Create);
 
-		using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
+		using (BinaryWriter bw = new BinaryWriter(file))
 		{
-			using (BinaryWriter bw = new BinaryWriter(fs))
+			foreach (short value in _DepthData)
 			{
-				foreach (short value in _DepthData)
-				{
-					bw.Write(value);
-				}
+				bw.Write(value);
 			}
 		}
 
-		Debug.Log("Saved to: " + path);
+		Debug.Log("Depth sample saved to: " + path);
+	}
+
+	public void ReadDepthFromFile()
+	{
+		var path = "Assets/Samples/DepthFile" + SampleDepthData;
+		var file = File.Open(path, FileMode.Open);
+
+		using (BinaryReader br = new BinaryReader(file))
+		{
+			var valueCt = br.BaseStream.Length/sizeof(ushort);
+			var readArr = new ushort[valueCt];
+
+			for (int x = 0; x < valueCt; x++) {
+				readArr[x] = br.ReadUInt16();
+			}
+
+			_DepthData = readArr;
+		}
+
+		DepthHeight = 424;
+		DepthWidth = 512;
+
+		_DepthImage = new byte[DepthHeight, DepthWidth, 1];
+		
+		lastSampleData = SampleDepthData;
+		Debug.Log("Depth sample read from: " + path);
 	}
 	
 	void Start () 
 	{
+		ReadDepthFromFile();
+
 		_Sensor = KinectSensor.GetDefault();
 		
 		if (_Sensor != null) 
@@ -89,6 +119,9 @@ public class DepthSourceManager : MonoBehaviour
 			{
 				_Sensor.Open();
 			}
+		} else {
+			if (SampleDepthData != lastSampleData)
+				ReadDepthFromFile();
 		}
 	}
 
@@ -120,10 +153,13 @@ public class DepthSourceManager : MonoBehaviour
 				
 				frame = null;
 			}
+		} else {
+			if (SampleDepthData != lastSampleData)
+				ReadDepthFromFile();
 		}
 	}
 
-	private void CreateDepthImage()
+	private void CreateDepthImage(int low, int high)
 	{
 		// find min and max value
 		var minDepth = Mathf.Infinity;
@@ -134,15 +170,22 @@ public class DepthSourceManager : MonoBehaviour
 			maxDepth = Mathf.Max(maxDepth, val);
 		}
 
+		minDepth = Mathf.Max(minDepth, low);
+		maxDepth = Mathf.Min(maxDepth, high);
+
 		var distDepth = maxDepth - minDepth;
 
 		// convert to depth image
 		for (int y = 0; y < DepthHeight; y++) {
 			for (int x = 0; x < DepthWidth; x++) {
 				var index = y * DepthWidth + x;
-				var val = (_DepthData [index] - minDepth) / distDepth;
 
-				_DepthImage[y, x, 0] = (byte) (val * 255);
+				if (_DepthData[index] < low || _DepthData[index] > high)
+					_DepthImage[y, x, 0] = 0;
+				else {
+					var val = (_DepthData [index] - minDepth) / distDepth;
+					_DepthImage[y, x, 0] = (byte) (val * 255);
+				}
 			}
 		}
 	}

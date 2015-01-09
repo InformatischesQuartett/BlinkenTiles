@@ -173,10 +173,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileCtrl: {fileID: 1926542678}
-  MinThr: 140
-  MaxThr: 180
+  MinThr: 25
+  MaxThr: 255
+  MinDepth: 2500
+  MaxDepth: 3500
   DebugImg: 5
-  DebugImgSize: 10
+  DebugImgSize: 250
   GridLoc: {x: 13, y: 140}
   FieldSize: {x: 64, y: 64}
   GridTolerance: 25
@@ -191,6 +193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e76898dfbc35444996c83da83419093, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SampleDepthData: 3
 --- !u!114 &163530856
 MonoBehaviour:
   m_ObjectHideFlags: 0
