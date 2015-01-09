@@ -21,7 +21,6 @@ struct TileCol
 struct Tile
 {
     public Rect Bounds;
-    public Rect TriggerBounds;
 	public bool Active;
     public GameObject TileGo;
     public int soundIndex;
@@ -35,6 +34,16 @@ public struct Song
     public List<int> Tileset;
     public string SoundFilePath;
     public List<string> TileSoundFilePaths;
+}
+
+struct ConfigSet
+{
+    public int Cols;
+    public int Rows;
+    public float TileWidth;
+    public float TileHeight;
+    public float TileSpaceing;
+    public float BPM;
 }
 
 public enum Highlighttype
