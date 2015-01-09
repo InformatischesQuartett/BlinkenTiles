@@ -5,7 +5,6 @@ public class TileController : MonoBehaviour
 {
     public GameObject TilePrefab;
     private GameObject _tileParent;
-    private GameObject _peopleParent;
     private GameObject _tempParent;
 
     private float _bpm = 120;
@@ -25,7 +24,6 @@ public class TileController : MonoBehaviour
 	{
 	    _dmxControllerScript = gameObject.GetComponent<DmxController>();
         _tileParent = GameObject.Find("Tiles");
-	    _peopleParent = GameObject.Find("People");
         _tempParent = GameObject.Find("Temp");
 
 	    _activeCol = 0;
@@ -63,6 +61,7 @@ public class TileController : MonoBehaviour
 	                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
 	                    if (i == _activeCol)
 	                    {
+                            /*
 	                        for (int j = 0; j < _peopleParent.transform.childCount; j++)
 	                        {
 	                            Transform child = _peopleParent.transform.GetChild(j);
@@ -79,6 +78,7 @@ public class TileController : MonoBehaviour
 								Debug.Log("Blub");
 	                            tileScript.Highlight = Highlighttype.Time;
 	                        }
+                             */
 	                    }
 	                    else
 	                    {
