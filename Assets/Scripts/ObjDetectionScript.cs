@@ -17,7 +17,13 @@ public class ObjDetectionScript : MonoBehaviour {
 	[Range(0, 255)]
 	public int MaxThr;
 
-	[Range(0, 5)]
+	[Range(0, 7999)]
+	public int MinDepth;
+
+	[Range(0, 7999)]
+	public int MaxDepth;
+
+	[Range(0, 6)]
 	public int DebugImg;
 
 	[Range(10, 512)]
@@ -29,12 +35,15 @@ public class ObjDetectionScript : MonoBehaviour {
 	public int GridTolerance;
 	
 	private Texture2D lastTex;
+	private Texture2D lastColorImg;
+
 	private bool[,] ObjGrid;
 
 	private DepthSourceManager DepthManager;
 
 	void Start () {
-		lastTex = new Texture2D(512, 512);
+		lastTex = new Texture2D(512, 424);
+
 		DepthManager = GetComponent<DepthSourceManager>();
 	}
 
@@ -46,13 +55,14 @@ public class ObjDetectionScript : MonoBehaviour {
 
 	void OnGUI()
 	{
-		GUI.DrawTexture(new Rect(0, 0, DebugImgSize, DebugImgSize), lastTex);
+		GUI.DrawTexture(new Rect(0, 0, DebugImgSize, 424 * (DebugImgSize/512.0f)), lastTex);
 		GUI.Label(new Rect(5, DebugImgSize - 20, 100, 20), "Schritt " + DebugImg);
 		
-		if (GUI.Button(new Rect(0, 0, 100, 20), "Save")) {
+		if (GUI.Button(new Rect(0, 0, 100, 20), "Save"))
 			DepthManager.SaveDepthToFile();
-			//ProcessImg();
-		}
+
+		if (GUI.Button(new Rect(110, 0, 100, 20), "ColorImg"))
+			lastColorImg = DepthManager.GetColorImg();
 	}
 
 	byte[,,] ConvertToImage(Texture2D tex) {
@@ -103,13 +113,16 @@ public class ObjDetectionScript : MonoBehaviour {
 	}
 	
 	void ProcessImg () {
-		var depthImg = DepthManager.GetDepthImg ();
+		var depthImg = DepthManager.GetDepthImg (MinDepth, MaxDepth);
 
 		if (depthImg == null)
 			return;
-
+		
 		var imgGray = new Image<Gray, byte> (depthImg);
-		var imgOrg = imgGray.Convert<Bgr, byte> ();
+
+		var depthImgOrg = DepthManager.GetDepthImg (0, 7999);
+		var imgGrayOrg = new Image<Gray, byte> (depthImgOrg);
+		var imgOrg = imgGrayOrg.Convert<Bgr, byte> ();
 
 		if (DebugImg == 1)
 			lastTex = ConvertToTexture(imgGray.Data, imgGray.Width, imgGray.Height);
@@ -126,8 +139,7 @@ public class ObjDetectionScript : MonoBehaviour {
 		
 		// filtering
 		var imgThr = imgSm.InRange(new Gray(MinThr), new Gray(MaxThr));
-		CvInvoke.cvDilate(imgThr, imgThr, element, 3);
-		
+
 		if (DebugImg == 3)
 			lastTex = ConvertToTexture(imgThr.Data, imgThr.Width, imgThr.Height);
 
@@ -198,6 +210,12 @@ public class ObjDetectionScript : MonoBehaviour {
 	    if (DebugImg == 5)
 			lastTex = ConvertToTexture(imgOrg.Data, imgOrg.Width, imgOrg.Height);
 
-		//imgOrg.Save(@"E:\Test.jpg");*/
+		if (DebugImg == 6)
+		{
+			if (lastColorImg != null) {
+				var colorImg = new Image<Bgr, byte>(ConvertToImage(lastColorImg));
+				imgOrg = imgOrg.AddWeighted(colorImg, 0.5f, 0.5f, 0);
+			}
+		}
 	}
 }
