@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Windows.Kinect;
 
@@ -37,8 +38,8 @@ public class DepthSourceManager : MonoBehaviour
 
 	public void SaveDepthToFile()
 	{
-		//if (_DepthData == null)
-		//	return;
+		if (_DepthData == null)
+			return;
 
 		var randObj = new System.Random();
 		var name = randObj.Next(10000, 99999);
@@ -144,6 +145,40 @@ public class DepthSourceManager : MonoBehaviour
 				_DepthImage[y, x, 0] = (byte) (val * 255);
 			}
 		}
+	}
+
+	private ushort[] ScaleDepthMap(ushort[] arr, float scale)
+	{
+		var scArr = new ushort[arr.Length];
+		var tmpArr = new List<ushort>();
+
+		for (int i = 0; i < arr.Length; i++)
+			scArr[i] = 0;
+
+		// catch elements
+		for (int y = 0; y < DepthHeight; y += 2)
+			for (int x = 0; x < DepthWidth; x += 2)
+				tmpArr.Add(arr[y * DepthWidth + x]);
+
+		// write elements
+		var midHeight = DepthHeight/2.0f;
+		var startValY = Mathf.FloorToInt(midHeight - midHeight/2.0f);
+
+		var midWidth = DepthWidth/2.0f;
+		var startValX = Mathf.FloorToInt(midWidth - midWidth/2.0f);
+
+		for (int y = startValY; y < DepthHeight - startValY; y++)
+		{
+			for (int x = startValX; x < DepthWidth - startValX; x++)
+			{
+				var index = y * DepthWidth + x;
+			
+				scArr[index] = tmpArr[0];
+				tmpArr.RemoveAt(0);
+			}
+		}
+			
+		return scArr;
 	}
 
 	void OnApplicationQuit()
