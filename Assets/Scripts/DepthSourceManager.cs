@@ -149,9 +149,17 @@ public class DepthSourceManager : MonoBehaviour
 
 	private ushort[] ScaleDepthMap(ushort[] arr, float scale)
 	{
-		var scArr = new ushort[arr.Length];
 		var tmpArr = new List<ushort>();
 
+		var midHeight = DepthHeight/2.0f;
+		var midWidth = DepthWidth/2.0f;
+		
+		var startValY = Mathf.FloorToInt(midHeight - midHeight/2.0f);
+		var startValX = Mathf.FloorToInt(midWidth - midWidth/2.0f);
+
+		// output array 
+		var scArr = new ushort[arr.Length];
+		
 		for (int i = 0; i < arr.Length; i++)
 			scArr[i] = 0;
 
@@ -161,12 +169,6 @@ public class DepthSourceManager : MonoBehaviour
 				tmpArr.Add(arr[y * DepthWidth + x]);
 
 		// write elements
-		var midHeight = DepthHeight/2.0f;
-		var startValY = Mathf.FloorToInt(midHeight - midHeight/2.0f);
-
-		var midWidth = DepthWidth/2.0f;
-		var startValX = Mathf.FloorToInt(midWidth - midWidth/2.0f);
-
 		for (int y = startValY; y < DepthHeight - startValY; y++)
 		{
 			for (int x = startValX; x < DepthWidth - startValX; x++)
