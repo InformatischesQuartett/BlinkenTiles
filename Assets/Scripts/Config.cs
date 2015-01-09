@@ -9,6 +9,7 @@ public static class Config
     private static string _challengePath = Application.streamingAssetsPath + @"\Songs\Challenge";
     private static string _configPath = Application.streamingAssetsPath;
 
+    public static Vector3 CamPosition { get; private set; }
     public static int Cols { get; private set; }
     public static int Rows { get; private set; }
     public static float TileWidth { get; private set; }
@@ -32,6 +33,8 @@ public static class Config
     {
         string configcontent = File.ReadAllText(_configPath + "/config.json");
         var conf = JsonConvert.DeserializeObject<ConfigSet>(configcontent);
+
+        CamPosition = new Vector3(conf.CameraOffsetX, conf.CameraOffsetY, -10);
 
         Cols = conf.Cols;
         Rows = conf.Rows;

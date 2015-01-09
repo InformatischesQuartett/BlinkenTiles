@@ -38,6 +38,8 @@ public struct Song
 
 struct ConfigSet
 {
+    public float CameraOffsetX;
+    public float CameraOffsetY;
     public int Cols;
     public int Rows;
     public float TileWidth;
