@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
 using Windows.Kinect;
 
 public class DepthSourceManager : MonoBehaviour
@@ -32,6 +33,29 @@ public class DepthSourceManager : MonoBehaviour
 		if (_DepthData != null)
 			CreateDepthImage();
 		return _DepthImage;
+	}
+
+	public void SaveDepthToFile()
+	{
+		//if (_DepthData == null)
+		//	return;
+
+		var randObj = new System.Random();
+		var name = randObj.Next(10000, 99999);
+		var path = "Assets/Samples/DepthFile" + name;
+
+		using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
+		{
+			using (BinaryWriter bw = new BinaryWriter(fs))
+			{
+				foreach (short value in _DepthData)
+				{
+					bw.Write(value);
+				}
+			}
+		}
+
+		Debug.Log("Saved to: " + path);
 	}
 	
 	void Start () 

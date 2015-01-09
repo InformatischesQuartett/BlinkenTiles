@@ -49,8 +49,10 @@ public class ObjDetectionScript : MonoBehaviour {
 		GUI.DrawTexture(new Rect(0, 0, DebugImgSize, DebugImgSize), lastTex);
 		GUI.Label(new Rect(5, DebugImgSize - 20, 100, 20), "Schritt " + DebugImg);
 		
-		if (GUI.Button(new Rect(0, 0, 100, 20), "Process"))
-			ProcessImg();
+		if (GUI.Button(new Rect(0, 0, 100, 20), "Save")) {
+			DepthManager.SaveDepthToFile();
+			//ProcessImg();
+		}
 	}
 
 	byte[,,] ConvertToImage(Texture2D tex) {
