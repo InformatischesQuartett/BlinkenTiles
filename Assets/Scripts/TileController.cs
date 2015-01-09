@@ -132,7 +132,6 @@ public class TileController : MonoBehaviour
                     currentTile.TileGo = current;
                     currentTile.soundIndex = j;
                     currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
-                    currentTile.TriggerBounds = new Rect(currentTile.Bounds.xMin + Config.TileTriggerOffset, currentTile.Bounds.yMin + Config.TileTriggerOffset, Config.TileWidth - Config.TileTriggerOffset*2, Config.TileHeight - Config.TileTriggerOffset*2);
 
 					currentTile.Active = false;
                     currentTileCol.Tiles.Add(currentTile);

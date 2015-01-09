@@ -7,13 +7,13 @@ public static class Config
 {
     private static string _freestylePath = Application.streamingAssetsPath + @"\Songs\Freestyle";
     private static string _challengePath = Application.streamingAssetsPath + @"\Songs\Challenge";
+    private static string _configPath = Application.streamingAssetsPath;
 
     public static int Cols { get; private set; }
     public static int Rows { get; private set; }
     public static float TileWidth { get; private set; }
     public static float TileHeight { get; private set; }
     public static float TileSpaceing { get; private set; }
-    public static float TileTriggerOffset { get; private set; }
     public static float BPM { get; set; }
     public static Gamemode CurrentGamemode { get; set; }
 
@@ -30,15 +30,17 @@ public static class Config
 
     static Config()
     {
-        Cols = 8;
-        Rows = 4;
+        string configcontent = File.ReadAllText(_configPath + "/config.json");
+        var conf = JsonConvert.DeserializeObject<ConfigSet>(configcontent);
 
-        TileWidth = 9;
-        TileHeight = 9;
-        TileSpaceing = 1;
-        TileTriggerOffset = 1;
+        Cols = conf.Cols;
+        Rows = conf.Rows;
 
-        BPM = 120;
+        TileWidth = conf.TileWidth;
+        TileHeight = conf.TileHeight;
+        TileSpaceing = conf.TileSpaceing;
+
+        BPM = conf.BPM;
 
         CurrentGamemode = Gamemode.Freestyle;
 
@@ -54,7 +56,6 @@ public static class Config
         MaterialGreen.SetColor("_Color", new Color(0, 1, 0));
         MaterialOrange = new Material(Shader.Find("Sprites/Default"));
         MaterialOrange.SetColor("_Color", new Color(1, 0.5f, 0,5f));
-
 
         FreestyleSongs = new List<Song>();
         ChallengeSongs = new List<Song>();
@@ -78,10 +79,5 @@ public static class Config
                 ChallengeSongs.Add(song);
             }
         }
-    }
-
-    public static void LoadNextSong()
-    {
-        throw new System.NotImplementedException();
     }
 }

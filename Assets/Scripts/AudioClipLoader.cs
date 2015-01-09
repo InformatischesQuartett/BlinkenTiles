@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Security.AccessControl;
 
 public class AudioClipLoader : MonoBehaviour {
 
