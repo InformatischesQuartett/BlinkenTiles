@@ -24,8 +24,6 @@ public class AudioClipLoader : MonoBehaviour {
 
     public void Update()
     {
-        if (playOnce)
-            Debug.Log("Play");
         if (audio.clip != null && audio.clip.isReadyToPlay && playOnce)
         {
             audio.Play();

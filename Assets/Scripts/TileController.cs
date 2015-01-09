@@ -7,7 +7,6 @@ public class TileController : MonoBehaviour
     private GameObject _tileParent;
     private GameObject _tempParent;
 
-    private float _bpm = 120;
     private float _timerCol;
     private int _activeCol;
 
@@ -44,9 +43,9 @@ public class TileController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
             RebuildTiles();
 
-	    if (_timerCol > 60/_bpm)
+	    if (_timerCol > 60/Config.BPM)
 	    {
-	        _timerCol = (_timerCol - (60/_bpm)) + Time.deltaTime;
+	        _timerCol = (_timerCol - (60/Config.BPM)) + Time.deltaTime;
 	        _activeCol++;
 	        if (_activeCol >= Config.Cols)
 	            _activeCol = 0;
@@ -61,24 +60,18 @@ public class TileController : MonoBehaviour
 	                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
 	                    if (i == _activeCol)
 	                    {
-                            /*
-	                        for (int j = 0; j < _peopleParent.transform.childCount; j++)
+	                        if (tile.Active)
 	                        {
-	                            Transform child = _peopleParent.transform.GetChild(j);
-	                            if (tile.TriggerBounds.Contains(child.position))
-	                            {
-	                                tileScript.Highlight = Highlighttype.Hit;
-	                                tileScript.Shake();
+	                            tileScript.Highlight = Highlighttype.Hit;
+	                            tileScript.Shake();
 
-	                                var soundGo = GameObject.Find("Temp/TileSounds/" + tile.soundIndex);
-                                    soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
-
-	                                break;
-	                            }
-								Debug.Log("Blub");
-	                            tileScript.Highlight = Highlighttype.Time;
+                                var soundGo = GameObject.Find("Temp/TileSounds/" + tile.soundIndex);
+                                soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
 	                        }
-                             */
+	                        else
+	                        {
+                                tileScript.Highlight = Highlighttype.Time;
+	                        }
 	                    }
 	                    else
 	                    {
@@ -93,7 +86,7 @@ public class TileController : MonoBehaviour
 	        _timerCol += Time.deltaTime;
 	    }
 
-	    TimerField = (_activeCol*60/_bpm) + _timerCol;
+	    TimerField = (_activeCol*60/Config.BPM) + _timerCol;
 	    _dmxControllerScript.TimeReference = TimerField;
 
         _dmxControllerScript.Tick();
