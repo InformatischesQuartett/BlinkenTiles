@@ -9,6 +9,7 @@ public class TileController : MonoBehaviour
 
     private float _timerCol;
     private int _activeCol;
+    private int _previousActiveCol;
 
     public float TimerField { get; private set; }
     public float FieldWidth { get; private set; }
@@ -18,12 +19,17 @@ public class TileController : MonoBehaviour
 
     private DmxController _dmxControllerScript;
 
+    private List<GameObject> _tempGameObjects; 
+
 	// Use this for initialization
 	void Start ()
 	{
 	    _dmxControllerScript = gameObject.GetComponent<DmxController>();
         _tileParent = GameObject.Find("Tiles");
         _tempParent = GameObject.Find("Temp");
+
+        _matrix = new List<TileCol>();
+        _tempGameObjects = new List<GameObject>();
 
 	    _activeCol = 0;
 
@@ -43,48 +49,62 @@ public class TileController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
             RebuildTiles();
 
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+            LoadSong(0);
+
 	    if (_timerCol > 60/Config.BPM)
 	    {
 	        _timerCol = (_timerCol - (60/Config.BPM)) + Time.deltaTime;
 	        _activeCol++;
 	        if (_activeCol >= Config.Cols)
 	            _activeCol = 0;
-
-	        if (_matrixReady)
-	        {
-	            for (int i = 0; i < Config.Cols; i++)
-	            {
-	                TileCol tileCol = _matrix[i];
-	                foreach (Tile tile in tileCol.Tiles)
-	                {
-	                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
-	                    if (i == _activeCol)
-	                    {
-	                        if (tile.Active)
-	                        {
-	                            tileScript.Highlight = Highlighttype.Hit;
-	                            tileScript.Shake();
-
-                                var soundGo = GameObject.Find("Temp/TileSounds/" + tile.soundIndex);
-                                soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
-	                        }
-	                        else
-	                        {
-                                tileScript.Highlight = Highlighttype.Time;
-	                        }
-	                    }
-	                    else
-	                    {
-	                        tileScript.Highlight = Highlighttype.None;
-	                    }
-	                }
-	            }
-	        }
 	    }
 	    else
 	    {
 	        _timerCol += Time.deltaTime;
 	    }
+
+        if (_matrixReady)
+        {
+            for (int i = 0; i < Config.Cols; i++)
+            {
+                TileCol tileCol = _matrix[i];
+                foreach (Tile tile in tileCol.Tiles)
+                {
+                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
+                    if (i == _activeCol)
+                    {
+                        if (tile.Active)
+                        {
+                            tileScript.Highlight = Highlighttype.Hit;
+                            if (_activeCol != _previousActiveCol)
+                            {
+                                tileScript.Shake();
+
+                                var soundGo = GameObject.Find("Temp/TileSounds/" + tile.soundIndex);
+                                soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
+                            }
+                        }
+                        else
+                        {
+                            tileScript.Highlight = Highlighttype.Time;
+                        }
+                    }
+                    else
+                    {
+                        if (tile.Active)
+                        {
+                            tileScript.Highlight = Highlighttype.Occupied;
+                        }
+                        else
+                        {
+                            tileScript.Highlight = Highlighttype.None;
+                        }
+                    }
+                }
+            }
+            _previousActiveCol = _activeCol;
+        }
 
 	    TimerField = (_activeCol*60/Config.BPM) + _timerCol;
 	    _dmxControllerScript.TimeReference = TimerField;
@@ -98,8 +118,6 @@ public class TileController : MonoBehaviour
         float yInc = (Config.TileHeight + Config.TileSpaceing);
         float xStart = -((Config.Cols/2*xInc) - xInc/2);
         float yStart = -((Config.Rows/2*yInc) - yInc/2);
-
-        _matrix = new List<TileCol>();
 
         for (int i = 0; i < Config.Cols; i++)
         {
@@ -162,32 +180,47 @@ public class TileController : MonoBehaviour
         BuildTiles();
     }
 
-    public void LoadSong()
+    public void LoadSong(int num=0)
     {
+        if (_tempGameObjects.Count > 0)
+        {
+            foreach (var tgo in _tempGameObjects)
+            {
+                Destroy(tgo);
+            }
+        }
+
         var go = new GameObject();
         go.name = "Song";
         go.transform.parent = _tempParent.transform;
         go.AddComponent<AudioSource>();
-
         go.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[0].SoundFilePath;
+
+        _tempGameObjects.Add(go);
 
         var goTileSounds = new GameObject();
         goTileSounds.name = "TileSounds";
         goTileSounds.transform.parent = _tempParent.transform;
 
-        for (int i = 0; i < Config.ChallengeSongs[0].TileSoundFilePaths.Count; i++)
+        _tempGameObjects.Add(goTileSounds);
+
+        for (int i = 0; i < Config.ChallengeSongs[num].TileSoundFilePaths.Count; i++)
         {
             var tilesounds = new GameObject();
             tilesounds.name = i.ToString();
             tilesounds.transform.parent = goTileSounds.transform;
             tilesounds.AddComponent<AudioSource>();
-            tilesounds.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[0].TileSoundFilePaths[i];
+            tilesounds.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[num].TileSoundFilePaths[i];
+
+            _tempGameObjects.Add(tilesounds);
         }
 
         go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
-        //Set Config vars
-        //Load Song files
-        //Rebuild Tiles
+
+        Config.BPM = Config.ChallengeSongs[num].Bpm;
+
+        _activeCol = 0;
+        _timerCol = 0;
     }
 
 	public void SetTileStatus(int col, int row, bool status)

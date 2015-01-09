@@ -176,7 +176,7 @@ MonoBehaviour:
   MinThr: 140
   MaxThr: 180
   DebugImg: 5
-  DebugImgSize: 512
+  DebugImgSize: 10
   GridLoc: {x: 13, y: 140}
   FieldSize: {x: 64, y: 64}
   GridTolerance: 25

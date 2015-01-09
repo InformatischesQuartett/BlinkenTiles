@@ -51,6 +51,7 @@ struct ConfigSet
 public enum Highlighttype
 {
     None,
+    Occupied,
     Preview,
     Time,
     Hit
