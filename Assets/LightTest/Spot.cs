@@ -21,7 +21,7 @@ public class Spot
     {
         position = p;
         valueList = vList;
-        Debug.Log("new Spot");
+        //Debug.Log("new Spot");
         red = green= blue = 1;
         intensity = 50;
         currentcolor = CurrentCollor.White;
