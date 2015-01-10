@@ -28,6 +28,8 @@ public static class Config
     public static Material MaterialGreen { get; private set; }
     public static Material MaterialOrange { get; private set; }
 
+    public static byte[] LightColor { get; set; }
+
 
     static Config()
     {
@@ -43,6 +45,12 @@ public static class Config
         TileHeight = conf.TileHeight;
         TileSpaceing = conf.TileSpaceing;
 
+        LightColor =  new byte[4];
+        for(int i = 0; i < conf.LightColor.Length; i++)
+        {
+            LightColor[i] = (byte) conf.LightColor[i];
+        }
+        
         BPM = conf.BPM;
 
         CurrentGamemode = Gamemode.Freestyle;

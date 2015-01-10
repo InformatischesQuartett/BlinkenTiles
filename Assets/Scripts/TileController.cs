@@ -17,14 +17,14 @@ public class TileController : MonoBehaviour
     private bool _matrixReady;
     private List<TileCol> _matrix;
 
-    private DmxController _dmxControllerScript;
+    private List<GameObject> _tempGameObjects;
 
-    private List<GameObject> _tempGameObjects; 
+    private LightController _lightController;
 
 	// Use this for initialization
 	void Start ()
 	{
-	    _dmxControllerScript = gameObject.GetComponent<DmxController>();
+	    _lightController = this.GetComponent<LightController>();
         _tileParent = GameObject.Find("Tiles");
         _tempParent = GameObject.Find("Temp");
 
@@ -52,17 +52,7 @@ public class TileController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha0))
             LoadSong(0);
 
-	    if (_timerCol > 60/Config.BPM)
-	    {
-	        _timerCol = (_timerCol - (60/Config.BPM)) + Time.deltaTime;
-	        _activeCol++;
-	        if (_activeCol >= Config.Cols)
-	            _activeCol = 0;
-	    }
-	    else
-	    {
-	        _timerCol += Time.deltaTime;
-	    }
+	   
 
         if (_matrixReady)
         {
@@ -106,11 +96,27 @@ public class TileController : MonoBehaviour
             _previousActiveCol = _activeCol;
         }
 
-	    TimerField = (_activeCol*60/Config.BPM) + _timerCol;
-	    _dmxControllerScript.TimeReference = TimerField;
+	    
 
-        _dmxControllerScript.Tick();
+        
+	   
 	}
+
+    void FixedUpdate()
+    {
+        if (_timerCol > 60 / Config.BPM)
+        {
+            _timerCol = (_timerCol - (60 / Config.BPM)) + Time.fixedDeltaTime;
+            _activeCol++;
+            if (_activeCol >= Config.Cols)
+                _activeCol = 0;
+        }
+        else
+        {
+            _timerCol += Time.fixedDeltaTime;
+        }
+        _lightController.UpdateFaderValues(_activeCol, _timerCol);
+    }
 
     public void BuildTiles()
     {
@@ -158,8 +164,7 @@ public class TileController : MonoBehaviour
         _activeCol = 0;
         _timerCol = 0;
         _matrixReady = true;
-        FieldWidth = Config.Cols*(Config.TileWidth + Config.TileSpaceing);
-        _dmxControllerScript.FieldSize = FieldWidth;
+        //FieldWidth = Config.Cols*(Config.TileWidth + Config.TileSpaceing);
     }
 
     public void DestroyTiles()
