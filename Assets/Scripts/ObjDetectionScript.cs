@@ -184,7 +184,7 @@ public class ObjDetectionScript : MonoBehaviour {
 		// set tile status
 		for (int x = 0; x < Config.Cols; x++)
 			for (int y = 0; y < Config.Rows; y++)
-				tileCtrl.SetTileStatus(x, Config.Rows - y - 1, ObjGrid[x, y]);
+				tileCtrl.SetTileStatus(Config.Cols - x - 1, Config.Rows - y - 1, ObjGrid[x, y]);
 
 		if (DebugImg == 4)
 			lastTex = ConvertToTexture(imgOrg.Data, imgOrg.Width, imgOrg.Height);
