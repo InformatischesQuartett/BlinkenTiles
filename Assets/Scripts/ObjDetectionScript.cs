@@ -56,7 +56,7 @@ public class ObjDetectionScript : MonoBehaviour {
 	void OnGUI()
 	{
 		GUI.DrawTexture(new Rect(0, 0, DebugImgSize, 424 * (DebugImgSize/512.0f)), lastTex);
-		GUI.Label(new Rect(5, DebugImgSize - 20, 100, 20), "Schritt " + DebugImg);
+		GUI.Label(new Rect(5, 424 * (DebugImgSize/512.0f) - 20, 100, 20), "Schritt " + DebugImg);
 		
 		if (GUI.Button(new Rect(0, 0, 100, 20), "Save"))
 			DepthManager.SaveDepthToFile();
