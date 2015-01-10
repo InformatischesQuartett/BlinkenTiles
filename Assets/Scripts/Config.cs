@@ -30,11 +30,22 @@ public static class Config
 
     public static byte[] LightColor { get; set; }
 
+    // blob detection
+    public static int MinDepth { get; set; }
+    public static int MaxDepth { get; set; }
+
+    public static int MinThreshold { get; set; }
+    public static int MaxThreshold { get; set; }
+
+    public static Vector2 GridLoc { get; set; }
+    public static Vector2 FieldSize { get; set; }
+    public static Vector2 FieldTolerance { get; set; }
+
 
     static Config()
     {
-        string configcontent = File.ReadAllText(_configPath + "/config.json");
-        var conf = JsonConvert.DeserializeObject<ConfigSet>(configcontent);
+        string configContent = File.ReadAllText(_configPath + "/config.json");
+        var conf = JsonConvert.DeserializeObject<ConfigSet>(configContent);
 
         CamPosition = new Vector3(conf.CameraOffsetX, conf.CameraOffsetY, -10);
 
@@ -53,6 +64,18 @@ public static class Config
         
         BPM = conf.BPM;
 
+        // blob detection
+        MinDepth = conf.MinDepth;
+        MaxDepth = conf.MaxDepth;
+
+        MinThreshold = conf.MinThreshold;
+        MaxThreshold = conf.MaxThreshold;
+
+        GridLoc = new Vector2(conf.GridLocX, conf.GridLocY);
+        FieldSize = new Vector2(conf.FieldSizeX, conf.FieldSizeY);
+        FieldTolerance = new Vector2(conf.FieldToleranceX, conf.FieldToleranceY);
+
+        // prepare game
         CurrentGamemode = Gamemode.Freestyle;
 
         MaterialWhite = new Material(Shader.Find("Sprites/Default"));
