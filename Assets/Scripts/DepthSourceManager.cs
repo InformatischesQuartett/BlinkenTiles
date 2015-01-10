@@ -16,7 +16,9 @@ public class DepthSourceManager : MonoBehaviour
 	private MultiSourceFrameReader _Reader;
 
 	private ushort[] _DepthData;
-	private byte[,,] _DepthImage;
+
+	private byte[,,] _depthImage;
+	private byte[,,] _depthFilteredImage;
 
 	private byte[] _ColorData;
 	private Texture2D _ColorImage;
@@ -33,11 +35,14 @@ public class DepthSourceManager : MonoBehaviour
 		return _ColorImage;
 	}
 	
-	public byte[,,] GetDepthImg(int low, int high)
+	public byte[,,] GetDepthFilteredImg()
 	{
-		if (_DepthData != null)
-			CreateDepthImage(low, high);
-		return _DepthImage;
+		return _depthFilteredImage;
+	}
+
+	public byte[,,] GetDepthImg()
+	{
+		return _depthImage;
 	}
 
 	public void SaveDepthToFile()
@@ -81,7 +86,8 @@ public class DepthSourceManager : MonoBehaviour
 		DepthHeight = 424;
 		DepthWidth = 512;
 
-		_DepthImage = new byte[DepthHeight, DepthWidth, 1];
+		_depthImage = new byte[DepthHeight, DepthWidth, 1];
+		_depthFilteredImage = new byte[DepthHeight, DepthWidth, 1];
 		
 		lastSampleData = SampleDepthData;
 		Debug.Log("Depth sample read from: " + path);
@@ -110,7 +116,9 @@ public class DepthSourceManager : MonoBehaviour
 			DepthWidth = depthFrameDesc.Width;
 			DepthHeight = depthFrameDesc.Height;
 
-			_DepthImage = new byte[DepthHeight, DepthWidth, 1];
+			_depthImage = new byte[DepthHeight, DepthWidth, 1];
+			_depthFilteredImage = new byte[DepthHeight, DepthWidth, 1];
+
 			_DepthData = new ushort[depthFrameDesc.LengthInPixels];
 			
 			if (!_Sensor.IsOpen)
@@ -118,7 +126,7 @@ public class DepthSourceManager : MonoBehaviour
 				_Sensor.Open();
 			}
 		} else {
-			if (SampleDepthData != 0 && SampleDepthData != lastSampleData)
+			if (SampleDepthData != lastSampleData)
 				ReadDepthFromFile();
 		}
 	}
@@ -141,6 +149,8 @@ public class DepthSourceManager : MonoBehaviour
 						colorFrame.CopyConvertedFrameDataToArray(_ColorData, ColorImageFormat.Rgba);
 
 						depthFrame.CopyFrameDataToArray(_DepthData);
+						CreateDepthImage(Config.MinDepth, Config.MaxDepth);
+
 						depthFrame.Dispose();
 						depthFrame = null;
 					}
@@ -152,7 +162,7 @@ public class DepthSourceManager : MonoBehaviour
 				frame = null;
 			}
 		} else {
-			if (SampleDepthData != 0 && SampleDepthData != lastSampleData)
+			if (SampleDepthData != lastSampleData)
 				ReadDepthFromFile();
 		}
 	}
@@ -177,13 +187,14 @@ public class DepthSourceManager : MonoBehaviour
 		for (int y = 0; y < DepthHeight; y++) {
 			for (int x = 0; x < DepthWidth; x++) {
 				var index = y * DepthWidth + x;
+				var val = (_DepthData [index] - minDepth) / distDepth;
+
+				_depthImage[y, x, 0] = (byte) (val * 255);
 
 				if (_DepthData[index] < low || _DepthData[index] > high)
-					_DepthImage[y, x, 0] = 0;
-				else {
-					var val = (_DepthData [index] - minDepth) / distDepth;
-					_DepthImage[y, x, 0] = (byte) (val * 255);
-				}
+					_depthFilteredImage[y, x, 0] = 0;
+				else
+					_depthFilteredImage[y, x, 0] = (byte) (val * 255);
 			}
 		}
 	}
