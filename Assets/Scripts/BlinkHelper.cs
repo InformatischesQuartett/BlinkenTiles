@@ -46,6 +46,7 @@ struct ConfigSet
     public float TileHeight;
     public float TileSpaceing;
     public float BPM;
+    public int[] LightColor;
 }
 
 public enum Highlighttype

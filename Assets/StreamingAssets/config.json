@@ -6,5 +6,6 @@
 "TileWidth":9,
 "TileHeight":9,
 "TileSpaceing":1,
-"BPM":120
+"BPM":120,
+"LightColor": [20,0,20]
 }
