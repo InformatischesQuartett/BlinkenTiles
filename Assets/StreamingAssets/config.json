@@ -1,5 +1,5 @@
 {
-"CameraOffsetX":-35,
+"CameraOffsetX":-40,
 "CameraOffsetY":5,
 "Cols":8,
 "Rows":5,
@@ -7,5 +7,15 @@
 "TileHeight":9,
 "TileSpaceing":1,
 "BPM":120,
-"LightColor": [20,0,20]
+"LightColor": [20,0,20],
+"MinThreshold":25,
+"MaxThreshold":255,
+"MinDepth":2500,
+"MaxDepth":4500,
+"DebugImg":5,
+"GridLocX":124,
+"GridLocY":109,
+"FieldSizeX":35,
+"FieldSizeY":28,
+"FieldTolerance":24
 }

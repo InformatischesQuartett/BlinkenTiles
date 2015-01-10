@@ -47,6 +47,16 @@ struct ConfigSet
     public float TileSpaceing;
     public float BPM;
     public int[] LightColor;
+    public int MinDepth;
+    public int MaxDepth;
+    public int MinThreshold;
+    public int MaxThreshold;
+    public float GridLocX;
+    public float GridLocY;
+    public float FieldSizeX;
+    public float FieldSizeY;
+    public float FieldToleranceX;
+    public float FieldToleranceY;
 }
 
 public enum Highlighttype

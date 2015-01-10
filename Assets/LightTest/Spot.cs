@@ -18,9 +18,7 @@ public class Spot
         position = p;
         valueList = vList;
 
-        
-        Debug.Log("new Spot " + position);
-        red = blue = green =0;
+        red = blue = green = 0;
         intensity = 20;
 
         SetRowToColor(0,CurrentCollor.Black);
