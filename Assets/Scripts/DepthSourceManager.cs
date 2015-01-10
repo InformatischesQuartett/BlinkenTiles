@@ -89,8 +89,6 @@ public class DepthSourceManager : MonoBehaviour
 	
 	void Start () 
 	{
-		ReadDepthFromFile();
-
 		_Sensor = KinectSensor.GetDefault();
 		
 		if (_Sensor != null) 
@@ -120,7 +118,7 @@ public class DepthSourceManager : MonoBehaviour
 				_Sensor.Open();
 			}
 		} else {
-			if (SampleDepthData != lastSampleData)
+			if (SampleDepthData != 0 && SampleDepthData != lastSampleData)
 				ReadDepthFromFile();
 		}
 	}
@@ -154,7 +152,7 @@ public class DepthSourceManager : MonoBehaviour
 				frame = null;
 			}
 		} else {
-			if (SampleDepthData != lastSampleData)
+			if (SampleDepthData != 0 && SampleDepthData != lastSampleData)
 				ReadDepthFromFile();
 		}
 	}
