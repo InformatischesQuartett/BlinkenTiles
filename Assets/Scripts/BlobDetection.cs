@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using System.Threading;
 
-public delegate void RenderDataCallback(byte[, ,] data);
+public delegate void RenderDataCallback(byte[] data);
 
 public class BlobDetectionSettings
 {
     public int RenderImgType { get; set; }
-    public Vector2 RenderImgSize { get; set; }
 
     public int MinDepth { get; set; }
     public int MaxDepth { get; set; }
@@ -41,7 +40,7 @@ public class BlobDetection : MonoBehaviour
     public Vector2 FieldSize;
     public Vector2 FieldTolerance;
 
-    private Color32[] _lastRenderData;
+    private byte[] _lastRenderData;
     private Texture2D _lastRenderImage;
     private bool _renderDataUpdate;
 
@@ -66,17 +65,9 @@ public class BlobDetection : MonoBehaviour
 
     private void Start()
     {
-        var imgWidth = (int)(Screen.width / 2.0f);
-        var imgHeight = (int)(Screen.width / 2.416f);
-
-        _lastRenderImage = new Texture2D(imgWidth, imgHeight);
-        _lastRenderData = new Color32[imgWidth * imgHeight];
-        _renderDataUpdate = false;
-
         _detectionSettings = new BlobDetectionSettings
         {
             RenderImgType = Config.RenderImageType,
-            RenderImgSize = new Vector2(imgWidth, imgHeight),
 
             MinDepth = Config.MinDepth,
             MaxDepth = Config.MaxDepth,
@@ -102,6 +93,14 @@ public class BlobDetection : MonoBehaviour
 
         _kinectManager.WorkerThread = _workerObject;
 
+        // render data
+        var imgWidth = _kinectManager.DepthWidth;
+        var imgHeight = _kinectManager.DepthHeight;
+
+        _lastRenderImage = new Texture2D(imgWidth, imgHeight, TextureFormat.RGBA32,false);
+        _lastRenderData = new byte[4 * imgWidth * imgHeight];
+        _renderDataUpdate = false;
+
         // fps caluclations
         _mainDeltaTime = 0.0f;
         _mainFrameCount = 0;
@@ -118,7 +117,7 @@ public class BlobDetection : MonoBehaviour
 
         if (_renderDataUpdate)
         {
-            _lastRenderImage.SetPixels32(_lastRenderData);
+            _lastRenderImage.LoadRawTextureData(_lastRenderData);
             _lastRenderImage.Apply();
 
             _renderDataUpdate = false;
@@ -148,36 +147,18 @@ public class BlobDetection : MonoBehaviour
         }
     }
 
-    private void SetRenderImage(byte[,,] data)
+    private void SetRenderImage(byte[] data)
     {
-        lock (_lastRenderData)
-        {
-            var imgWidth = (int) _detectionSettings.RenderImgSize.x;
-            var imgHeight = (int) _detectionSettings.RenderImgSize.y;
-           
-            var pixct = 0;
-
-            for (int y = imgHeight - 1; y >= 0; y--)
-            {
-                for (int x = 0; x < imgWidth; x++)
-                {
-                   
-                    if (x > data.GetLength(1) - 1 || y > data.GetLength(0) - 1)
-                        _lastRenderData[pixct++] = new Color32(0, 0, 0, 1);
-                    else if (data.GetLength(2) == 1)
-                        _lastRenderData[pixct++] = new Color32(data[y, x, 0], data[y, x, 0], data[y, x, 0], 255);
-                    else
-                        _lastRenderData[pixct++] = new Color32(data[y, x, 2], data[y, x, 1], data[y, x, 0], 255);
-                }
-            }
-
-            _renderDataUpdate = true;
-        }
+        _lastRenderData = data;
+        _renderDataUpdate = true;
     }
 
     private void OnGUI()
     {
-        GUI.DrawTexture(new Rect(0, 0, _lastRenderImage.width, _lastRenderImage.height), _lastRenderImage);
+        var imgHeight = Screen.height;
+        var imgWidth = imgHeight*(_kinectManager.DepthWidth/_kinectManager.DepthHeight);
+
+        GUI.DrawTexture(new Rect(0, imgHeight, imgWidth, -imgHeight), _lastRenderImage);
         GUI.Label(new Rect(5, _lastRenderImage.height - 20, 100, 20), "Schritt " + DebugImg);
 
         GUI.Label(new Rect(5, 0, 250, 20), "Performance: " + _mainFPS.ToString("F1") +

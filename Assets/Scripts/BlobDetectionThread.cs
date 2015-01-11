@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using System.Drawing;
+using System.Linq;
+using UnityEngine;
 
 public class BlobDetectionThread
 {
@@ -59,20 +60,14 @@ public class BlobDetectionThread
         _shouldStop = true;
     }
 
-    private byte[,,] PrepareRenderImage(Image<Gray, byte> img)
+    private byte[] PrepareRenderImage(Image<Gray, byte> img)
     {
-        var imgWidth = (int) _detectionSettings.RenderImgSize.x;
-        var imgHeight = (int) _detectionSettings.RenderImgSize.y;
-
-        return img.Resize(imgWidth, imgHeight, INTER.CV_INTER_CUBIC, true).Data;
+        return img.Convert<Rgba, byte>().Data.Cast<byte>().ToArray();
     }
 
-    private byte[,,] PrepareRenderImage(Image<Bgr, byte> img)
+    private byte[] PrepareRenderImage(Image<Bgr, byte> img)
     {
-        var imgWidth = (int) _detectionSettings.RenderImgSize.x;
-        var imgHeight = (int) _detectionSettings.RenderImgSize.y;
-
-        return img.Resize(imgWidth, imgHeight, INTER.CV_INTER_CUBIC, true).Data;
+        return img.Convert<Rgba, byte>().Data.Cast<byte>().ToArray();
     }
 
     public unsafe void ProcessImg()
@@ -107,7 +102,7 @@ public class BlobDetectionThread
                 var imgOrg = depthImgNorm.Convert<Bgr, byte>();
                 var imgGray = filteredImgNorm.Convert<Gray, byte>();
 
-                var renderImage = new byte[0, 0, 0];
+                var renderImage = new byte[0];
 
                 if (_detectionSettings.RenderImgType == 1)
                     renderImage = PrepareRenderImage(imgOrg);
