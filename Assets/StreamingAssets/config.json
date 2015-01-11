@@ -13,9 +13,10 @@
 "MinDepth":2500,
 "MaxDepth":4500,
 "RenderImageType":5,
-"GridLocX":124,
-"GridLocY":109,
-"FieldSizeX":35,
-"FieldSizeY":28,
-"FieldTolerance":24
+"GridLocX":60,
+"GridLocY":90,
+"FieldSizeX":50,
+"FieldSizeY":50,
+"FieldToleranceX":20,
+"FieldToleranceY":20,
 }

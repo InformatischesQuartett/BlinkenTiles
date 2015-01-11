@@ -154,14 +154,15 @@ public class BlobDetection : MonoBehaviour
         {
             var imgWidth = (int) _detectionSettings.RenderImgSize.x;
             var imgHeight = (int) _detectionSettings.RenderImgSize.y;
-
+           
             var pixct = 0;
 
             for (int y = imgHeight - 1; y >= 0; y--)
             {
                 for (int x = 0; x < imgWidth; x++)
                 {
-                    if (x > data.GetLength(1) - 1 || y > data.GetLength(0))
+                   
+                    if (x > data.GetLength(1) - 1 || y > data.GetLength(0) - 1)
                         _lastRenderData[pixct++] = new Color32(0, 0, 0, 1);
                     else if (data.GetLength(2) == 1)
                         _lastRenderData[pixct++] = new Color32(data[y, x, 0], data[y, x, 0], data[y, x, 0], 255);
