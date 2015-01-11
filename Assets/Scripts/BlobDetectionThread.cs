@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
@@ -58,163 +59,173 @@ public class BlobDetectionThread
         _shouldStop = true;
     }
 
-    private byte[, ,] PrepareRenderImage(Image<Gray, byte> img)
+    private byte[,,] PrepareRenderImage(Image<Gray, byte> img)
     {
-        var imgWidth = (int)_detectionSettings.RenderImgSize.x;
-        var imgHeight = (int)_detectionSettings.RenderImgSize.y;
+        var imgWidth = (int) _detectionSettings.RenderImgSize.x;
+        var imgHeight = (int) _detectionSettings.RenderImgSize.y;
 
         return img.Resize(imgWidth, imgHeight, INTER.CV_INTER_CUBIC, true).Data;
     }
 
-    private byte[, ,] PrepareRenderImage(Image<Bgr, byte> img)
+    private byte[,,] PrepareRenderImage(Image<Bgr, byte> img)
     {
-        var imgWidth = (int)_detectionSettings.RenderImgSize.x;
-        var imgHeight = (int)_detectionSettings.RenderImgSize.y;
+        var imgWidth = (int) _detectionSettings.RenderImgSize.x;
+        var imgHeight = (int) _detectionSettings.RenderImgSize.y;
 
-		return img.Resize(imgWidth, imgHeight, INTER.CV_INTER_CUBIC, true).Data;
+        return img.Resize(imgWidth, imgHeight, INTER.CV_INTER_CUBIC, true).Data;
     }
 
     public unsafe void ProcessImg()
     {
         while (!_shouldStop)
-		{
-			while (!_updatedData && !_shouldStop)
+        {
+            while (!_updatedData && !_shouldStop)
             {
                 // wait for next kinect data
             }
 
-			if (_shouldStop) return;
+            if (_shouldStop) return;
 
-		    fixed (ushort* dataPtr = _depthManager.DepthData)
-		    {
-		        var depthImg = new Image<Gray, short>(512, 424, 1024, new IntPtr(dataPtr));
+            fixed (ushort* dataPtr = _depthManager.DepthData)
+            {
+                var dWidth = _depthManager.DepthWidth;
+                var dHeight = _depthManager.DepthHeight;
 
-		        var imgOrg = depthImg.Convert<Bgr, byte>();
-                imgOrg._EqualizeHist();
+                var depthImg = new Image<Gray, short>(dWidth, dHeight, 1024, new IntPtr(dataPtr));
+                var depthImgNorm = new Image<Gray, short>(dWidth, dHeight);
 
-                var depthFilter = depthImg.InRange(new Gray(_detectionSettings.MinDepth),
-                    new Gray(_detectionSettings.MaxDepth)).Convert<Gray, short>();
-		        var filteredImg = depthImg.Mul(depthFilter);
-              
-                var imgGray = filteredImg.Convert<Gray, byte>();
-                imgGray._EqualizeHist();
+                var filteredImg = depthImg.ThresholdToZero(new Gray(_detectionSettings.MinDepth));
+                filteredImg = filteredImg.ThresholdToZeroInv(new Gray(_detectionSettings.MaxDepth));
+                filteredImg = filteredImg.Sub(new Gray(_detectionSettings.MinDepth));
+                filteredImg = filteredImg.ThresholdToZero(new Gray(0));
+    
+                var filteredImgNorm = new Image<Gray, short>(dWidth, dHeight);
 
-		        var renderImage = new byte[0, 0, 0];
+                CvInvoke.cvNormalize(depthImg, depthImgNorm, 0, short.MaxValue, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
+                CvInvoke.cvNormalize(filteredImg, filteredImgNorm, 0, short.MaxValue, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
 
-		        if (_detectionSettings.RenderImgType == 1)
-		            renderImage = PrepareRenderImage(imgGray);
+                var imgOrg = depthImgNorm.Convert<Bgr, byte>();
+                var imgGray = filteredImgNorm.Convert<Gray, byte>();
 
-		        // noise reduction
-		        var imgSm = imgGray.PyrDown().PyrUp().SmoothGaussian(3);
+                var renderImage = new byte[0, 0, 0];
 
-		        var element = new StructuringElementEx(5, 5, 2, 2, CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
-		        CvInvoke.cvErode(imgSm, imgSm, element, 2);
-		        CvInvoke.cvDilate(imgSm, imgSm, element, 2);
+                if (_detectionSettings.RenderImgType == 1)
+                    renderImage = PrepareRenderImage(imgOrg);
 
-		        if (_detectionSettings.RenderImgType == 2)
-		            renderImage = PrepareRenderImage(imgSm);
+                if (_detectionSettings.RenderImgType == 2)
+                    renderImage = PrepareRenderImage(imgGray);
 
-		        // filtering
-		        var imgThr = imgSm.InRange(new Gray(_detectionSettings.MinThreshold),
-		            new Gray(_detectionSettings.MaxThreshold));
+                // noise reduction
+                var imgSm = imgGray.PyrDown().PyrUp().SmoothGaussian(3);
 
-		        if (_detectionSettings.RenderImgType == 3)
-		            renderImage = PrepareRenderImage(imgThr);
+                var element = new StructuringElementEx(5, 5, 2, 2, CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
+                CvInvoke.cvErode(imgSm, imgSm, element, 2);
+                CvInvoke.cvDilate(imgSm, imgSm, element, 2);
 
-		        // create grid
-		        var cols = (int) _detectionSettings.GridSize.x;
-		        var rows = (int) _detectionSettings.GridSize.y;
-		        var objGrid = new bool[cols, rows];
+                if (_detectionSettings.RenderImgType == 3)
+                    renderImage = PrepareRenderImage(imgSm);
 
-		        for (int x = 0; x < cols; x++)
-		            for (int y = 0; y < rows; y++)
-		                objGrid[x, y] = false;
+                // filtering
+                var imgThr = imgSm.InRange(new Gray(_detectionSettings.MinThreshold),
+                    new Gray(_detectionSettings.MaxThreshold));
 
-		        // find contours
-		        var gridLoc = _detectionSettings.GridLoc;
-		        var fieldSize = _detectionSettings.FieldSize;
-		        var fieldTol = _detectionSettings.FieldTolerance;
+                if (_detectionSettings.RenderImgType == 4)
+                    renderImage = PrepareRenderImage(imgThr);
 
-		        using (MemStorage storage = new MemStorage())
-		        {
-		            for (var contours = imgThr.FindContours(CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
-		                RETR_TYPE.CV_RETR_TREE, storage);
-		                contours != null;
-		                contours = contours.HNext)
-		            {
-		                Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter*0.015, storage);
+                // create grid
+                var cols = (int) _detectionSettings.GridSize.x;
+                var rows = (int) _detectionSettings.GridSize.y;
+                var objGrid = new bool[cols, rows];
 
-		                var bdRect = currentContour.BoundingRectangle;
-		                if (bdRect.Width < 20 || bdRect.Height < 20)
-		                    continue;
+                for (int x = 0; x < cols; x++)
+                    for (int y = 0; y < rows; y++)
+                        objGrid[x, y] = false;
 
-		                // check against grid
-		                for (int x = 0; x < cols; x++)
-		                {
-		                    for (int y = 0; y < rows; y++)
-		                    {
-		                        var grRect = new Rectangle(
-		                            (int) (gridLoc.x + x*fieldSize.x + fieldTol.x),
-		                            (int) (gridLoc.y + y*fieldSize.y + fieldTol.y),
-		                            (int) (fieldSize.x - 2*fieldTol.x),
-		                            (int) (fieldSize.y - 2*fieldTol.y));
+                // find contours
+                var gridLoc = _detectionSettings.GridLoc;
+                var fieldSize = _detectionSettings.FieldSize;
+                var fieldTol = _detectionSettings.FieldTolerance;
 
-		                        imgOrg.Draw(grRect, new Bgr(200, 0, 0), 2);
+                using (MemStorage storage = new MemStorage())
+                {
+                    for (var contours = imgThr.FindContours(CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
+                        RETR_TYPE.CV_RETR_TREE, storage);
+                        contours != null;
+                        contours = contours.HNext)
+                    {
+                        Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter*0.015, storage);
 
-		                        if (bdRect.IntersectsWith(grRect))
-		                            objGrid[x, y] = true;
-		                    }
-		                }
+                        var bdRect = currentContour.BoundingRectangle;
+                        if (bdRect.Width < 20 || bdRect.Height < 20)
+                            continue;
 
-		                imgOrg.Draw(currentContour.BoundingRectangle, new Bgr(255, 255, 0), 2);
-		            }
-		        }
+                        // check against grid
+                        for (int x = 0; x < cols; x++)
+                        {
+                            for (int y = 0; y < rows; y++)
+                            {
+                                var grRect = new Rectangle(
+                                    (int) (gridLoc.x + x*fieldSize.x + fieldTol.x),
+                                    (int) (gridLoc.y + y*fieldSize.y + fieldTol.y),
+                                    (int) (fieldSize.x - 2*fieldTol.x),
+                                    (int) (fieldSize.y - 2*fieldTol.y));
 
-		        // set tile status
-		        for (int x = 0; x < cols; x++)
-		            for (int y = 0; y < rows; y++)
-		                _tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]);
+                                imgOrg.Draw(grRect, new Bgr(200, 0, 0), 2);
 
-		        if (_detectionSettings.RenderImgType == 4)
-		            renderImage = PrepareRenderImage(imgOrg);
+                                if (bdRect.IntersectsWith(grRect))
+                                    objGrid[x, y] = true;
+                            }
+                        }
 
-		        // draw grid
-		        var blendImg = new Image<Bgr, byte>(imgOrg.Width, imgOrg.Height);
+                        imgOrg.Draw(currentContour.BoundingRectangle, new Bgr(255, 255, 0), 2);
+                    }
+                }
 
-		        for (int x = 0; x < cols; x++)
-		        {
-		            for (int y = 0; y < rows; y++)
-		            {
-		                var grRect = new Rectangle(
-		                    (int) (gridLoc.x + x*fieldSize.x),
-		                    (int) (gridLoc.y + y*fieldSize.y),
-		                    (int) fieldSize.x,
-		                    (int) fieldSize.y);
+                // set tile status
+                for (int x = 0; x < cols; x++)
+                    for (int y = 0; y < rows; y++)
+                        _tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]);
 
-		                blendImg.Draw(grRect, new Bgr(0, 255, 0), objGrid[x, y] ? -1 : 2);
-		                imgOrg.Draw(grRect, new Bgr(200, 0, 0), 2);
-		            }
-		        }
+                if (_detectionSettings.RenderImgType == 5)
+                    renderImage = PrepareRenderImage(imgOrg);
 
-		        imgOrg = imgOrg.AddWeighted(blendImg, 0.7f, 0.3f, 0);
+                // draw grid
+                var blendImg = new Image<Bgr, byte>(imgOrg.Width, imgOrg.Height);
 
-		        if (_detectionSettings.RenderImgType == 5)
-		            renderImage = PrepareRenderImage(imgOrg);
+                for (int x = 0; x < cols; x++)
+                {
+                    for (int y = 0; y < rows; y++)
+                    {
+                        var grRect = new Rectangle(
+                            (int) (gridLoc.x + x*fieldSize.x),
+                            (int) (gridLoc.y + y*fieldSize.y),
+                            (int) fieldSize.x,
+                            (int) fieldSize.y);
 
-		        if (_detectionSettings.RenderImgType == 6)
-		        {
-		            var colorImg = new Image<Bgr, byte>(_depthManager.ColorImage);
-		            imgOrg = imgOrg.AddWeighted(colorImg, 0.5f, 0.5f, 0);
-		            renderImage = PrepareRenderImage(imgOrg);
-		        }
+                        blendImg.Draw(grRect, new Bgr(0, 255, 0), objGrid[x, y] ? -1 : 2);
+                        imgOrg.Draw(grRect, new Bgr(200, 0, 0), 2);
+                    }
+                }
 
-		        if (_renderImageCallback != null && renderImage.Length > 0)
-		            _renderImageCallback(renderImage);
+                imgOrg = imgOrg.AddWeighted(blendImg, 0.7f, 0.3f, 0);
+
+                if (_detectionSettings.RenderImgType == 6)
+                    renderImage = PrepareRenderImage(imgOrg);
+
+                if (_detectionSettings.RenderImgType == 7)
+                {
+                    var colorImg = new Image<Bgr, byte>(_depthManager.ColorImage);
+                    imgOrg = imgOrg.AddWeighted(colorImg, 0.5f, 0.5f, 0);
+                    renderImage = PrepareRenderImage(imgOrg);
+                }
+
+                if (_renderImageCallback != null && renderImage.Length > 0)
+                    _renderImageCallback(renderImage);
 
                 // wait for new data
-		        _updatedData = false;
-		        _runCounter++;
-		    }
-		}
+                _updatedData = false;
+                _runCounter++;
+            }
+        }
     }
 }
