@@ -142,7 +142,7 @@ public class KinectManager
 
         var randObj = new System.Random();
         var name = randObj.Next(10000, 99999);
-        var path = "Assets/Samples/DepthSample" + name;
+        var path = Application.streamingAssetsPath + "Samples/DepthSample" + name;
         var file = File.Open(path, FileMode.Create);
 
         using (var bw = new BinaryWriter(file))
@@ -156,7 +156,7 @@ public class KinectManager
     {
         var randObj = new System.Random();
         var name = randObj.Next(1, 15);
-        var path = "Assets/Samples/DepthSample" + name;
+        var path = Application.streamingAssetsPath + "/Samples/DepthSample" + name;
         var file = File.Open(path, FileMode.Open);
 
         using (var br = new BinaryReader(file))
