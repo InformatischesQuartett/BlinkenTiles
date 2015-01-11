@@ -37,6 +37,8 @@ public static class Config
     public static int MinThreshold { get; set; }
     public static int MaxThreshold { get; set; }
 
+	public static int RenderImageType { get; set; }
+
     public static Vector2 GridLoc { get; set; }
     public static Vector2 FieldSize { get; set; }
     public static Vector2 FieldTolerance { get; set; }
@@ -70,6 +72,8 @@ public static class Config
 
         MinThreshold = conf.MinThreshold;
         MaxThreshold = conf.MaxThreshold;
+
+		RenderImageType = conf.RenderImageType;
 
         GridLoc = new Vector2(conf.GridLocX, conf.GridLocY);
         FieldSize = new Vector2(conf.FieldSizeX, conf.FieldSizeY);

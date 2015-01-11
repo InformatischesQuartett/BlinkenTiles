@@ -39,7 +39,6 @@ public class BlobDetection : MonoBehaviour
 
     public Vector2 GridLoc;
     public Vector2 FieldSize;
-
     public Vector2 FieldTolerance;
 
     private Color32[] _lastRenderData;
@@ -53,6 +52,18 @@ public class BlobDetection : MonoBehaviour
     private BlobDetectionThread _workerObject;
     private Thread _workerThread;
 
+    // fps calculations
+    private const float MainFPSUpdateRate = 4.0f;
+    private const float ThreadFPSUpdateRate = 1.0f;
+
+    private float _mainDeltaTime;
+    private int _mainFrameCount;
+    private float _mainFPS;
+
+    private float _threadDeltaTime;
+    private int _threadFrameCount;
+    private float _threadFPS;
+
     private void Start()
     {
         var imgWidth = (int)(Screen.width / 2.0f);
@@ -64,7 +75,7 @@ public class BlobDetection : MonoBehaviour
 
         _detectionSettings = new BlobDetectionSettings
         {
-            RenderImgType = 5,
+            RenderImgType = Config.RenderImageType,
             RenderImgSize = new Vector2(imgWidth, imgHeight),
 
             MinDepth = Config.MinDepth,
@@ -90,6 +101,15 @@ public class BlobDetection : MonoBehaviour
         _workerThread.Start();
 
         _kinectManager.WorkerThread = _workerObject;
+
+        // fps caluclations
+        _mainDeltaTime = 0.0f;
+        _mainFrameCount = 0;
+        _mainFPS = 0.0f;
+
+        _threadDeltaTime = 0.0f;
+        _threadFrameCount = 0;
+        _threadFPS = 0.0f;
     }
 
     private void Update()
@@ -102,6 +122,29 @@ public class BlobDetection : MonoBehaviour
             _lastRenderImage.Apply();
 
             _renderDataUpdate = false;
+        }
+
+        // fps calculations
+        _mainDeltaTime += Time.deltaTime;
+
+        if (_mainDeltaTime > 1.0f/MainFPSUpdateRate)
+        {
+            var mainDiff = Time.frameCount - _mainFrameCount;
+            _mainFPS = mainDiff / _mainDeltaTime;
+            _mainFrameCount = Time.frameCount;
+
+            _mainDeltaTime -= 1.0f/MainFPSUpdateRate;
+        }
+
+        _threadDeltaTime += Time.deltaTime;
+
+        if (_threadDeltaTime > 1.0f / ThreadFPSUpdateRate)
+        {
+            var threadDiff = _workerObject.GetRunCount() - _threadFrameCount;
+            _threadFPS = threadDiff / _threadDeltaTime;
+            _threadFrameCount = _workerObject.GetRunCount();
+
+            _threadDeltaTime -= 1.0f / ThreadFPSUpdateRate;
         }
     }
 
@@ -136,11 +179,14 @@ public class BlobDetection : MonoBehaviour
         GUI.DrawTexture(new Rect(0, 0, _lastRenderImage.width, _lastRenderImage.height), _lastRenderImage);
         GUI.Label(new Rect(5, _lastRenderImage.height - 20, 100, 20), "Schritt " + DebugImg);
 
-        if (GUI.Button(new Rect(0, 0, 100, 20), "Save"))
-            _kinectManager.SaveDepthToFile();
+        GUI.Label(new Rect(5, 0, 250, 20), "Performance: " + _mainFPS.ToString("F1") +
+            " fps / " + _threadFPS.ToString("F1") + " fps");
 
-        if (GUI.Button(new Rect(220, 0, 100, 20), "Update"))
-            _workerObject.SetDetectionSettings(_detectionSettings);
+        //if (GUI.Button(new Rect(0, 0, 100, 20), "Save"))
+        //    _kinectManager.SaveDepthToFile();
+
+        //if (GUI.Button(new Rect(220, 0, 100, 20), "Update"))
+        //    _workerObject.SetDetectionSettings(_detectionSettings);
     }
 
     private void OnApplicationQuit()
