@@ -12,19 +12,17 @@ public class KinectManager
     private const int ColorWidth = 1920;
     private const int ColorHeight = 1080;
 
-    private KinectSensor _sensor;
-    private MultiSourceFrameReader _reader;
+    private KinectSensor _kinectSensor;
+    private MultiSourceFrameReader _frameReader;
 
     public BlobDetectionSettings DetectionSettings { get; set; }
     public BlobDetectionThread WorkerThread { get; set; }
 
-    private ushort[] _depthData;
-    public byte[, ,] DepthImage { get; private set; }
-    public byte[, ,] DepthFilteredImage { get; private set; }
+    public ushort[] DepthData { get; private set; }
 
-    private byte[] _colorData;
-	private float _lastColorData;
-    private ColorSpacePoint[] _colorSpacePoints;
+    private float _lastColorData;
+    private readonly byte[] _colorData;
+    private readonly ColorSpacePoint[] _colorSpacePoints;
 	public byte[, ,] ColorImage { get; private set; }
 
     private readonly bool _sampleMode;
@@ -34,30 +32,28 @@ public class KinectManager
         DetectionSettings = detectionSettings;
 
         if (SystemInfo.operatingSystem.Contains("Windows 8"))
-            _sensor = KinectSensor.GetDefault();
+            _kinectSensor = KinectSensor.GetDefault();
 
-        _sampleMode = (_sensor == null);
+        _sampleMode = (_kinectSensor == null);
 
 		_lastColorData = 0;
         ColorImage = new byte[DepthHeight, DepthWidth, 3];
-        DepthImage = new byte[DepthHeight, DepthWidth, 1];
-        DepthFilteredImage = new byte[DepthHeight, DepthWidth, 1];
 
-        if (_sensor != null)
+        if (_kinectSensor != null)
         {
-            _reader = _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth);
+            _frameReader = _kinectSensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth);
 
             // color frame
-            var colorFrameDesc = _sensor.ColorFrameSource.CreateFrameDescription(ColorImageFormat.Rgba);
+            var colorFrameDesc = _kinectSensor.ColorFrameSource.CreateFrameDescription(ColorImageFormat.Rgba);
             _colorData = new byte[colorFrameDesc.BytesPerPixel * colorFrameDesc.LengthInPixels];
 
             // depth frame
-            var depthFrameDesc = _sensor.DepthFrameSource.FrameDescription;
-            _depthData = new ushort[depthFrameDesc.LengthInPixels];
+            var depthFrameDesc = _kinectSensor.DepthFrameSource.FrameDescription;
+            DepthData = new ushort[depthFrameDesc.LengthInPixels];
             _colorSpacePoints = new ColorSpacePoint[depthFrameDesc.LengthInPixels];
 
-            if (!_sensor.IsOpen)
-                _sensor.Open();
+            if (!_kinectSensor.IsOpen)
+                _kinectSensor.Open();
         }
         else
             ReadDepthFromFile();
@@ -76,7 +72,7 @@ public class KinectManager
             return;
         }
 
-        if (_reader == null || WorkerThread.GetUpdatedData())
+        if (_frameReader == null || WorkerThread.GetUpdatedData())
             return;
 
 		if (DetectionSettings.RenderImgType == 6) {
@@ -87,7 +83,7 @@ public class KinectManager
 		}
 		
 		// get latest images
-        var frame = _reader.AcquireLatestFrame();
+        var frame = _frameReader.AcquireLatestFrame();
         if (frame == null) return;
 
         // color frame
@@ -103,19 +99,18 @@ public class KinectManager
         var depthFrame = frame.DepthFrameReference.AcquireFrame();
         if (depthFrame == null) return;
 
-        depthFrame.CopyFrameDataToArray(_depthData);
+        depthFrame.CopyFrameDataToArray(DepthData);
 		depthFrame.Dispose();
 
         if (DetectionSettings.RenderImgType == 6)
             CreateColorImage();
 
-        CreateDepthImage(DetectionSettings.MinDepth, DetectionSettings.MaxDepth);
 		WorkerThread.SetUpdatedData();
     }
 
     public void SaveDepthToFile()
     {
-        if (_depthData == null)
+        if (DepthData == null)
             return;
 
         var randObj = new System.Random();
@@ -124,7 +119,7 @@ public class KinectManager
         var file = File.Open(path, FileMode.Create);
 
         using (var bw = new BinaryWriter(file))
-            foreach (var value in _depthData)
+            foreach (var value in DepthData)
                 bw.Write(value);
 
         Debug.Log("Depth sample saved to: " + path);
@@ -145,15 +140,13 @@ public class KinectManager
             for (int x = 0; x < valueCt; x++)
                 readArr[x] = br.ReadUInt16();
 
-            _depthData = readArr;
+            DepthData = readArr;
         }
-
-        CreateDepthImage(DetectionSettings.MinDepth, DetectionSettings.MaxDepth);
     }
 
 	private void CreateColorImage()
 	{
-		_sensor.CoordinateMapper.MapDepthFrameToColorSpace(_depthData, _colorSpacePoints);
+		_kinectSensor.CoordinateMapper.MapDepthFrameToColorSpace(DepthData, _colorSpacePoints);
 		
 		for (int y = 0; y < DepthHeight; y++)
 		{
@@ -177,41 +170,6 @@ public class KinectManager
 			}
 		}
 	}
-
-    private void CreateDepthImage(int low, int high)
-    {
-        // find min and max value
-        var minDepth = Mathf.Infinity;
-        var maxDepth = Mathf.NegativeInfinity;
-
-        foreach (var val in _depthData)
-        {
-            minDepth = Mathf.Min(minDepth, val);
-            maxDepth = Mathf.Max(maxDepth, val);
-        }
-
-        minDepth = Mathf.Max(minDepth, low);
-        maxDepth = Mathf.Min(maxDepth, high);
-
-        var distDepth = maxDepth - minDepth;
-
-        // convert to depth image
-        for (int y = 0; y < DepthHeight; y++)
-        {
-            for (int x = 0; x < DepthWidth; x++)
-            {
-                var index = y*DepthWidth + x;
-                var val = (_depthData[index] - minDepth)/distDepth;
-
-                DepthImage[y, x, 0] = (byte) (val*255);
-
-                if (_depthData[index] < low || _depthData[index] > high)
-                    DepthFilteredImage[y, x, 0] = 0;
-                else
-                    DepthFilteredImage[y, x, 0] = (byte) (val*255);
-            }
-        }
-    }
 
     private ushort[] ScaleDepthMap(ushort[] arr, float scale)
     {
@@ -249,18 +207,18 @@ public class KinectManager
 
     public void OnApplicationQuit()
     {
-        if (_reader != null)
+        if (_frameReader != null)
         {
-            _reader.Dispose();
-            _reader = null;
+            _frameReader.Dispose();
+            _frameReader = null;
         }
 
-        if (_sensor != null)
+        if (_kinectSensor != null)
         {
-            if (_sensor.IsOpen)
-                _sensor.Close();
+            if (_kinectSensor.IsOpen)
+                _kinectSensor.Close();
 
-            _sensor = null;
+            _kinectSensor = null;
         }
     }
 }
