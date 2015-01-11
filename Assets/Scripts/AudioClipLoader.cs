@@ -14,6 +14,8 @@ public class AudioClipLoader : MonoBehaviour {
         url = "file://" + Application.streamingAssetsPath + url;
         www = new WWW(url);
         StartCoroutine(WaitForAudioClip());
+
+        transform.position = transform.parent.position;
     }
 
     public IEnumerator WaitForAudioClip()
