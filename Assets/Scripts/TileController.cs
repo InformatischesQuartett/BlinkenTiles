@@ -206,6 +206,7 @@ public class TileController : MonoBehaviour
         var goTileSounds = new GameObject();
         goTileSounds.name = "TileSounds";
         goTileSounds.transform.parent = _tempParent.transform;
+        goTileSounds.transform.position = goTileSounds.transform.parent.position;
 
         _tempGameObjects.Add(goTileSounds);
 
