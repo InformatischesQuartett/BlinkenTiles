@@ -6,8 +6,8 @@ using Windows.Kinect;
 
 public class KinectManager
 {
-    private const int DepthWidth = 512;
-    private const int DepthHeight = 424;
+    public readonly int DepthWidth = 512;
+    public readonly int DepthHeight = 424;
 
     private const int ColorWidth = 1920;
     private const int ColorHeight = 1080;
@@ -75,7 +75,7 @@ public class KinectManager
         if (_frameReader == null || WorkerThread.GetUpdatedData())
             return;
 
-		if (DetectionSettings.RenderImgType == 6) {
+		if (DetectionSettings.RenderImgType == 7) {
 			if (Time.time - _lastColorData < 1)
 				return;
 			else
@@ -102,46 +102,10 @@ public class KinectManager
         depthFrame.CopyFrameDataToArray(DepthData);
 		depthFrame.Dispose();
 
-        if (DetectionSettings.RenderImgType == 6)
+        if (DetectionSettings.RenderImgType == 7)
             CreateColorImage();
 
 		WorkerThread.SetUpdatedData();
-    }
-
-    public void SaveDepthToFile()
-    {
-        if (DepthData == null)
-            return;
-
-        var randObj = new System.Random();
-        var name = randObj.Next(10000, 99999);
-        var path = "Assets/Samples/DepthSample" + name;
-        var file = File.Open(path, FileMode.Create);
-
-        using (var bw = new BinaryWriter(file))
-            foreach (var value in DepthData)
-                bw.Write(value);
-
-        Debug.Log("Depth sample saved to: " + path);
-    }
-
-    private void ReadDepthFromFile()
-    {
-        var randObj = new System.Random();
-        var name = randObj.Next(1, 15);
-        var path = "Assets/Samples/DepthSample" + name;
-        var file = File.Open(path, FileMode.Open);
-
-        using (var br = new BinaryReader(file))
-        {
-            var valueCt = br.BaseStream.Length/sizeof (ushort);
-            var readArr = new ushort[valueCt];
-
-            for (int x = 0; x < valueCt; x++)
-                readArr[x] = br.ReadUInt16();
-
-            DepthData = readArr;
-        }
     }
 
 	private void CreateColorImage()
@@ -171,38 +135,40 @@ public class KinectManager
 		}
 	}
 
-    private ushort[] ScaleDepthMap(ushort[] arr, float scale)
+    public void SaveDepthToFile()
     {
-        var tmpArr = new List<ushort>();
+        if (DepthData == null)
+            return;
 
-        const float midHeight = DepthHeight/2.0f;
-        const float midWidth = DepthWidth/2.0f;
+        var randObj = new System.Random();
+        var name = randObj.Next(10000, 99999);
+        var path = "Assets/Samples/DepthSample" + name;
+        var file = File.Open(path, FileMode.Create);
 
-        var startValY = Mathf.FloorToInt(midHeight - midHeight/2.0f);
-        var startValX = Mathf.FloorToInt(midWidth - midWidth/2.0f);
+        using (var bw = new BinaryWriter(file))
+            foreach (var value in DepthData)
+                bw.Write(value);
 
-        // output array 
-        var scArr = new ushort[arr.Length];
-        Array.Clear(scArr, 0, arr.Length);
+        Debug.Log("Depth sample saved to: " + path);
+    }
 
-        // catch elements
-        for (int y = 0; y < DepthHeight; y += 2)
-            for (int x = 0; x < DepthWidth; x += 2)
-                tmpArr.Add(arr[y*DepthWidth + x]);
+    private void ReadDepthFromFile()
+    {
+        var randObj = new System.Random();
+        var name = randObj.Next(1, 15);
+        var path = "Assets/Samples/DepthSample" + name;
+        var file = File.Open(path, FileMode.Open);
 
-        // write elements
-        for (int y = startValY; y < DepthHeight - startValY; y++)
+        using (var br = new BinaryReader(file))
         {
-            for (int x = startValX; x < DepthWidth - startValX; x++)
-            {
-                var index = y*DepthWidth + x;
+            var valueCt = br.BaseStream.Length / sizeof(ushort);
+            var readArr = new ushort[valueCt];
 
-                scArr[index] = tmpArr[0];
-                tmpArr.RemoveAt(0);
-            }
+            for (int x = 0; x < valueCt; x++)
+                readArr[x] = br.ReadUInt16();
+
+            DepthData = readArr;
         }
-
-        return scArr;
     }
 
     public void OnApplicationQuit()
