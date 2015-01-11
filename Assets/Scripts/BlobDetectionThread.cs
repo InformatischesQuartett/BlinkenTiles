@@ -4,7 +4,6 @@ using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using System.Drawing;
 
-
 public class BlobDetectionThread
 {
     private volatile BlobDetectionSettings _detectionSettings;
@@ -17,6 +16,8 @@ public class BlobDetectionThread
     private volatile bool _shouldStop;
     private volatile bool _updatedData;
 
+    private volatile int _runCounter;
+
     public BlobDetectionThread(KinectManager depthManager, TileController tileCtrl,
         BlobDetectionSettings detectionSettings, RenderDataCallback renderImageCallback)
     {
@@ -26,7 +27,10 @@ public class BlobDetectionThread
 
         _renderImageCallback = renderImageCallback;
 
+        _shouldStop = false;
         _updatedData = false;
+
+        _runCounter = 0;
     }
 
     public void SetDetectionSettings(BlobDetectionSettings detectionSettings)
@@ -42,6 +46,11 @@ public class BlobDetectionThread
     public bool GetUpdatedData()
     {
         return _updatedData;
+    }
+
+    public int GetRunCount()
+    {
+        return _runCounter;
     }
 
     public void RequestStop()
@@ -62,19 +71,19 @@ public class BlobDetectionThread
         var imgWidth = (int)_detectionSettings.RenderImgSize.x;
         var imgHeight = (int)_detectionSettings.RenderImgSize.y;
 
-        return img.Resize(imgWidth, imgHeight, INTER.CV_INTER_CUBIC, false).Data;
+		return img.Resize(imgWidth, imgHeight, INTER.CV_INTER_CUBIC, true).Data;
     }
 
     public void ProcessImg()
     {
         while (!_shouldStop)
-        {
-            while (!_updatedData && !_shouldStop)
+		{
+			while (!_updatedData && !_shouldStop)
             {
                 // wait for next kinect data
             }
 
-            if (_shouldStop) return;
+			if (_shouldStop) return;
 
             var depthImg = _depthManager.DepthImage;
             var depthFilteredImg = _depthManager.DepthFilteredImage;
@@ -155,7 +164,7 @@ public class BlobDetectionThread
                 }
             }
 
-            // set tile status
+			// set tile status
             for (int x = 0; x < cols; x++)
                 for (int y = 0; y < rows; y++)
                     _tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]);
@@ -201,7 +210,8 @@ public class BlobDetectionThread
                 _renderImageCallback(renderImage);
 
             // wait for new data
-            _updatedData = false;
+		    _updatedData = false;
+            _runCounter++;
         }
     }
 }

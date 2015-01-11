@@ -51,6 +51,7 @@ struct ConfigSet
     public int MaxDepth;
     public int MinThreshold;
     public int MaxThreshold;
+	public int RenderImageType;
     public float GridLocX;
     public float GridLocY;
     public float FieldSizeX;
