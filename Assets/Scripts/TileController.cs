@@ -40,18 +40,7 @@ public class TileController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-        if (Input.GetKeyDown(KeyCode.B))
-            BuildTiles();
-
-        if (Input.GetKeyDown(KeyCode.D))
-            DestroyTiles();
-
-        if (Input.GetKeyDown(KeyCode.T))
-            RebuildTiles();
-
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-            LoadSong(0);
-
+        GetInputs();
 	   
 
         if (_matrixReady)
@@ -185,48 +174,67 @@ public class TileController : MonoBehaviour
         BuildTiles();
     }
 
-    public void LoadSong(int num=0)
+    public void LoadSong(Songtype songType=Songtype.Freestyle, int num=0)
     {
-        if (_tempGameObjects.Count > 0)
+        List<Song> songRepo = new List<Song>();
+
+        if (songType == Songtype.Freestyle)
         {
-            foreach (var tgo in _tempGameObjects)
+            songRepo = Config.FreestyleSongs;
+            if (num < songRepo.Count)
+                Config.CurrentGamemode = Gamemode.Freestyle;
+        }
+        else if (songType == Songtype.Challenge)
+        {
+            songRepo = Config.ChallengeSongs;
+            if (num < songRepo.Count)
+                Config.CurrentGamemode = Gamemode.Challenge;
+        }
+
+        if (num < songRepo.Count)
+        {
+            if (_tempGameObjects.Count > 0)
             {
-                Destroy(tgo);
+
+                foreach (var tgo in _tempGameObjects)
+                {
+                    Destroy(tgo);
+                }
             }
+
+            var go = new GameObject();
+            go.name = songRepo[num].Titel;
+            go.transform.parent = _tempParent.transform;
+            go.AddComponent<AudioSource>();
+            go.AddComponent<AudioClipLoader>().url = songRepo[num].SoundFilePath;
+
+            _tempGameObjects.Add(go);
+
+            var goTileSounds = new GameObject();
+            goTileSounds.name = "TileSounds";
+            goTileSounds.transform.parent = _tempParent.transform;
+            goTileSounds.transform.position = goTileSounds.transform.parent.position;
+
+            _tempGameObjects.Add(goTileSounds);
+
+            for (int i = 0; i < songRepo[num].TileSoundFilePaths.Count; i++)
+            {
+                var tilesounds = new GameObject();
+                tilesounds.name = i.ToString();
+                tilesounds.transform.parent = goTileSounds.transform;
+                tilesounds.AddComponent<AudioSource>();
+                tilesounds.AddComponent<AudioClipLoader>().url = songRepo[num].TileSoundFilePaths[i];
+
+                _tempGameObjects.Add(tilesounds);
+            }
+
+            go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
+
+            Config.BPM = songRepo[num].Bpm;
+
+            _activeCol = 0;
+            _timerCol = 0;
         }
-
-        var go = new GameObject();
-        go.name = "Song";
-        go.transform.parent = _tempParent.transform;
-        go.AddComponent<AudioSource>();
-        go.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[0].SoundFilePath;
-
-        _tempGameObjects.Add(go);
-
-        var goTileSounds = new GameObject();
-        goTileSounds.name = "TileSounds";
-        goTileSounds.transform.parent = _tempParent.transform;
-        goTileSounds.transform.position = goTileSounds.transform.parent.position;
-
-        _tempGameObjects.Add(goTileSounds);
-
-        for (int i = 0; i < Config.ChallengeSongs[num].TileSoundFilePaths.Count; i++)
-        {
-            var tilesounds = new GameObject();
-            tilesounds.name = i.ToString();
-            tilesounds.transform.parent = goTileSounds.transform;
-            tilesounds.AddComponent<AudioSource>();
-            tilesounds.AddComponent<AudioClipLoader>().url = Config.ChallengeSongs[num].TileSoundFilePaths[i];
-
-            _tempGameObjects.Add(tilesounds);
-        }
-
-        go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
-
-        Config.BPM = Config.ChallengeSongs[num].Bpm;
-
-        _activeCol = 0;
-        _timerCol = 0;
     }
 
 	public void SetTileStatus(int col, int row, bool status)
@@ -235,4 +243,21 @@ public class TileController : MonoBehaviour
 		tile.Active = status;
 		_matrix[col].Tiles[row] = tile;
 	}
+
+    private void GetInputs()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
+            BuildTiles();
+
+        if (Input.GetKeyDown(KeyCode.D))
+            DestroyTiles();
+
+        if (Input.GetKeyDown(KeyCode.T))
+            RebuildTiles();
+
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            LoadSong(Songtype.Freestyle, 0);
+        }
+    }
 }
