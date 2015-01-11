@@ -195,16 +195,12 @@ public class BlobDetectionThread
             if (_detectionSettings.RenderImgType == 5)
                 renderImage = PrepareRenderImage(imgOrg);
 
-            /*
-            if (_detectionSettings.DebugImg == 6)
+			if (_detectionSettings.RenderImgType == 6)
             {
-                if (_lastColorImg != null)
-                {
-                    var colorImg = new Image<Bgr, byte>(ConvertToImage(_lastColorImg));
-                    imgOrg = imgOrg.AddWeighted(colorImg, 0.5f, 0.5f, 0);
-                }
+				var colorImg = new Image<Bgr, byte>(_depthManager.ColorImage);
+            	imgOrg = imgOrg.AddWeighted(colorImg, 0.5f, 0.5f, 0);
+				renderImage = PrepareRenderImage(imgOrg);
             }
-            */
 
             if (_renderImageCallback != null && renderImage.Length > 0)
                 _renderImageCallback(renderImage);

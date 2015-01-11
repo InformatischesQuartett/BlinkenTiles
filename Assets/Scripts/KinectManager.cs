@@ -23,7 +23,9 @@ public class KinectManager
     public byte[, ,] DepthFilteredImage { get; private set; }
 
     private byte[] _colorData;
-    private Texture2D _colorImage;
+	private float _lastColorData;
+    private ColorSpacePoint[] _colorSpacePoints;
+	public byte[, ,] ColorImage { get; private set; }
 
     private readonly bool _sampleMode;
 
@@ -36,8 +38,8 @@ public class KinectManager
 
         _sampleMode = (_sensor == null);
 
-        _colorImage = new Texture2D(ColorWidth, ColorHeight, TextureFormat.RGBA32, false);
-
+		_lastColorData = 0;
+        ColorImage = new byte[DepthHeight, DepthWidth, 3];
         DepthImage = new byte[DepthHeight, DepthWidth, 1];
         DepthFilteredImage = new byte[DepthHeight, DepthWidth, 1];
 
@@ -52,6 +54,7 @@ public class KinectManager
             // depth frame
             var depthFrameDesc = _sensor.DepthFrameSource.FrameDescription;
             _depthData = new ushort[depthFrameDesc.LengthInPixels];
+            _colorSpacePoints = new ColorSpacePoint[depthFrameDesc.LengthInPixels];
 
             if (!_sensor.IsOpen)
                 _sensor.Open();
@@ -76,33 +79,38 @@ public class KinectManager
         if (_reader == null || WorkerThread.GetUpdatedData())
             return;
 
-        // get latest images
+		if (DetectionSettings.RenderImgType == 6) {
+			if (Time.time - _lastColorData < 1)
+				return;
+			else
+				_lastColorData = Time.time;
+		}
+		
+		// get latest images
         var frame = _reader.AcquireLatestFrame();
         if (frame == null) return;
 
-        var colorFrame = frame.ColorFrameReference.AcquireFrame();
+        // color frame
+		var colorFrame = frame.ColorFrameReference.AcquireFrame();
+		
+		if (colorFrame != null)
+		{
+			colorFrame.CopyConvertedFrameDataToArray(_colorData, ColorImageFormat.Rgba);
+			colorFrame.Dispose();
+		}
 
-        if (colorFrame != null)
-        {
-            colorFrame.CopyConvertedFrameDataToArray(_colorData, ColorImageFormat.Rgba);
-            colorFrame.Dispose();
-        }
-
+        // depth frame
         var depthFrame = frame.DepthFrameReference.AcquireFrame();
         if (depthFrame == null) return;
 
         depthFrame.CopyFrameDataToArray(_depthData);
+		depthFrame.Dispose();
+
+        if (DetectionSettings.RenderImgType == 6)
+            CreateColorImage();
+
         CreateDepthImage(DetectionSettings.MinDepth, DetectionSettings.MaxDepth);
-
-        depthFrame.Dispose();
-    }
-
-    public Texture2D GetColorImg()
-    {
-        _colorImage.LoadRawTextureData(_colorData);
-        _colorImage.Apply();
-
-        return _colorImage;
+		WorkerThread.SetUpdatedData();
     }
 
     public void SaveDepthToFile()
@@ -142,6 +150,33 @@ public class KinectManager
 
         CreateDepthImage(DetectionSettings.MinDepth, DetectionSettings.MaxDepth);
     }
+
+	private void CreateColorImage()
+	{
+		_sensor.CoordinateMapper.MapDepthFrameToColorSpace(_depthData, _colorSpacePoints);
+		
+		for (int y = 0; y < DepthHeight; y++)
+		{
+			for (int x = 0; x < DepthWidth; x++)
+			{
+				var index = y * DepthWidth + x;
+				
+				var point = _colorSpacePoints[index];
+				var colorX = (int) Math.Floor(point.X + 0.5f);
+				var colorY = (int) Math.Floor(point.Y + 0.5f);
+				
+				var inWidth = (colorX >= 0) && (colorX < ColorWidth);
+				var inHeight = (colorY >= 0) && (colorY < ColorHeight);
+				if (!inWidth || !inHeight) continue;
+				
+				int colorIndex = ((ColorWidth * colorY) + colorX) * 4;
+				
+				ColorImage[y, x, 2] = _colorData[colorIndex+0];
+				ColorImage[y, x, 1] = _colorData[colorIndex+1];
+				ColorImage[y, x, 0] = _colorData[colorIndex+2];
+			}
+		}
+	}
 
     private void CreateDepthImage(int low, int high)
     {
@@ -190,9 +225,7 @@ public class KinectManager
 
         // output array 
         var scArr = new ushort[arr.Length];
-
-        for (int i = 0; i < arr.Length; i++)
-            scArr[i] = 0;
+        Array.Clear(scArr, 0, arr.Length);
 
         // catch elements
         for (int y = 0; y < DepthHeight; y += 2)
