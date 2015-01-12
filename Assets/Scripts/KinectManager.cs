@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections.Generic;
 using System.IO;
 using Windows.Kinect;
 
@@ -75,7 +74,7 @@ public class KinectManager
         if (_frameReader == null || WorkerThread.GetUpdatedData())
             return;
 
-		if (DetectionSettings.RenderImgType == 7) {
+		if (DetectionSettings.RenderImgType == 6) {
 			if (Time.time - _lastColorData < 1)
 				return;
 			else
@@ -102,7 +101,7 @@ public class KinectManager
         depthFrame.CopyFrameDataToArray(DepthData);
 		depthFrame.Dispose();
 
-        if (DetectionSettings.RenderImgType == 7)
+        if (DetectionSettings.RenderImgType == 6)
             CreateColorImage();
 
 		WorkerThread.SetUpdatedData();
