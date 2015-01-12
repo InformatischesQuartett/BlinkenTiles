@@ -12,7 +12,7 @@
 "MaxThreshold":255,
 "MinDepth":2500,
 "MaxDepth":4500,
-"RenderImageType":6,
+"RenderImageType":5,
 "GridLocX":20,
 "GridLocY":90,
 "FieldSizeX":60,

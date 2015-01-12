@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using System.Threading;
-using Emgu.CV.CvEnum;
 using UnityEditor;
 
 public delegate void RenderDataCallback(byte[] data);
@@ -153,7 +152,7 @@ public class BlobDetection : MonoBehaviour
         GUI.Label(new Rect(5, imgHeight - 40, 200, 20), "RenderImageType " + _dSettings.RenderImgType);
         GUI.Label(new Rect(5, imgHeight - 20, 200, 20), "20.01.2014 / " + DateTime.Now.ToString("HH:mm:ss"));
 
-        GUI.Label(new Rect(5, 0, 250, 20), "Performance: " + _mainFPS.ToString("F1") +
+        GUI.Label(new Rect(5, 0, 250, 25), "Performance: " + _mainFPS.ToString("F1") +
                                            " fps / " + _threadFPS.ToString("F1") + " fps");
 
         GUI.backgroundColor = new Color(1, 1, 1, 0.4f);
