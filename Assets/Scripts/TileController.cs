@@ -174,7 +174,7 @@ public class TileController : MonoBehaviour
         BuildTiles();
     }
 
-    public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
+    public void LoadSong(Songtype songType=Songtype.Challenge, int num=1)
     {
         List<Song> songRepo = new List<Song>();
 
