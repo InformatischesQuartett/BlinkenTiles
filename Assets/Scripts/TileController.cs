@@ -174,7 +174,7 @@ public class TileController : MonoBehaviour
         BuildTiles();
     }
 
-    public void LoadSong(Songtype songType=Songtype.Freestyle, int num=0)
+    public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
     {
         List<Song> songRepo = new List<Song>();
 
@@ -239,9 +239,12 @@ public class TileController : MonoBehaviour
 
 	public void SetTileStatus(int col, int row, bool status)
 	{
-		var tile = _matrix[col].Tiles[row];
-		tile.Active = status;
-		_matrix[col].Tiles[row] = tile;
+	    lock (_matrix[col].Tiles)
+	    {
+	        var tile = _matrix[col].Tiles[row];
+	        tile.Active = status;
+	        _matrix[col].Tiles[row] = tile;
+	    }
 	}
 
     private void GetInputs()

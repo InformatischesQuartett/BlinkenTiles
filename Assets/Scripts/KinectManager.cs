@@ -12,7 +12,8 @@ public class KinectManager
     private const int ColorHeight = 1080;
 
     private KinectSensor _kinectSensor;
-    private MultiSourceFrameReader _frameReader;
+	private ColorFrameReader _colorReader;
+	private DepthFrameReader _depthReader;
 
     public BlobDetectionSettings DetectionSettings { get; set; }
     public BlobDetectionThread WorkerThread { get; set; }
@@ -40,7 +41,11 @@ public class KinectManager
 
         if (_kinectSensor != null)
         {
-            _frameReader = _kinectSensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth);
+			_depthReader = _kinectSensor.DepthFrameSource.OpenReader();
+			_depthReader.FrameArrived += DepthFrameArrived;
+
+			_colorReader = _kinectSensor.ColorFrameSource.OpenReader();
+			_colorReader.FrameArrived += ColorFrameArrived;
 
             // color frame
             var colorFrameDesc = _kinectSensor.ColorFrameSource.CreateFrameDescription(ColorImageFormat.Rgba);
@@ -58,59 +63,50 @@ public class KinectManager
             ReadDepthFromFile();
     }
 
-    public void Update()
-    {
-        if (_sampleMode)
-        {
-            if (Time.frameCount % 600 == 0)
-               ReadDepthFromFile();
-
-            if (!WorkerThread.GetUpdatedData())
-                WorkerThread.SetUpdatedData();
-
-            return;
-        }
-
-        if (_frameReader == null || WorkerThread.GetUpdatedData())
-            return;
-
-		if (DetectionSettings.RenderImgType == 6) {
-			if (Time.time - _lastColorData < 1)
-				return;
-			else
-				_lastColorData = Time.time;
-		}
-		
-		// get latest images
-        var frame = _frameReader.AcquireLatestFrame();
-        if (frame == null) return;
-
-        // color frame
-		var colorFrame = frame.ColorFrameReference.AcquireFrame();
-		
-		if (colorFrame != null)
+	public void Update()
+	{
+		if (_sampleMode)
 		{
-			colorFrame.CopyConvertedFrameDataToArray(_colorData, ColorImageFormat.Rgba);
-			colorFrame.Dispose();
+			if (Time.frameCount % 600 == 0)
+				ReadDepthFromFile();
+			
+			if (!WorkerThread.GetUpdatedData())
+				WorkerThread.SetUpdatedData();
 		}
+	}
+	
+	public void DepthFrameArrived(object sender, DepthFrameArrivedEventArgs evt)
+	{
+		if (WorkerThread.GetUpdatedData ())
+			return;
 
-        // depth frame
-        var depthFrame = frame.DepthFrameReference.AcquireFrame();
-        if (depthFrame == null) return;
+		using (var depthFrame = evt.FrameReference.AcquireFrame()) {
+		    if (depthFrame == null) return;
 
-        depthFrame.CopyFrameDataToArray(DepthData);
-		depthFrame.Dispose();
+		    depthFrame.CopyFrameDataToArray (DepthData);		
+		    WorkerThread.SetUpdatedData ();
+		}
+	}
+	
+	public void ColorFrameArrived(object sender, ColorFrameArrivedEventArgs evt)
+	{
+		if (WorkerThread.GetUpdatedData ())
+			return;
 
-        if (DetectionSettings.RenderImgType == 6)
-            CreateColorImage();
+		using (var colorFrame = evt.FrameReference.AcquireFrame()) {
+		    if (colorFrame == null) return;
 
-		WorkerThread.SetUpdatedData();
-    }
+		    colorFrame.CopyConvertedFrameDataToArray (_colorData, ColorImageFormat.Rgba);
+
+		    if (DetectionSettings.RenderImgType == 6)
+		        CreateColorImage ();
+		}
+	}
 
 	private void CreateColorImage()
 	{
 		_kinectSensor.CoordinateMapper.MapDepthFrameToColorSpace(DepthData, _colorSpacePoints);
-		
+
 		for (int y = 0; y < DepthHeight; y++)
 		{
 			for (int x = 0; x < DepthWidth; x++)
@@ -132,6 +128,8 @@ public class KinectManager
 				ColorImage[y, x, 2] = _colorData[colorIndex+2];
 			}
 		}
+
+		_lastColorData = Time.time;
 	}
 
     public void SaveDepthToFile()
@@ -172,11 +170,16 @@ public class KinectManager
 
     public void OnApplicationQuit()
     {
-        if (_frameReader != null)
+        if (_depthReader != null)
         {
-            _frameReader.Dispose();
-            _frameReader = null;
-        }
+			_depthReader.Dispose();
+			_depthReader = null;
+		}
+
+		if (_colorReader != null) {
+			_colorReader.Dispose();
+			_colorReader = null;
+		}
 
         if (_kinectSensor != null)
         {
