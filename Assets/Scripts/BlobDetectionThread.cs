@@ -116,15 +116,12 @@ public class BlobDetectionThread
                 var element = new StructuringElementEx(5, 5, 2, 2, CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
                 CvInvoke.cvErode(imgSm, imgSm, element, 2);
                 CvInvoke.cvDilate(imgSm, imgSm, element, 2);
-                
-                if (_detectionSettings.RenderImgType == 3)
-                    renderImage = PrepareRenderImage(imgSm);
 
                 // filtering
                 var imgThr = imgSm.InRange(new Gray(_detectionSettings.MinThreshold),
                     new Gray(_detectionSettings.MaxThreshold));
 
-                if (_detectionSettings.RenderImgType == 4)
+                if (_detectionSettings.RenderImgType == 3)
                     renderImage = PrepareRenderImage(imgThr);
 
                 // create grid
@@ -181,7 +178,7 @@ public class BlobDetectionThread
                     for (int y = 0; y < rows; y++)
                         _tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]);
 
-                if (_detectionSettings.RenderImgType == 5)
+                if (_detectionSettings.RenderImgType == 4)
                     renderImage = PrepareRenderImage(imgOrg);
 
                 // draw grid
@@ -204,10 +201,10 @@ public class BlobDetectionThread
 
                 imgOrg = imgOrg.AddWeighted(blendImg, 0.7f, 0.3f, 0);
 
-                if (_detectionSettings.RenderImgType == 6)
+                if (_detectionSettings.RenderImgType == 5)
                     renderImage = PrepareRenderImage(imgOrg);
 
-                if (_detectionSettings.RenderImgType == 7)
+                if (_detectionSettings.RenderImgType == 6)
                 {
                     var colorImg = new Image<Rgb, byte>(_depthManager.ColorImage);
                     imgOrg = imgOrg.AddWeighted(colorImg, 0.5f, 0.5f, 0);

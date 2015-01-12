@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 using System.Threading;
+using Emgu.CV.CvEnum;
+using UnityEditor;
 
 public delegate void RenderDataCallback(byte[] data);
 
@@ -22,21 +24,6 @@ public class BlobDetectionSettings
 
 public class BlobDetection : MonoBehaviour
 {
-    [Range(0, 255)]
-    public int MinThr;
-
-    [Range(0, 255)]
-    public int MaxThr;
-
-    [Range(0, 7999)]
-    public int MinDepth;
-
-    [Range(0, 7999)]
-    public int MaxDepth;
-
-    [Range(1, 6)]
-    public int DebugImg;
-
     public Vector2 GridLoc;
     public Vector2 FieldSize;
     public Vector2 FieldTolerance;
@@ -47,7 +34,7 @@ public class BlobDetection : MonoBehaviour
 
     private KinectManager _kinectManager;
     private TileController _tileController;
-    private BlobDetectionSettings _detectionSettings;
+    private BlobDetectionSettings _dSettings;
 
     private BlobDetectionThread _workerObject;
     private Thread _workerThread;
@@ -64,7 +51,7 @@ public class BlobDetection : MonoBehaviour
 
     private void Start()
     {
-        _detectionSettings = new BlobDetectionSettings
+        _dSettings = new BlobDetectionSettings
         {
             RenderImgType = Config.RenderImageType,
 
@@ -81,11 +68,11 @@ public class BlobDetection : MonoBehaviour
             FieldTolerance = Config.FieldTolerance
         };
 
-        _kinectManager = new KinectManager(_detectionSettings);
+        _kinectManager = new KinectManager(_dSettings);
         _tileController = GameObject.Find("Tiles").GetComponent<TileController>();
 
         _workerObject = new BlobDetectionThread(_kinectManager, _tileController,
-            _detectionSettings, SetRenderImage);
+            _dSettings, SetRenderImage);
 
         _workerThread = new Thread(_workerObject.ProcessImg);
         _workerThread.Start();
@@ -145,23 +132,57 @@ public class BlobDetection : MonoBehaviour
         _renderDataUpdate = true;
     }
 
+    private int SettingSlider(int x, int y, string text, int val, int low, int high)
+    {
+        GUI.BeginGroup(new Rect(x, y, 250, 40));
+        GUI.Label(new Rect(0, 0, 200, 20), text + ": " + val);
+        val = (int)GUI.HorizontalSlider(new Rect(0, 20, 185, 10), val, low, high);
+        if (GUI.Button(new Rect(193, 15, 20, 20), "+")) val = Mathf.Min(high, val + 1);
+        if (GUI.Button(new Rect(215, 15, 20, 20), "-")) val = Mathf.Max(low, val - 1);
+        GUI.EndGroup();
+
+        return val;
+    }
+
     private void OnGUI()
     {
         var imgHeight = Screen.height;
         var imgWidth = imgHeight*(_kinectManager.DepthWidth/_kinectManager.DepthHeight);
 
         GUI.DrawTexture(new Rect(0, imgHeight, imgWidth, -imgHeight), _lastRenderImage);
-        GUI.Label(new Rect(5, imgHeight - 40, 200, 20), "RenderImageType " + DebugImg);
+        GUI.Label(new Rect(5, imgHeight - 40, 200, 20), "RenderImageType " + _dSettings.RenderImgType);
         GUI.Label(new Rect(5, imgHeight - 20, 200, 20), "20.01.2014 / " + DateTime.Now.ToString("HH:mm:ss"));
 
         GUI.Label(new Rect(5, 0, 250, 20), "Performance: " + _mainFPS.ToString("F1") +
-            " fps / " + _threadFPS.ToString("F1") + " fps");
+                                           " fps / " + _threadFPS.ToString("F1") + " fps");
 
-        //if (GUI.Button(new Rect(0, 0, 100, 20), "Save"))
-        //    _kinectManager.SaveDepthToFile();
+        GUI.backgroundColor = new Color(1, 1, 1, 0.4f);
+        GUI.skin.box.normal.background = EditorGUIUtility.whiteTexture;
 
-        //if (GUI.Button(new Rect(220, 0, 100, 20), "Update"))
-        //    _workerObject.SetDetectionSettings(_detectionSettings);
+        GUI.BeginGroup(new Rect(imgWidth + 100, 20, 265, 500));
+        GUI.Box(new Rect(0, 0, 265, 500), "Blob Detection Settings");
+
+        GUI.backgroundColor = new Color(0, 0, 0, 1);
+
+        _dSettings.RenderImgType = SettingSlider(15, 40, "RenderImageType", _dSettings.RenderImgType, 1, 6);
+        _dSettings.MinDepth = SettingSlider(15, 100, "Minimum Depth", _dSettings.MinDepth, 0, 8000);
+        _dSettings.MaxDepth = SettingSlider(15, 140, "Maximum Depth", _dSettings.MaxDepth, 0, 8000);
+        _dSettings.MinThreshold = SettingSlider(15, 180, "Minimum Threshold", _dSettings.MinThreshold, 0, 255);
+        _dSettings.MaxThreshold = SettingSlider(15, 220, "Maximum Threshold", _dSettings.MaxThreshold, 0, 255);
+
+        var gridLocX = SettingSlider(15, 280, "Grid Location (X)", (int) _dSettings.GridLoc.x, 0, 200);
+        var gridLocY = SettingSlider(15, 320, "Grid Location (Y)", (int) _dSettings.GridLoc.y, 0, 200);
+        _dSettings.GridLoc = new Vector2(gridLocX, gridLocY);
+
+        var fieldSizeX = SettingSlider(15, 360, "Field Size (X)", (int)_dSettings.FieldSize.x, 0, 200);
+        var fieldSizeY = SettingSlider(15, 400, "Field Size (Y)", (int)_dSettings.FieldSize.y, 0, 200);
+        _dSettings.FieldSize = new Vector2(fieldSizeX, fieldSizeY);
+
+        var fieldTolX = SettingSlider(15, 440, "Field Tolerance (X)", (int)_dSettings.FieldTolerance.x, 0, 200);
+        var fieldTolY = SettingSlider(15, 480, "Field Tolerance (Y)", (int)_dSettings.FieldTolerance.y, 0, 200);
+        _dSettings.FieldTolerance = new Vector2(fieldTolX, fieldTolY);
+
+        GUI.EndGroup();
     }
 
     private void OnApplicationQuit()
