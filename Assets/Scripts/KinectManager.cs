@@ -128,9 +128,9 @@ public class KinectManager
 				
 				int colorIndex = ((ColorWidth * colorY) + colorX) * 4;
 				
-				ColorImage[y, x, 2] = _colorData[colorIndex+0];
+				ColorImage[y, x, 0] = _colorData[colorIndex+0];
 				ColorImage[y, x, 1] = _colorData[colorIndex+1];
-				ColorImage[y, x, 0] = _colorData[colorIndex+2];
+				ColorImage[y, x, 2] = _colorData[colorIndex+2];
 			}
 		}
 	}

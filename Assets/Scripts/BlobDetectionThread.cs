@@ -3,8 +3,6 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using System.Drawing;
-using System.Linq;
-using UnityEngine;
 
 public class BlobDetectionThread
 {
@@ -62,12 +60,14 @@ public class BlobDetectionThread
 
     private byte[] PrepareRenderImage(Image<Gray, byte> img)
     {
-        return img.Convert<Rgba, byte>().Data.Cast<byte>().ToArray();
+        return PrepareRenderImage(img.Convert<Rgb, byte>());
     }
 
-    private byte[] PrepareRenderImage(Image<Bgr, byte> img)
+    private unsafe byte[] PrepareRenderImage(Image<Rgb, byte> img)
     {
-        return img.Convert<Rgba, byte>().Data.Cast<byte>().ToArray();
+        var linData = new byte[img.Data.Length];
+        Buffer.BlockCopy(img.Data, 0, linData, 0, img.Data.Length);
+        return linData;
     }
 
     public unsafe void ProcessImg()
@@ -93,13 +93,13 @@ public class BlobDetectionThread
                 filteredImg = filteredImg.ThresholdToZeroInv(new Gray(_detectionSettings.MaxDepth));
                 filteredImg = filteredImg.Sub(new Gray(_detectionSettings.MinDepth));
                 filteredImg = filteredImg.ThresholdToZero(new Gray(0));
-    
+
                 var filteredImgNorm = new Image<Gray, short>(dWidth, dHeight);
 
                 CvInvoke.cvNormalize(depthImg, depthImgNorm, 0, short.MaxValue, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
                 CvInvoke.cvNormalize(filteredImg, filteredImgNorm, 0, short.MaxValue, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
 
-                var imgOrg = depthImgNorm.Convert<Bgr, byte>();
+                var imgOrg = depthImgNorm.Convert<Rgb, byte>();
                 var imgGray = filteredImgNorm.Convert<Gray, byte>();
 
                 var renderImage = new byte[0];
@@ -116,7 +116,7 @@ public class BlobDetectionThread
                 var element = new StructuringElementEx(5, 5, 2, 2, CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
                 CvInvoke.cvErode(imgSm, imgSm, element, 2);
                 CvInvoke.cvDilate(imgSm, imgSm, element, 2);
-
+                
                 if (_detectionSettings.RenderImgType == 3)
                     renderImage = PrepareRenderImage(imgSm);
 
@@ -165,14 +165,14 @@ public class BlobDetectionThread
                                     (int) (fieldSize.x - 2*fieldTol.x),
                                     (int) (fieldSize.y - 2*fieldTol.y));
 
-                                imgOrg.Draw(grRect, new Bgr(200, 0, 0), 2);
+                                imgOrg.Draw(grRect, new Rgb(0, 0, 200), 2);
 
                                 if (bdRect.IntersectsWith(grRect))
                                     objGrid[x, y] = true;
                             }
                         }
 
-                        imgOrg.Draw(currentContour.BoundingRectangle, new Bgr(255, 255, 0), 2);
+                        imgOrg.Draw(currentContour.BoundingRectangle, new Rgb(0, 255, 255), 2);
                     }
                 }
 
@@ -185,7 +185,7 @@ public class BlobDetectionThread
                     renderImage = PrepareRenderImage(imgOrg);
 
                 // draw grid
-                var blendImg = new Image<Bgr, byte>(imgOrg.Width, imgOrg.Height);
+                var blendImg = new Image<Rgb, byte>(imgOrg.Width, imgOrg.Height);
 
                 for (int x = 0; x < cols; x++)
                 {
@@ -197,8 +197,8 @@ public class BlobDetectionThread
                             (int) fieldSize.x,
                             (int) fieldSize.y);
 
-                        blendImg.Draw(grRect, new Bgr(0, 255, 0), objGrid[x, y] ? -1 : 2);
-                        imgOrg.Draw(grRect, new Bgr(200, 0, 0), 2);
+                        blendImg.Draw(grRect, new Rgb(0, 255, 0), objGrid[x, y] ? -1 : 2);
+                        imgOrg.Draw(grRect, new Rgb(0, 0, 200), 2);
                     }
                 }
 
@@ -209,7 +209,7 @@ public class BlobDetectionThread
 
                 if (_detectionSettings.RenderImgType == 7)
                 {
-                    var colorImg = new Image<Bgr, byte>(_depthManager.ColorImage);
+                    var colorImg = new Image<Rgb, byte>(_depthManager.ColorImage);
                     imgOrg = imgOrg.AddWeighted(colorImg, 0.5f, 0.5f, 0);
                     renderImage = PrepareRenderImage(imgOrg);
                 }
