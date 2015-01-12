@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Threading;
 
 public delegate void RenderDataCallback(byte[] data);
@@ -52,14 +53,12 @@ public class BlobDetection : MonoBehaviour
     private Thread _workerThread;
 
     // fps calculations
-    private const float MainFPSUpdateRate = 4.0f;
-    private const float ThreadFPSUpdateRate = 1.0f;
+    private const float FPSUpdateRate = 4.0f;
+    private float _deltaTime;
 
-    private float _mainDeltaTime;
     private int _mainFrameCount;
     private float _mainFPS;
 
-    private float _threadDeltaTime;
     private int _threadFrameCount;
     private float _threadFPS;
 
@@ -97,16 +96,16 @@ public class BlobDetection : MonoBehaviour
         var imgWidth = _kinectManager.DepthWidth;
         var imgHeight = _kinectManager.DepthHeight;
 
-        _lastRenderImage = new Texture2D(imgWidth, imgHeight, TextureFormat.RGBA32,false);
+        _lastRenderImage = new Texture2D(imgWidth, imgHeight, TextureFormat.RGB24,false);
         _lastRenderData = new byte[4 * imgWidth * imgHeight];
         _renderDataUpdate = false;
 
         // fps caluclations
-        _mainDeltaTime = 0.0f;
+        _deltaTime = 0.0f;
+
         _mainFrameCount = 0;
         _mainFPS = 0.0f;
 
-        _threadDeltaTime = 0.0f;
         _threadFrameCount = 0;
         _threadFPS = 0.0f;
     }
@@ -124,26 +123,19 @@ public class BlobDetection : MonoBehaviour
         }
 
         // fps calculations
-        _mainDeltaTime += Time.deltaTime;
+        _deltaTime += Time.deltaTime;
 
-        if (_mainDeltaTime > 1.0f/MainFPSUpdateRate)
+        if (_deltaTime > 1.0f/FPSUpdateRate)
         {
             var mainDiff = Time.frameCount - _mainFrameCount;
-            _mainFPS = mainDiff / _mainDeltaTime;
+            _mainFPS = mainDiff / _deltaTime;
             _mainFrameCount = Time.frameCount;
 
-            _mainDeltaTime -= 1.0f/MainFPSUpdateRate;
-        }
-
-        _threadDeltaTime += Time.deltaTime;
-
-        if (_threadDeltaTime > 1.0f / ThreadFPSUpdateRate)
-        {
             var threadDiff = _workerObject.GetRunCount() - _threadFrameCount;
-            _threadFPS = threadDiff / _threadDeltaTime;
+            _threadFPS = threadDiff / _deltaTime;
             _threadFrameCount = _workerObject.GetRunCount();
 
-            _threadDeltaTime -= 1.0f / ThreadFPSUpdateRate;
+            _deltaTime -= 1.0f/FPSUpdateRate;
         }
     }
 
@@ -159,7 +151,8 @@ public class BlobDetection : MonoBehaviour
         var imgWidth = imgHeight*(_kinectManager.DepthWidth/_kinectManager.DepthHeight);
 
         GUI.DrawTexture(new Rect(0, imgHeight, imgWidth, -imgHeight), _lastRenderImage);
-        GUI.Label(new Rect(5, _lastRenderImage.height - 20, 100, 20), "Schritt " + DebugImg);
+        GUI.Label(new Rect(5, imgHeight - 40, 200, 20), "RenderImageType " + DebugImg);
+        GUI.Label(new Rect(5, imgHeight - 20, 200, 20), "20.01.2014 / " + DateTime.Now.ToString("HH:mm:ss"));
 
         GUI.Label(new Rect(5, 0, 250, 20), "Performance: " + _mainFPS.ToString("F1") +
             " fps / " + _threadFPS.ToString("F1") + " fps");
