@@ -42,7 +42,6 @@ public class TileController : MonoBehaviour
 	{
         GetInputs();
 	   
-
         if (_matrixReady)
         {
             for (int i = 0; i < Config.Cols; i++)
@@ -53,7 +52,7 @@ public class TileController : MonoBehaviour
                     TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
                     if (i == _activeCol)
                     {
-                        if (tile.Active)
+                        if (tile.Active || tileScript.ForceActive)
                         {
                             tileScript.Highlight = Highlighttype.Hit;
                             if (_activeCol != _previousActiveCol)
@@ -71,7 +70,7 @@ public class TileController : MonoBehaviour
                     }
                     else
                     {
-                        if (tile.Active)
+                        if (tile.Active || tileScript.ForceActive)
                         {
                             tileScript.Highlight = Highlighttype.Occupied;
                         }
@@ -84,11 +83,6 @@ public class TileController : MonoBehaviour
             }
             _previousActiveCol = _activeCol;
         }
-
-	    
-
-        
-	   
 	}
 
     void FixedUpdate()
@@ -111,8 +105,8 @@ public class TileController : MonoBehaviour
     {
         float xInc = (Config.TileWidth + Config.TileSpaceing);
         float yInc = (Config.TileHeight + Config.TileSpaceing);
-        float xStart = -((Config.Cols/2*xInc) - xInc/2);
-        float yStart = -((Config.Rows/2*yInc) - yInc/2);
+        float xStart = -((Config.Cols/2.0f*xInc) - xInc/2);
+        float yStart = -((Config.Rows/2.0f*yInc) - yInc/2);
 
         for (int i = 0; i < Config.Cols; i++)
         {
