@@ -30,10 +30,11 @@ public struct Song
 {
     public string Titel;
     public float Bpm;
-    public bool DoubleTiles;
     public List<int> Tileset;
     public string SoundFilePath;
     public List<string> TileSoundFilePaths;
+    public List<string> TileFailSoundFilePaths;
+    public int[] LightColor;
 }
 
 struct ConfigSet
