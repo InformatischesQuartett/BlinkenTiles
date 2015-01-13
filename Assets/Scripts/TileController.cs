@@ -33,7 +33,7 @@ public class TileController : MonoBehaviour
 
 	    _activeCol = 0;
 
-        LoadSong();
+        LoadSong(Songtype.Freestyle, 0);
         BuildTiles();
     }
 	
