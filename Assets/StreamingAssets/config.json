@@ -7,7 +7,7 @@
 "TileHeight":9,
 "TileSpaceing":1,
 "BPM":120,
-"LightColor": [20,0,20],
+"LightColor": [20,0,20,0],
 "MinThreshold":25,
 "MaxThreshold":255,
 "MinDepth":2500,

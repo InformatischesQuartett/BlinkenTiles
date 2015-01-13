@@ -59,10 +59,10 @@ public static class Config
         TileSpaceing = conf.TileSpaceing;
 
         LightColor =  new byte[4];
-        for(int i = 0; i < conf.LightColor.Length; i++)
-        {
-            LightColor[i] = (byte) conf.LightColor[i];
-        }
+        LightColor[0] = (byte) conf.LightColor[0];
+        LightColor[1] = (byte) conf.LightColor[1];
+        LightColor[2] = (byte) conf.LightColor[2];
+        LightColor[3] = (byte) conf.LightColor[3];
         
         BPM = conf.BPM;
 

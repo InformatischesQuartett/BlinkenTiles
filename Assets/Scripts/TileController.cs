@@ -232,6 +232,11 @@ public class TileController : MonoBehaviour
 
             Config.BPM = songRepo[num].Bpm;
 
+            Config.LightColor[0] = (byte) songRepo[num].LightColor[0];
+            Config.LightColor[1] = (byte) songRepo[num].LightColor[1];
+            Config.LightColor[2] = (byte) songRepo[num].LightColor[2];
+            Config.LightColor[3] = (byte) songRepo[num].LightColor[3];
+
             _activeCol = 0;
             _timerCol = 0;
         }
