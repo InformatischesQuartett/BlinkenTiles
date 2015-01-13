@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using System.Threading;
-using UnityEditor;
 
 public delegate void RenderDataCallback(byte[] data);
 
@@ -156,7 +155,7 @@ public class BlobDetection : MonoBehaviour
                                            " fps / " + _threadFPS.ToString("F1") + " fps");
 
         GUI.backgroundColor = new Color(1, 1, 1, 0.4f);
-        GUI.skin.box.normal.background = EditorGUIUtility.whiteTexture;
+        //GUI.skin.box.normal.background = EditorGUIUtility.whiteTexture;
 
         GUI.BeginGroup(new Rect(imgWidth + 100, 20, 265, 500));
         GUI.Box(new Rect(0, 0, 265, 500), "Blob Detection Settings");

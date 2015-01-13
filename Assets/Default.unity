@@ -172,11 +172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a09b9a4457e17943a7551345519a598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MinThr: 25
-  MaxThr: 255
-  MinDepth: 2500
-  MaxDepth: 4784
-  DebugImg: 5
   GridLoc: {x: 124.400002, y: 108.57}
   FieldSize: {x: 35.0999985, y: 28.5}
   FieldTolerance: {x: 0, y: 0}
