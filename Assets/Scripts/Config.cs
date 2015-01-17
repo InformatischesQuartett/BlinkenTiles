@@ -29,6 +29,7 @@ public static class Config
     public static Color ColorHit { get; private set; }
     public static Color ColorPreview { get; private set; }
     public static Color ColorOccupied { get; private set; }
+    public static Color ColorFail { get; private set; }
 
   //  public static int FreestyleAmmount { }
 
@@ -71,7 +72,7 @@ public static class Config
         LightColor[1] = (byte) conf.LightColor[1];
         LightColor[2] = (byte) conf.LightColor[2];
         LightColor[3] = (byte) conf.LightColor[3];
-        
+
         BPM = conf.BPM;
 
         // blob detection
@@ -90,12 +91,12 @@ public static class Config
         // prepare game
         CurrentGamemode = Gamemode.Freestyle;
 
-        ColorDefault = new Color(1,1,1);
-        ColorHit = new Color(0,1,0);
-        ColorTime = new Color(1,1,0);
-        ColorOccupied = new Color(0,0,1);
-        ColorPreview = new Color(1, 0.5f, 0.5f);
-
+        ColorDefault = new Color(conf.ColorDefault[0], conf.ColorDefault[1], conf.ColorDefault[2]);
+        ColorHit = new Color(conf.ColorHit[0], conf.ColorHit[1], conf.ColorHit[2]);
+        ColorTime = new Color(conf.ColorTime[0], conf.ColorTime[1], conf.ColorTime[2]);
+        ColorOccupied = new Color(conf.ColorOccupied[0], conf.ColorOccupied[1], conf.ColorOccupied[2]);
+        ColorPreview = new Color(conf.ColorPreview[0], conf.ColorPreview[1], conf.ColorPreview[2]);
+        ColorFail = new Color(conf.ColorFail[0], conf.ColorFail[1], conf.ColorFail[2]);
  
         FreestyleSongs = new List<Song>();
         ChallengeSongs = new List<Song>();
