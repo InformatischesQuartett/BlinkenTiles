@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Policy;
 using UnityEngine;
 
 public static class BlinkHelper {
@@ -13,11 +12,13 @@ public static class BlinkHelper {
 }
 struct TileCol
 {
+    public List<int> ChallengeIndex;
     public List<Tile> Tiles;
 }
 
 struct Tile
 {
+    public TileCol parentCol;
 	public bool Active;
     public GameObject TileGo;
     public int soundIndex;
