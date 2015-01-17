@@ -7,8 +7,17 @@ public class TileBehaviour : MonoBehaviour
     private float _tileHeight;
     private Rect _positionRect;
 
+<<<<<<< HEAD
+    private Material _materialTime;
+    private Material _materialDefault;
+    private Material _materialOccupied;
+    private Material _materialPreview;
+    private Material _materialHit;
+
 	public Texture2D _footprint;
 
+=======
+>>>>>>> origin/master
     private Highlighttype _isHighlight;
 
     public bool ForceActive { get; set; }
