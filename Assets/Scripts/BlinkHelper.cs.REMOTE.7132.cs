@@ -60,7 +60,6 @@ struct ConfigSet
     public float FieldSizeY;
     public float FieldToleranceX;
     public float FieldToleranceY;
-    public float IdleDelay;
     public float[] ColorDefault;
     public float[] ColorHit;
     public float[] ColorTime;

@@ -24,8 +24,7 @@ public class TileController : MonoBehaviour
 
     private LightController _lightController;
 
-    public Texture2D[] Numbers = new Texture2D[8];
-    private int num;
+    private Texture2D[] Numbers = new Texture2D[9];
 
     private delegate void GUIFunction();
 
@@ -36,6 +35,7 @@ public class TileController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+	    LoadCoundtownTextures();
 	    _currenGuiFunction = EmptyGUI;
 	    _lightController = this.GetComponent<LightController>();
         _tileParent = GameObject.Find("Tiles");
@@ -138,6 +138,17 @@ public class TileController : MonoBehaviour
             _lightController.UpdateFaderValues(_activeCol, _timerCol);
 
         
+    }
+
+    private void LoadCoundtownTextures()
+    {
+        for (int j = 0,  i = 8; i >= 0; j++,i--)
+        {
+            //int n = i + 1;
+            //string tex = "Textures/Countdown_" + n;
+            Numbers[j] = Resources.Load<Texture2D>("Textures/Countdown_" + (i));
+        }
+        Numbers[8] = Resources.Load<Texture2D>("Textures/Countdown_GO");
     }
 
     private void OnGUI()

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Policy;
 using UnityEngine;
 
 public static class BlinkHelper {
@@ -60,13 +59,6 @@ struct ConfigSet
     public float FieldSizeY;
     public float FieldToleranceX;
     public float FieldToleranceY;
-    public float IdleDelay;
-    public float[] ColorDefault;
-    public float[] ColorHit;
-    public float[] ColorTime;
-    public float[] ColorOccupied;
-    public float[] ColorPreview;
-    public float[] ColorFail;
 }
 
 public enum Highlighttype
@@ -75,8 +67,7 @@ public enum Highlighttype
     Occupied,
     Preview,
     Time,
-    Hit,
-    Fail
+    Hit
 }
 
 public enum Gamemode

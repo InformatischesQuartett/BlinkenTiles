@@ -60,13 +60,16 @@ struct ConfigSet
     public float FieldSizeY;
     public float FieldToleranceX;
     public float FieldToleranceY;
-    public float IdleDelay;
+<<<<<<< HEAD
+	public float IdleDelay;
+=======
     public float[] ColorDefault;
     public float[] ColorHit;
     public float[] ColorTime;
     public float[] ColorOccupied;
     public float[] ColorPreview;
     public float[] ColorFail;
+>>>>>>> origin/master
 }
 
 public enum Highlighttype
