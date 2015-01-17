@@ -19,4 +19,5 @@
 "FieldSizeY":60,
 "FieldToleranceX":20,
 "FieldToleranceY":20,
+"IdleDelay":5,
 }

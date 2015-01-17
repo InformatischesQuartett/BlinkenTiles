@@ -59,6 +59,7 @@ struct ConfigSet
     public float FieldSizeY;
     public float FieldToleranceX;
     public float FieldToleranceY;
+	public float IdleDelay;
 }
 
 public enum Highlighttype

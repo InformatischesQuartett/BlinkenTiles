@@ -47,7 +47,8 @@ public static class Config
     public static Vector2 FieldSize { get; set; }
     public static Vector2 FieldTolerance { get; set; }
 
-	public static bool MatrixEmpty { get; set; }
+	public static bool IdleMode { get; set; }
+	public static float IdleDelay { get; set; }
 
 
     static Config()
@@ -65,6 +66,8 @@ public static class Config
         TileWidth = conf.TileWidth;
         TileHeight = conf.TileHeight;
         TileSpaceing = conf.TileSpaceing;
+
+		IdleDelay = conf.IdleDelay;
 
         LightColor =  new byte[4];
         LightColor[0] = (byte) conf.LightColor[0];

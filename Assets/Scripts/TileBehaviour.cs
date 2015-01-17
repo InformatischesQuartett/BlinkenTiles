@@ -13,9 +13,12 @@ public class TileBehaviour : MonoBehaviour
     private Material _materialPreview;
     private Material _materialHit;
 
+	public Texture2D _footprint;
+
     private Highlighttype _isHighlight;
 
     public bool ForceActive { get; set; }
+
 
     //Shake stuff
     private Vector3 _originPosition;
@@ -95,6 +98,16 @@ public class TileBehaviour : MonoBehaviour
             transform.position = _originPosition;
             transform.rotation = _originRotation;
         }
+
+		//print Footprints after a certain amount of time
+		//if force-active == true und idleMode==true --> 
+		if (Config.IdleMode) {
+			Debug.Log ("I am in IdleMode");
+			renderer.material.SetTexture("_footprints_human", _footprint);
+		}
+		//after frametimer 
+		//setTexture to footprints
+
     }
 
     public void Shake()

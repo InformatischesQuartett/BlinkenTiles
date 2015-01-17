@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Footprints : MonoBehaviour {
+public class FootprintController : MonoBehaviour {
 
 	public Texture2D footprintImg;
 
