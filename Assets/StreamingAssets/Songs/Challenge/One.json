@@ -5,5 +5,6 @@
 "Tileset":[7,0,0],
 "SoundFilePath":"/Songs/Challenge/One/Beat.ogg",
 "TileSoundFilePaths":["/Songs/Challenge/One/One01.wav","/Songs/Challenge/One/One02.wav","/Songs/Challenge/One/One03.wav","/Songs/Challenge/One/One04.wav","/Songs/Challenge/One/One05.wav"],
+"TileFailSoundFilePaths":["/Songs/Challenge/One/One01.wav","/Songs/Challenge/One/One01.wav"],
 "LightColor":[255,0,255,0]
 }

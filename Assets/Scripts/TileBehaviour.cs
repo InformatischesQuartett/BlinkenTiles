@@ -15,6 +15,8 @@ public class TileBehaviour : MonoBehaviour
 
     public bool ForceActive { get; set; }
 
+	public Texture2D Testtexture;
+
 
     //Shake stuff
     private Vector3 _originPosition;
@@ -60,6 +62,7 @@ public class TileBehaviour : MonoBehaviour
     {
         //_soundEmitter = findSoundEmitter(transform.position.y);
 
+
         _tileWidth = transform.localScale.x*10;
         _tileHeight = transform.localScale.y*10;
         _positionRect.x = transform.position.x - _tileWidth/2;
@@ -67,13 +70,17 @@ public class TileBehaviour : MonoBehaviour
         _positionRect.width = _tileWidth;
         _positionRect.height = _tileHeight;
 
+		_footprintHuman = (Texture2D) Resources.Load ("Textures/Footprints_human", typeof(Texture2D));
+		_footprintDino = (Texture2D) Resources.Load ("Textures/Footprints_dino", typeof(Texture2D));
+		_footprintDog = (Texture2D) Resources.Load ("Textures/Footprints_dog", typeof(Texture2D));
+
         var mat = new Material(Shader.Find(Config.ShaderType));
 
         renderer.material = mat;
         renderer.material.SetColor("_Color", Config.ColorDefault);
         Highlight = Highlighttype.None;
 
-        _originPosition = transform.position;
+	    _originPosition = transform.position;
         _originRotation = transform.rotation;
 
         ForceActive = false;
@@ -110,16 +117,22 @@ public class TileBehaviour : MonoBehaviour
 	 * Sets random Footprint texture.
 	 **/
 	public void handleFootprintTexture () {
-		var randNumber = Random.Range (1, 3);
+		var randNumber = Random.Range (1, 4);
+
 		switch (randNumber) {
 			case 1:
+				renderer.material.SetTexture ("_MainTex", _footprintHuman);
 				break;
 			case 2:
+				renderer.material.SetTexture ("_MainTex", _footprintDino);
 				break;
 			case 3:
+				renderer.material.SetTexture ("_MainTex", _footprintDog);
 				break;
 		}
-		//renderer.material.SetTexture ("_footprint", _footprintHuman);
+
+
+		ForceActive = true;
 	}
 
     private void OnMouseDown()
