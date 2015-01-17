@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class TileController : MonoBehaviour
@@ -22,9 +23,17 @@ public class TileController : MonoBehaviour
 
     private LightController _lightController;
 
+    public Texture2D[] Numbers = new Texture2D[8];
+    private int num;
+
+    private delegate void GUIFunction();
+
+    private GUIFunction _currenGuiFunction; 
+
 	// Use this for initialization
 	void Start ()
 	{
+	    _currenGuiFunction = EmptyGUI;
 	    _lightController = this.GetComponent<LightController>();
         _tileParent = GameObject.Find("Tiles");
         _tempParent = GameObject.Find("Temp");
@@ -34,7 +43,7 @@ public class TileController : MonoBehaviour
 
 	    _activeCol = 0;
 
-        LoadSong(Songtype.Challenge, 0);
+        LoadSong(Songtype.Freestyle, 0);
         BuildTiles();
     }
 	
@@ -88,6 +97,7 @@ public class TileController : MonoBehaviour
                 }
             }
             _previousActiveCol = _activeCol;
+            
         }
 	}
 
@@ -100,6 +110,11 @@ public class TileController : MonoBehaviour
             _beatCounter++;
             if (_activeCol >= Config.Cols)
                 _activeCol = 0;
+
+            if (_beatCounter > 8)
+            {
+                _currenGuiFunction = EmptyGUI;
+            }
         }
         else
         {
@@ -108,6 +123,22 @@ public class TileController : MonoBehaviour
 
         if (_activeCol >= 0)
             _lightController.UpdateFaderValues(_activeCol, _timerCol);
+
+        
+    }
+
+    private void OnGUI()
+    {
+        _currenGuiFunction();
+    }
+
+    private void EmptyGUI()
+    {
+    }
+
+    private void CountdownGUI()
+    {
+         GUI.Box(new Rect(Screen.width/2, 0, Screen.width/2, Screen.height), Numbers[_beatCounter]);
     }
 
     public void BuildTiles()
@@ -180,6 +211,7 @@ public class TileController : MonoBehaviour
 
     public void LoadSong(Songtype songType=Songtype.Challenge, int num=1)
     {
+        num = 0;
         List<Song> songRepo = new List<Song>();
 
         if (songType == Songtype.Freestyle)
@@ -190,6 +222,7 @@ public class TileController : MonoBehaviour
         }
         else if (songType == Songtype.Challenge)
         {
+            _currenGuiFunction = CountdownGUI;
             songRepo = Config.ChallengeSongs;
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Challenge;
