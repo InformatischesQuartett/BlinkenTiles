@@ -1,7 +1,13 @@
-﻿using UnityEditor;
+﻿using System;
+using System.IO;
+using System.Net.Mime;
+using System.Xml;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
+using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
-using Random = UnityEngine.Random;
 
 public class TileController : MonoBehaviour
 {
@@ -24,15 +30,18 @@ public class TileController : MonoBehaviour
 
     private LightController _lightController;
 
-    private Texture2D[] Numbers = new Texture2D[9];
+    private Texture2D[] _numbers = new Texture2D[9];
 
     private delegate void GUIFunction();
+    private GUIFunction _currenGuiFunction;
 
-    private GUIFunction _currenGuiFunction; 
-
+    private string _networkPath;
+    private XmlSerializer _writer;
 	// Use this for initialization
 	void Start ()
 	{
+        _networkPath = Application.streamingAssetsPath + @"\Network";
+        
 	    LoadCoundtownTextures();
 	    _currenGuiFunction = EmptyGUI;
 	    _lightController = this.GetComponent<LightController>();
@@ -132,11 +141,9 @@ public class TileController : MonoBehaviour
     {
         for (int j = 0,  i = 8; i >= 0; j++,i--)
         {
-            //int n = i + 1;
-            //string tex = "Textures/Countdown_" + n;
-            Numbers[j] = Resources.Load<Texture2D>("Textures/Countdown_" + (i));
+            _numbers[j] = Resources.Load<Texture2D>("Textures/Countdown_" + (i));
         }
-        Numbers[8] = Resources.Load<Texture2D>("Textures/Countdown_GO");
+        _numbers[8] = Resources.Load<Texture2D>("Textures/Countdown_GO");
     }
 
     private void OnGUI()
@@ -150,7 +157,7 @@ public class TileController : MonoBehaviour
 
     private void CountdownGUI()
     {
-         GUI.Box(new Rect(Screen.width/2, 0, Screen.width/2, Screen.height), Numbers[_beatCounter]);
+         GUI.Box(new Rect(Screen.width/2, 0, Screen.width/2, Screen.height), _numbers[_beatCounter]);
     }
 
     public void BuildTiles()
@@ -227,20 +234,36 @@ public class TileController : MonoBehaviour
             
     }
 
+    
 
+    
     public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
     {
-        num = 0;
+
+        _writer = new XmlSerializer(typeof(NetworkSet));
+        NetworkSet networkSet = new NetworkSet();
+
         List<Song> songRepo = new List<Song>();
 
         if (songType == Songtype.Freestyle)
         {
+            networkSet.ChallengeMode = false;
+            using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
+            {
+                _writer.Serialize(file, networkSet);
+            }
             songRepo = Config.FreestyleSongs;
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Freestyle;
         }
         else if (songType == Songtype.Challenge)
         {
+            networkSet.ChallengeMode = false;
+            using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
+            {
+                _writer.Serialize(file, networkSet);
+            }
+
             _currenGuiFunction = CountdownGUI;
             songRepo = Config.ChallengeSongs;
             if (num < songRepo.Count)
