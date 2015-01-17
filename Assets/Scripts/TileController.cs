@@ -10,6 +10,7 @@ public class TileController : MonoBehaviour
     private float _timerCol;
     private int _activeCol;
     private int _previousActiveCol;
+    private int _beatCounter;
 
     public float TimerField { get; private set; }
     public float FieldWidth { get; private set; }
@@ -33,7 +34,7 @@ public class TileController : MonoBehaviour
 
 	    _activeCol = 0;
 
-        LoadSong(Songtype.Freestyle, 0);
+        LoadSong(Songtype.Challenge, 0);
         BuildTiles();
     }
 	
@@ -79,6 +80,11 @@ public class TileController : MonoBehaviour
                             tileScript.Highlight = Highlighttype.None;
                         }
                     }
+
+                    if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == 9 && _activeCol != _previousActiveCol)
+                    {
+                        GameObject.FindGameObjectWithTag("Song").audio.Play();
+                    }
                 }
             }
             _previousActiveCol = _activeCol;
@@ -91,6 +97,7 @@ public class TileController : MonoBehaviour
         {
             _timerCol = (_timerCol - (60 / Config.BPM)) + Time.fixedDeltaTime;
             _activeCol++;
+            _beatCounter++;
             if (_activeCol >= Config.Cols)
                 _activeCol = 0;
         }
@@ -98,7 +105,9 @@ public class TileController : MonoBehaviour
         {
             _timerCol += Time.fixedDeltaTime;
         }
-        _lightController.UpdateFaderValues(_activeCol, _timerCol);
+
+        if (_activeCol >= 0)
+            _lightController.UpdateFaderValues(_activeCol, _timerCol);
     }
 
     public void BuildTiles()
@@ -144,8 +153,9 @@ public class TileController : MonoBehaviour
             xStart += xInc;
         }
 
-        _activeCol = 0;
+        _activeCol = -1;
         _timerCol = 0;
+        _beatCounter = 0;
         _matrixReady = true;
         //FieldWidth = Config.Cols*(Config.TileWidth + Config.TileSpaceing);
     }
@@ -198,6 +208,7 @@ public class TileController : MonoBehaviour
 
             var go = new GameObject();
             go.name = songRepo[num].Titel;
+            go.tag = "Song";
             go.transform.parent = _tempParent.transform;
             go.AddComponent<AudioSource>();
             go.AddComponent<AudioClipLoader>().url = songRepo[num].SoundFilePath;
@@ -222,7 +233,10 @@ public class TileController : MonoBehaviour
                 _tempGameObjects.Add(tilesounds);
             }
 
-            go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
+            if (songType == Songtype.Freestyle)
+            {
+                go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
+            }
 
             Config.BPM = songRepo[num].Bpm;
 
@@ -231,8 +245,9 @@ public class TileController : MonoBehaviour
             Config.LightColor[2] = (byte) songRepo[num].LightColor[2];
             Config.LightColor[3] = (byte) songRepo[num].LightColor[3];
 
-            _activeCol = 0;
+            _activeCol = -1;
             _timerCol = 0;
+            _beatCounter = 0;
         }
     }
 
