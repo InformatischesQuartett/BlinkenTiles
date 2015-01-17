@@ -43,6 +43,8 @@ public static class Config
     public static Vector2 FieldSize { get; set; }
     public static Vector2 FieldTolerance { get; set; }
 
+	public static bool MatrixEmpty { get; set; }
+
 
     static Config()
     {
