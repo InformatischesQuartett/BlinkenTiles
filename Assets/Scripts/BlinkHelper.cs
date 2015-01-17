@@ -12,15 +12,13 @@ public static class BlinkHelper {
 }
 struct TileCol
 {
-    public float XMin;
-    public float XMax;
-
+    public List<int> ChallengeIndex;
     public List<Tile> Tiles;
 }
 
 struct Tile
 {
-    public Rect Bounds;
+    public TileCol parentCol;
 	public bool Active;
     public GameObject TileGo;
     public int soundIndex;
@@ -59,12 +57,18 @@ struct ConfigSet
     public float FieldSizeY;
     public float FieldToleranceX;
     public float FieldToleranceY; 
-
+    public float IdleDelay;
+    public float[] ColorDefault;
+    public float[] ColorHit;
+    public float[] ColorTime;
+    public float[] ColorOccupied;
+    public float[] ColorPreview;
+    public float[] ColorFail;
 }
 
 public struct NetworkSet
 {
-    public bool ChallengeMode;
+    public bool ChallengeMode
 }
 
 public enum Highlighttype
@@ -73,7 +77,8 @@ public enum Highlighttype
     Occupied,
     Preview,
     Time,
-    Hit
+    Hit,
+    Fail
 }
 
 public enum Gamemode

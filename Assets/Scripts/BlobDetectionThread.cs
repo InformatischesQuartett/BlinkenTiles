@@ -177,15 +177,11 @@ public class BlobDetectionThread
                     }
 
                     // set tile status
-					//check if tilematrix is empty (= no dudes on the field)
-					var isOccupied = false;
 	                for (int x = 0; x < cols; x++)
 	                	for (int y = 0; y < rows; y++) {
-	                    	_tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]);
-							isOccupied |= objGrid[x, y]; 
+	                    	_tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]); 
 						}
-					Config.MatrixEmpty = !isOccupied;
-                    if (_detectionSettings.RenderImgType == 4)
+					if (_detectionSettings.RenderImgType == 4)
                         renderImage = PrepareRenderImage(imgOrg);
 
                     // draw grid
