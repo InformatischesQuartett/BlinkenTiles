@@ -36,7 +36,10 @@ public class TileController : MonoBehaviour
     private delegate void GUIFunction();
     private GUIFunction _currenGuiFunction;
 
+	/*Timer start idle time and set up footprints after this certain time*/
 	private float _idleTimer = 0.0f;
+	/*Timer to reset idlemode footprints after this certain time*/
+	private float _idleResetTimer = 0.0f;
 	/*Determines how many footprints are allowed on the field*/
 	private int _footprintCount = 4;
 
@@ -118,18 +121,39 @@ public class TileController : MonoBehaviour
             
         }
 
-		/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
-		Config.IdleMode = _idleTimer > Config.IdleDelay;
+
 		
 		/**
-		 * If IdleMode is active, set footprintCount tiles footprint textures and set them forceActive
+		 * Check if IdleMode = true.
+		 * If IdleMode is active, set footprintCount tiles footprint textures and set them forceActive.
 		 **/
-		if (Config.IdleMode && _footprintCount > 0) {
-			SetIdleBehaviour ();
-		}
 		if (!Config.IdleMode) {
-			ResetIdleBehaviour ();
+			/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
+			Config.IdleMode = _idleTimer > Config.IdleDelay;
+
+			/*Set Idle Behaviour if IdleMode is activated --> creates footprints*/
+			if (Config.IdleMode) {
+				SetIdleBehaviour ();
+				//reset idleResetTimer
+				_idleResetTimer = 0.0f;
+			}
 		}
+
+		if (Config.IdleMode) {
+			/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
+			Config.IdleMode = _idleTimer > Config.IdleDelay;
+			if (!Config.IdleMode) {
+				RemoveIdleBehaviour ();
+			} else if (_idleResetTimer > Config.IdleResetDelay) {
+				/*Resetting footprint positions after a certain amount of time*/
+				RemoveIdleBehaviour ();
+				SetIdleBehaviour();
+				_idleResetTimer = 0.0f;
+			}
+
+		}
+
+
 
 	}
 
@@ -137,6 +161,8 @@ public class TileController : MonoBehaviour
     {
 		//IdleTimer
 		_idleTimer+= Time.fixedDeltaTime;
+		
+		_idleResetTimer+= Time.fixedDeltaTime;
 
         if (_timerCol > 60 / Config.BPM)
         {
@@ -386,33 +412,28 @@ public class TileController : MonoBehaviour
 	 * Changes Texture and forceActive when in IdleMode
 	 **/ 
 	private void SetIdleBehaviour () {
-		Debug.Log ("I am setting a footprint tex");
-		var randRow = Random.Range (0,Config.Rows);
-		var randColumn = Random.Range(0, Config.Cols);
+		for (int i = 0; i < _footprintCount; i++) {
+			Debug.Log ("I am setting a footprint tex");
+			var randRow = Random.Range (0, Config.Rows);
+			var randColumn = Random.Range (0, Config.Cols);
 
-		//_matrix [2].Tiles [3].TileGo.GetComponent<TileBehaviour> ().handleFootprintTexture ();
-		_matrix [randColumn].Tiles [randRow].TileGo.GetComponent<TileBehaviour> ().handleFootprintTexture ();
-
-		_footprintCount--;
+			_matrix [randColumn].Tiles [randRow].TileGo.GetComponent<TileBehaviour> ().SetFootprint ();
+		}
 	}
 
 	/**
+	 * Searches for tiles with forceActive = true
 	 * Removes Footprint Texture and sets forceActive to false when exiting IdleMode
 	 **/ 
-	private void ResetIdleBehaviour () {
+	private void RemoveIdleBehaviour () {
 		for (int i = 0; i < Config.Cols; i++) {
 			TileCol tileCol = _matrix [i];
 			foreach (Tile tile in tileCol.Tiles) {
 				if (tile.TileGo.GetComponent<TileBehaviour> ().ForceActive) {
-					tile.TileGo.GetComponent<TileBehaviour> ().ForceActive = false;
-					Debug.Log("I am resetting the textures");
+					tile.TileGo.GetComponent<TileBehaviour> ().ResetFootprint ();
 				}
 			}//end foreach
 		} //end for
-		//for each tiles in matrix forceActive
-		//forceActive = false;
-		//remove texture
-		_footprintCount = 4; //todo: make dynamic
 	}
 
     private void GetInputs()
