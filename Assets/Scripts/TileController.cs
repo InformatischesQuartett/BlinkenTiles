@@ -48,8 +48,8 @@ public class TileController : MonoBehaviour
 
 	    _activeCol = 0;
 
-        LoadSong(Songtype.Challenge, 0);
         BuildTiles();
+        LoadSong(Songtype.Challenge, 0);
     }
 	
 	// Update is called once per frame
@@ -148,8 +148,6 @@ public class TileController : MonoBehaviour
 
         if (_activeCol >= 0)
             _lightController.UpdateFaderValues(_activeCol, _timerCol);
-
-        
     }
 
     private void LoadCoundtownTextures()
@@ -190,6 +188,7 @@ public class TileController : MonoBehaviour
 
             TileCol currentTileCol = new TileCol();
             currentTileCol.Tiles = new List<Tile>();
+            currentTileCol.ChallengeIndex = new List<int>();
 
             for (int j = 0; j < Config.Rows; j++)
             {
@@ -207,6 +206,8 @@ public class TileController : MonoBehaviour
                     currentTile.soundIndex = j;
 
 					currentTile.Active = false;
+
+                    currentTile.parentCol = currentTileCol;
 
                     currentTileCol.Tiles.Add(currentTile);
                 }
@@ -328,7 +329,10 @@ public class TileController : MonoBehaviour
                     _tempGameObjects.Add(tileFailSounds);
                 }
 
-                //load array stuff
+                for (int i = 0; i < songRepo[num].Tileset.Count; i++)
+                {
+                    _matrix[i % Config.Cols].ChallengeIndex.Add(songRepo[num].Tileset[i]);
+                }
             }
             Config.BPM = songRepo[num].Bpm;
 

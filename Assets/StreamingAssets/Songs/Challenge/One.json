@@ -2,7 +2,7 @@
 "Titel":"One",
 "BPM":126.0,
 "DoubleTiles":false,
-"Tileset":[7,0,0],
+"Tileset":[1,0,0,4,3,0,0,5,0,0,0,0,3,2,4,1,5,0,0,0,3,0,2,3,1,0,0,2,2,3,1,5,4,2,0],
 "SoundFilePath":"/Songs/Challenge/One/Beat.ogg",
 "TileSoundFilePaths":["/Songs/Challenge/One/One01.wav","/Songs/Challenge/One/One02.wav","/Songs/Challenge/One/One03.wav","/Songs/Challenge/One/One04.wav","/Songs/Challenge/One/One05.wav"],
 "TileFailSoundFilePaths":["/Songs/Challenge/One/One01.wav","/Songs/Challenge/One/One01.wav"],
