@@ -13,15 +13,11 @@ public static class BlinkHelper {
 }
 struct TileCol
 {
-    public float XMin;
-    public float XMax;
-
     public List<Tile> Tiles;
 }
 
 struct Tile
 {
-    public Rect Bounds;
 	public bool Active;
     public GameObject TileGo;
     public int soundIndex;

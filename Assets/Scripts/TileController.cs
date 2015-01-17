@@ -46,7 +46,7 @@ public class TileController : MonoBehaviour
 
 	    _activeCol = 0;
 
-        LoadSong(Songtype.Freestyle, 2);
+        LoadSong(Songtype.Challenge, 0);
         BuildTiles();
     }
 	
@@ -188,8 +188,6 @@ public class TileController : MonoBehaviour
             float yStartTmp = yStart;
 
             TileCol currentTileCol = new TileCol();
-            currentTileCol.XMin = xStart - Config.TileWidth/2;
-            currentTileCol.XMax = xStart + Config.TileWidth/2;
             currentTileCol.Tiles = new List<Tile>();
 
             for (int j = 0; j < Config.Rows; j++)
@@ -206,7 +204,6 @@ public class TileController : MonoBehaviour
                     Tile currentTile = new Tile();
                     currentTile.TileGo = current;
                     currentTile.soundIndex = j;
-                    currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
 
 					currentTile.Active = false;
 
@@ -311,7 +308,27 @@ public class TileController : MonoBehaviour
             {
                 go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
             }
+            else if (songType == Songtype.Challenge)
+            {
+                var goTileFailSounds = new GameObject();
+                goTileFailSounds.name = "TileFailSounds";
+                goTileFailSounds.transform.parent = _tempParent.transform;
+                goTileFailSounds.transform.position = goTileFailSounds.transform.parent.position;
+                _tempGameObjects.Add(goTileFailSounds);
 
+                for (int i = 0; i < songRepo[num].TileFailSoundFilePaths.Count; i++)
+                {
+                    var tileFailSounds = new GameObject();
+                    tileFailSounds.name = i.ToString();
+                    tileFailSounds.transform.parent = goTileFailSounds.transform;
+                    tileFailSounds.AddComponent<AudioSource>();
+                    tileFailSounds.AddComponent<AudioClipLoader>().url = songRepo[num].TileFailSoundFilePaths[i];
+
+                    _tempGameObjects.Add(tileFailSounds);
+                }
+
+                //load array stuff
+            }
             Config.BPM = songRepo[num].Bpm;
 
             Config.LightColor[0] = (byte) songRepo[num].LightColor[0];
