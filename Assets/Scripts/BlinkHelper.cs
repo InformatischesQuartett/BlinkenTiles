@@ -58,7 +58,13 @@ struct ConfigSet
     public float FieldSizeX;
     public float FieldSizeY;
     public float FieldToleranceX;
-    public float FieldToleranceY;
+    public float FieldToleranceY; 
+
+}
+
+public struct NetworkSet
+{
+    public bool ChallengeMode;
 }
 
 public enum Highlighttype
