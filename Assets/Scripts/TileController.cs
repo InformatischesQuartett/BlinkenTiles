@@ -106,8 +106,19 @@ public class TileController : MonoBehaviour
             
         }
 
-		//set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below
+		/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
 		Config.IdleMode = _idleTimer > Config.IdleDelay;
+		
+		/**
+		 * If IdleMode is active, set random textures to footprints and set them forceActive
+		 **/
+
+		if (Config.IdleMode) {
+			Debug.Log ("I am in IdleMode");
+			//renderer.material.SetTexture("_footprints_human", _footprint);
+		}
+		//after frametimer 
+		//setTexture to footprints
 		 
 	}
 
