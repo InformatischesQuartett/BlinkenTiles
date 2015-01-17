@@ -188,8 +188,6 @@ public class TileController : MonoBehaviour
             float yStartTmp = yStart;
 
             TileCol currentTileCol = new TileCol();
-            currentTileCol.XMin = xStart - Config.TileWidth/2;
-            currentTileCol.XMax = xStart + Config.TileWidth/2;
             currentTileCol.Tiles = new List<Tile>();
 
             for (int j = 0; j < Config.Rows; j++)
@@ -206,7 +204,6 @@ public class TileController : MonoBehaviour
                     Tile currentTile = new Tile();
                     currentTile.TileGo = current;
                     currentTile.soundIndex = j;
-                    currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
 
 					currentTile.Active = false;
 
