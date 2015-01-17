@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public class TileController : MonoBehaviour
 {
@@ -174,6 +175,7 @@ public class TileController : MonoBehaviour
                     currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
 
 					currentTile.Active = false;
+
                     currentTileCol.Tiles.Add(currentTile);
                 }
                 yStartTmp += yInc;
@@ -209,7 +211,13 @@ public class TileController : MonoBehaviour
         BuildTiles();
     }
 
-    public void LoadSong(Songtype songType=Songtype.Challenge, int num=1)
+    public void LoadSongRandom(Songtype songtype = Songtype.Freestyle)
+    {
+            
+    }
+
+
+    public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
     {
         num = 0;
         List<Song> songRepo = new List<Song>();

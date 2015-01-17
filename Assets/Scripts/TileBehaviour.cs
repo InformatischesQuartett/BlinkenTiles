@@ -33,19 +33,19 @@ public class TileBehaviour : MonoBehaviour
                 switch (value)
                 {
                     case Highlighttype.None:
-                        renderer.material = _materialDefault;
+                        renderer.material.SetColor("_Color", Config.ColorDefault);
                         break;
                     case Highlighttype.Occupied:
-                        renderer.material = _materialOccupied;
+                        renderer.material.SetColor("_Color", Config.ColorOccupied);
                         break;
                     case Highlighttype.Hit:
-                        renderer.material = _materialHit;
+                        renderer.material.SetColor("_Color", Config.ColorHit);
                         break;
                     case Highlighttype.Preview:
-                        renderer.material = _materialPreview;
+                        renderer.material.SetColor("_Color", Config.ColorPreview);
                         break;
                     case Highlighttype.Time:
-                        renderer.material = _materialTime;
+                        renderer.material.SetColor("_Color", Config.ColorTime);
                         break;
                 }
             }
@@ -65,12 +65,10 @@ public class TileBehaviour : MonoBehaviour
         _positionRect.width = _tileWidth;
         _positionRect.height = _tileHeight;
 
-        _materialDefault = Config.MaterialWhite;
-        _materialTime = Config.MaterialYellow;
-        _materialHit = Config.MaterialRed;
-        _materialPreview = Config.MaterialOrange;
-        _materialOccupied = Config.MaterialGreen;
-        renderer.material = _materialDefault;
+        var mat = new Material(Shader.Find(Config.ShaderType));
+
+        renderer.material = mat;
+        renderer.material.SetColor("_Color", Config.ColorDefault);
         Highlight = Highlighttype.None;
 
         _originPosition = transform.position;

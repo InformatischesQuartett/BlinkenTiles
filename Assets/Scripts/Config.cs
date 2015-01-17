@@ -2,12 +2,15 @@
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
+using ZedGraph;
 
 public static class Config
 {
     private static string _freestylePath = Application.streamingAssetsPath + @"\Songs\Freestyle";
     private static string _challengePath = Application.streamingAssetsPath + @"\Songs\Challenge";
     private static string _configPath = Application.streamingAssetsPath;
+
+    public static string ShaderType { get; private set; }
 
     public static Vector3 CamPosition { get; private set; }
     public static int Cols { get; private set; }
@@ -21,12 +24,13 @@ public static class Config
     public static List<Song> FreestyleSongs { get; private set; }
     public static List<Song> ChallengeSongs { get; private set; }
 
-    public static Material MaterialWhite { get; private set; }
-    public static Material MaterialYellow { get; private set; }
-    public static Material MaterialRed { get; private set; }
-    public static Material MaterialBlue { get; private set; }
-    public static Material MaterialGreen { get; private set; }
-    public static Material MaterialOrange { get; private set; }
+    public static Color ColorDefault { get; private set; }
+    public static Color ColorTime { get; private set; }
+    public static Color ColorHit { get; private set; }
+    public static Color ColorPreview { get; private set; }
+    public static Color ColorOccupied { get; private set; }
+
+  //  public static int FreestyleAmmount { }
 
     public static byte[] LightColor { get; set; }
 
@@ -52,6 +56,8 @@ public static class Config
         var conf = JsonConvert.DeserializeObject<ConfigSet>(configContent);
 
         CamPosition = new Vector3(conf.CameraOffsetX, conf.CameraOffsetY, -10);
+
+        ShaderType = @"Self-Illumin/Diffuse";
 
         Cols = conf.Cols;
         Rows = conf.Rows;
@@ -84,19 +90,13 @@ public static class Config
         // prepare game
         CurrentGamemode = Gamemode.Freestyle;
 
-        MaterialWhite = new Material(Shader.Find("Sprites/Default"));
-        MaterialWhite.SetColor("_Color", new Color(1, 1, 1));
-        MaterialYellow = new Material(Shader.Find("Sprites/Default"));
-        MaterialYellow.SetColor("_Color", new Color(1, 1, 0));
-        MaterialRed = new Material(Shader.Find("Sprites/Default"));
-        MaterialRed.SetColor("_Color", new Color(1, 0, 0));
-        MaterialBlue = new Material(Shader.Find("Sprites/Default"));
-        MaterialBlue.SetColor("_Color", new Color(0, 0, 1));
-        MaterialGreen = new Material(Shader.Find("Sprites/Default"));
-        MaterialGreen.SetColor("_Color", new Color(0, 1, 0));
-        MaterialOrange = new Material(Shader.Find("Sprites/Default"));
-        MaterialOrange.SetColor("_Color", new Color(1, 0.5f, 0,5f));
+        ColorDefault = new Color(1,1,1);
+        ColorHit = new Color(0,1,0);
+        ColorTime = new Color(1,1,0);
+        ColorOccupied = new Color(0,0,1);
+        ColorPreview = new Color(1, 0.5f, 0.5f);
 
+ 
         FreestyleSongs = new List<Song>();
         ChallengeSongs = new List<Song>();
 
