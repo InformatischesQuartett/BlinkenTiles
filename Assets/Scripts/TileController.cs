@@ -31,6 +31,8 @@ public class TileController : MonoBehaviour
     private GUIFunction _currenGuiFunction;
 
 	private float _idleTimer = 0.0f;
+	/*Determines how many footprints are allowed on the field*/
+	private int _footprintCount = 4;
 
 	// Use this for initialization
 	void Start ()
@@ -110,16 +112,15 @@ public class TileController : MonoBehaviour
 		Config.IdleMode = _idleTimer > Config.IdleDelay;
 		
 		/**
-		 * If IdleMode is active, set random textures to footprints and set them forceActive
+		 * If IdleMode is active, set footprintCount tiles footprint textures and set them forceActive
 		 **/
-
-		if (Config.IdleMode) {
-			Debug.Log ("I am in IdleMode");
-			//renderer.material.SetTexture("_footprints_human", _footprint);
+		if (Config.IdleMode && _footprintCount > 0) {
+			SetIdleBehaviour ();
 		}
-		//after frametimer 
-		//setTexture to footprints
-		 
+		if (!Config.IdleMode) {
+			ResetIdleBehaviour ();
+		}
+
 	}
 
     void FixedUpdate()
@@ -351,6 +352,30 @@ public class TileController : MonoBehaviour
 	        tile.Active = status;
 	        _matrix[col].Tiles[row] = tile;
 	    }
+	}
+
+	/**
+	 * Changes Texture and forceActive when in IdleMode
+	 **/ 
+	private void SetIdleBehaviour () {
+		Debug.Log ("I am setting a footprint tex");
+		var randRow = Random.Range (0,Config.Rows);
+		var randColumn = Random.Range(0, Config.Cols);
+
+		//_matrix [randColumn].Tiles [randRow].GetComponent<TileBehaviour>.handleFootprintTexture ();
+
+		_footprintCount--;
+	}
+
+	/**
+	 * Removes Footprint Texture and sets forceActive to false when exiting IdleMode
+	 **/ 
+	private void ResetIdleBehaviour () {
+		Debug.Log("I am resetting the textures");
+		//for each tiles in matrix forceActive
+		//forceActive = false;
+		//remove texture
+		_footprintCount = 4; //todo: make dynamic
 	}
 
     private void GetInputs()
