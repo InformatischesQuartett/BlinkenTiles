@@ -8,6 +8,7 @@ using Newtonsoft.Json.Bson;
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public class TileController : MonoBehaviour
 {
@@ -39,6 +40,8 @@ public class TileController : MonoBehaviour
 	/*Determines how many footprints are allowed on the field*/
 	private int _footprintCount = 4;
 
+
+    private string _networkPath;
 	// Use this for initialization
 	void Start ()
 	{
@@ -56,7 +59,7 @@ public class TileController : MonoBehaviour
 	    _activeCol = 0;
 
         BuildTiles();
-        LoadSong(Songtype.Challenge, 0);
+        LoadSong(Songtype.Freestyle, 0);
     }
 	
 	// Update is called once per frame
@@ -260,7 +263,7 @@ public class TileController : MonoBehaviour
     public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
     {
 
-        _writer = new XmlSerializer(typeof(NetworkSet));
+        XmlSerializer _writer = new XmlSerializer(typeof(NetworkSet));
         NetworkSet networkSet = new NetworkSet();
 
         List<Song> songRepo = new List<Song>();
@@ -278,7 +281,7 @@ public class TileController : MonoBehaviour
         }
         else if (songType == Songtype.Challenge)
         {
-            networkSet.ChallengeMode = false;
+            networkSet.ChallengeMode = true;
             using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
             {
                 _writer.Serialize(file, networkSet);
