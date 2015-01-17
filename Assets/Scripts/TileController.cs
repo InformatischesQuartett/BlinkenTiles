@@ -46,7 +46,7 @@ public class TileController : MonoBehaviour
 
 	    _activeCol = 0;
 
-        LoadSong(Songtype.Freestyle, 0);
+        LoadSong(Songtype.Freestyle, 2);
         BuildTiles();
     }
 	
@@ -253,7 +253,6 @@ public class TileController : MonoBehaviour
 
     public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
     {
-        num = 0;
         List<Song> songRepo = new List<Song>();
 
         if (songType == Songtype.Freestyle)
