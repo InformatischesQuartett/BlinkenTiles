@@ -35,8 +35,10 @@ public class TileController : MonoBehaviour
     private delegate void GUIFunction();
     private GUIFunction _currenGuiFunction;
 
-    private string _networkPath;
-    private XmlSerializer _writer;
+	private float _idleTimer = 0.0f;
+	/*Determines how many footprints are allowed on the field*/
+	private int _footprintCount = 4;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -53,8 +55,8 @@ public class TileController : MonoBehaviour
 
 	    _activeCol = 0;
 
-        LoadSong(Songtype.Freestyle, 0);
         BuildTiles();
+        LoadSong(Songtype.Challenge, 0);
     }
 	
 	// Update is called once per frame
@@ -93,6 +95,9 @@ public class TileController : MonoBehaviour
                         if (tile.Active || tileScript.ForceActive)
                         {
                             tileScript.Highlight = Highlighttype.Occupied;
+							if (tile.Active) {
+								_idleTimer = 0.0f;
+							}
                         }
                         else
                         {
@@ -109,10 +114,27 @@ public class TileController : MonoBehaviour
             _previousActiveCol = _activeCol;
             
         }
+
+		/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
+		Config.IdleMode = _idleTimer > Config.IdleDelay;
+		
+		/**
+		 * If IdleMode is active, set footprintCount tiles footprint textures and set them forceActive
+		 **/
+		if (Config.IdleMode && _footprintCount > 0) {
+			SetIdleBehaviour ();
+		}
+		if (!Config.IdleMode) {
+			ResetIdleBehaviour ();
+		}
+
 	}
 
     void FixedUpdate()
     {
+		//IdleTimer
+		_idleTimer+= Time.fixedDeltaTime;
+
         if (_timerCol > 60 / Config.BPM)
         {
             _timerCol = (_timerCol - (60 / Config.BPM)) + Time.fixedDeltaTime;
@@ -133,8 +155,6 @@ public class TileController : MonoBehaviour
 
         if (_activeCol >= 0)
             _lightController.UpdateFaderValues(_activeCol, _timerCol);
-
-        
     }
 
     private void LoadCoundtownTextures()
@@ -172,9 +192,8 @@ public class TileController : MonoBehaviour
             float yStartTmp = yStart;
 
             TileCol currentTileCol = new TileCol();
-            currentTileCol.XMin = xStart - Config.TileWidth/2;
-            currentTileCol.XMax = xStart + Config.TileWidth/2;
             currentTileCol.Tiles = new List<Tile>();
+            currentTileCol.ChallengeIndex = new List<int>();
 
             for (int j = 0; j < Config.Rows; j++)
             {
@@ -190,9 +209,10 @@ public class TileController : MonoBehaviour
                     Tile currentTile = new Tile();
                     currentTile.TileGo = current;
                     currentTile.soundIndex = j;
-                    currentTile.Bounds = new Rect(currentTileCol.XMin, yStartTmp - Config.TileHeight/2, Config.TileWidth, Config.TileHeight);
 
 					currentTile.Active = false;
+
+                    currentTile.parentCol = currentTileCol;
 
                     currentTileCol.Tiles.Add(currentTile);
                 }
@@ -312,7 +332,30 @@ public class TileController : MonoBehaviour
             {
                 go.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Loop);
             }
+            else if (songType == Songtype.Challenge)
+            {
+                var goTileFailSounds = new GameObject();
+                goTileFailSounds.name = "TileFailSounds";
+                goTileFailSounds.transform.parent = _tempParent.transform;
+                goTileFailSounds.transform.position = goTileFailSounds.transform.parent.position;
+                _tempGameObjects.Add(goTileFailSounds);
 
+                for (int i = 0; i < songRepo[num].TileFailSoundFilePaths.Count; i++)
+                {
+                    var tileFailSounds = new GameObject();
+                    tileFailSounds.name = i.ToString();
+                    tileFailSounds.transform.parent = goTileFailSounds.transform;
+                    tileFailSounds.AddComponent<AudioSource>();
+                    tileFailSounds.AddComponent<AudioClipLoader>().url = songRepo[num].TileFailSoundFilePaths[i];
+
+                    _tempGameObjects.Add(tileFailSounds);
+                }
+
+                for (int i = 0; i < songRepo[num].Tileset.Count; i++)
+                {
+                    _matrix[i % Config.Cols].ChallengeIndex.Add(songRepo[num].Tileset[i]);
+                }
+            }
             Config.BPM = songRepo[num].Bpm;
 
             Config.LightColor[0] = (byte) songRepo[num].LightColor[0];
@@ -334,6 +377,39 @@ public class TileController : MonoBehaviour
 	        tile.Active = status;
 	        _matrix[col].Tiles[row] = tile;
 	    }
+	}
+
+	/**
+	 * Changes Texture and forceActive when in IdleMode
+	 **/ 
+	private void SetIdleBehaviour () {
+		Debug.Log ("I am setting a footprint tex");
+		var randRow = Random.Range (0,Config.Rows);
+		var randColumn = Random.Range(0, Config.Cols);
+
+		//_matrix [2].Tiles [3].TileGo.GetComponent<TileBehaviour> ().handleFootprintTexture ();
+		_matrix [randColumn].Tiles [randRow].TileGo.GetComponent<TileBehaviour> ().handleFootprintTexture ();
+
+		_footprintCount--;
+	}
+
+	/**
+	 * Removes Footprint Texture and sets forceActive to false when exiting IdleMode
+	 **/ 
+	private void ResetIdleBehaviour () {
+		for (int i = 0; i < Config.Cols; i++) {
+			TileCol tileCol = _matrix [i];
+			foreach (Tile tile in tileCol.Tiles) {
+				if (tile.TileGo.GetComponent<TileBehaviour> ().ForceActive) {
+					tile.TileGo.GetComponent<TileBehaviour> ().ForceActive = false;
+					Debug.Log("I am resetting the textures");
+				}
+			}//end foreach
+		} //end for
+		//for each tiles in matrix forceActive
+		//forceActive = false;
+		//remove texture
+		_footprintCount = 4; //todo: make dynamic
 	}
 
     private void GetInputs()

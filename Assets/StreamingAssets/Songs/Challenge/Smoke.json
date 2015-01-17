@@ -5,5 +5,6 @@
 "Tileset":[7,0,0],
 "SoundFilePath":"/Songs/Challenge/Smoke/smoke_backing.wav",
 "TileSoundFilePaths":["/Songs/Challenge/Smoke/smoke_1.wav","/Songs/Challenge/Smoke/smoke_2.wav","/Songs/Challenge/Smoke/smoke_3.wav","/Songs/Challenge/Smoke/smoke_4.wav","/Songs/Challenge/Smoke/smoke_5.wav",],
+"TileFailSoundFilePaths":["/Songs/Challenge/Smoke/smoke_1.wav"],
 "LightColor":[255,255,0,0]
 }

@@ -47,6 +47,9 @@ public class BlobDetection : MonoBehaviour
     private int _threadFrameCount;
     private float _threadFPS;
 
+	// gui
+	private Texture2D _whiteTex;
+
     private void Start()
     {
         _dSettings = new BlobDetectionSettings
@@ -93,6 +96,11 @@ public class BlobDetection : MonoBehaviour
 
         _threadFrameCount = 0;
         _threadFPS = 0.0f;
+
+		// gui
+		_whiteTex = new Texture2D(1, 1);
+		_whiteTex.SetPixel(0, 0, Color.white);
+		_whiteTex.Apply();
     }
 
     private void Update()
@@ -155,9 +163,9 @@ public class BlobDetection : MonoBehaviour
                                            " fps / " + _threadFPS.ToString("F1") + " fps");
 
         GUI.backgroundColor = new Color(1, 1, 1, 0.4f);
-        //GUI.skin.box.normal.background = EditorGUIUtility.whiteTexture;
+        GUI.skin.box.normal.background = _whiteTex;
 
-        GUI.BeginGroup(new Rect(imgWidth + 100, 20, 265, 500));
+		GUI.BeginGroup(new Rect(Screen.width/2 - 265, 20, 265, 500));
         GUI.Box(new Rect(0, 0, 265, 500), "Blob Detection Settings");
 
         GUI.backgroundColor = new Color(0, 0, 0, 1);

@@ -7,11 +7,9 @@ public class TileBehaviour : MonoBehaviour
     private float _tileHeight;
     private Rect _positionRect;
 
-    private Material _materialTime;
-    private Material _materialDefault;
-    private Material _materialOccupied;
-    private Material _materialPreview;
-    private Material _materialHit;
+	private Texture2D _footprintHuman;
+	private Texture2D _footprintDino;
+	private Texture2D _footprintDog;
 
     private Highlighttype _isHighlight;
 
@@ -47,6 +45,9 @@ public class TileBehaviour : MonoBehaviour
                     case Highlighttype.Time:
                         renderer.material.SetColor("_Color", Config.ColorTime);
                         break;
+                    case Highlighttype.Fail:
+                        renderer.material.SetColor("_Color", Config.ColorFail);
+                        break;
                 }
             }
             _isHighlight = value;
@@ -58,6 +59,7 @@ public class TileBehaviour : MonoBehaviour
     {
         //_soundEmitter = findSoundEmitter(transform.position.y);
 
+
         _tileWidth = transform.localScale.x*10;
         _tileHeight = transform.localScale.y*10;
         _positionRect.x = transform.position.x - _tileWidth/2;
@@ -65,13 +67,17 @@ public class TileBehaviour : MonoBehaviour
         _positionRect.width = _tileWidth;
         _positionRect.height = _tileHeight;
 
+		_footprintHuman = (Texture2D) Resources.Load ("Textures/Footprints_human", typeof(Texture2D));
+		_footprintDino = (Texture2D) Resources.Load ("Textures/Footprints_dino", typeof(Texture2D));
+		_footprintDog = (Texture2D) Resources.Load ("Textures/Footprints_dog", typeof(Texture2D));
+
         var mat = new Material(Shader.Find(Config.ShaderType));
 
         renderer.material = mat;
         renderer.material.SetColor("_Color", Config.ColorDefault);
         Highlight = Highlighttype.None;
 
-        _originPosition = transform.position;
+	    _originPosition = transform.position;
         _originRotation = transform.rotation;
 
         ForceActive = false;
@@ -95,13 +101,35 @@ public class TileBehaviour : MonoBehaviour
             transform.position = _originPosition;
             transform.rotation = _originRotation;
         }
-    }
+
+   }
 
     public void Shake()
     {
         _shakeIntensity = 0.8f;
         _shakeDecay = 0.015f;
     }
+
+	/**
+	 * Sets random Footprint texture.
+	 **/
+	public void handleFootprintTexture () {
+		var randNumber = Random.Range (1, 4);
+
+		switch (randNumber) {
+			case 1:
+				renderer.material.SetTexture ("_MainTex", _footprintHuman);
+				break;
+			case 2:
+				renderer.material.SetTexture ("_MainTex", _footprintDino);
+				break;
+			case 3:
+				renderer.material.SetTexture ("_MainTex", _footprintDog);
+				break;
+		}
+
+		ForceActive = true;
+	}
 
     private void OnMouseDown()
     {
