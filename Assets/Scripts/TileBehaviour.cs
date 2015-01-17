@@ -7,7 +7,9 @@ public class TileBehaviour : MonoBehaviour
     private float _tileHeight;
     private Rect _positionRect;
 
-	public Texture2D _footprint;
+	private Texture2D _footprintHuman;
+	private Texture2D _footprintDino;
+	private Texture2D _footprintDog;
 
     private Highlighttype _isHighlight;
 
@@ -96,22 +98,29 @@ public class TileBehaviour : MonoBehaviour
             transform.rotation = _originRotation;
         }
 
-		//print Footprints after a certain amount of time
-		//if force-active == true und idleMode==true --> 
-		if (Config.IdleMode) {
-			Debug.Log ("I am in IdleMode");
-			renderer.material.SetTexture("_footprints_human", _footprint);
-		}
-		//after frametimer 
-		//setTexture to footprints
-
-    }
+   }
 
     public void Shake()
     {
         _shakeIntensity = 0.8f;
         _shakeDecay = 0.015f;
     }
+
+	/**
+	 * Sets random Footprint texture.
+	 **/
+	public void handleFootprintTexture () {
+		var randNumber = Random.Range (1, 3);
+		switch (randNumber) {
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+		}
+		//renderer.material.SetTexture ("_footprint", _footprintHuman);
+	}
 
     private void OnMouseDown()
     {
