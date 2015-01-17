@@ -50,6 +50,7 @@ public static class Config
 
 	public static bool IdleMode { get; set; }
 	public static float IdleDelay { get; set; }
+	public static float IdleResetDelay { get; set; }
 
 
     static Config()
@@ -69,6 +70,7 @@ public static class Config
         TileSpaceing = conf.TileSpaceing;
 
 		IdleDelay = conf.IdleDelay;
+		IdleResetDelay = conf.IdleResetDelay;
 
         LightColor =  new byte[4];
         LightColor[0] = (byte) conf.LightColor[0];

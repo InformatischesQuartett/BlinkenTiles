@@ -113,7 +113,7 @@ public class TileBehaviour : MonoBehaviour
 	/**
 	 * Sets random Footprint texture.
 	 **/
-	public void handleFootprintTexture () {
+	public void SetFootprint () {
 		var randNumber = Random.Range (1, 4);
 
 		switch (randNumber) {
@@ -129,6 +129,14 @@ public class TileBehaviour : MonoBehaviour
 		}
 
 		ForceActive = true;
+	}
+
+	/**
+	 * Resets/removes Footprint texture.
+	 **/
+	public void ResetFootprint () {
+		renderer.material.SetTexture ("_MainTex", null);
+		ForceActive = false;
 	}
 
     private void OnMouseDown()
