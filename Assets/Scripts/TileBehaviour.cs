@@ -15,9 +15,6 @@ public class TileBehaviour : MonoBehaviour
 
     public bool ForceActive { get; set; }
 
-	public Texture2D Testtexture;
-
-
     //Shake stuff
     private Vector3 _originPosition;
     private Quaternion _originRotation;
@@ -130,7 +127,6 @@ public class TileBehaviour : MonoBehaviour
 				renderer.material.SetTexture ("_MainTex", _footprintDog);
 				break;
 		}
-
 
 		ForceActive = true;
 	}
