@@ -29,7 +29,9 @@ public class TileController : MonoBehaviour
 
     private delegate void GUIFunction();
 
-    private GUIFunction _currenGuiFunction; 
+    private GUIFunction _currenGuiFunction;
+
+	private float _idleTimer = 0.0f;
 
 	// Use this for initialization
 	void Start ()
@@ -84,6 +86,9 @@ public class TileController : MonoBehaviour
                         if (tile.Active || tileScript.ForceActive)
                         {
                             tileScript.Highlight = Highlighttype.Occupied;
+							if (tile.Active) {
+								_idleTimer = 0.0f;
+							}
                         }
                         else
                         {
@@ -100,10 +105,17 @@ public class TileController : MonoBehaviour
             _previousActiveCol = _activeCol;
             
         }
+
+		//set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below
+		Config.IdleMode = _idleTimer > Config.IdleDelay;
+		 
 	}
 
     void FixedUpdate()
     {
+		//IdleTimer
+		_idleTimer+= Time.fixedDeltaTime;
+
         if (_timerCol > 60 / Config.BPM)
         {
             _timerCol = (_timerCol - (60 / Config.BPM)) + Time.fixedDeltaTime;
