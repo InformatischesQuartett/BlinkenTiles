@@ -361,7 +361,8 @@ public class TileController : MonoBehaviour
 		var randRow = Random.Range (0,Config.Rows);
 		var randColumn = Random.Range(0, Config.Cols);
 
-		//_matrix [randColumn].Tiles [randRow].GetComponent<TileBehaviour>.handleFootprintTexture ();
+		//_matrix [2].Tiles [3].TileGo.GetComponent<TileBehaviour> ().handleFootprintTexture ();
+		_matrix [randColumn].Tiles [randRow].TileGo.GetComponent<TileBehaviour> ().handleFootprintTexture ();
 
 		_footprintCount--;
 	}
@@ -370,7 +371,15 @@ public class TileController : MonoBehaviour
 	 * Removes Footprint Texture and sets forceActive to false when exiting IdleMode
 	 **/ 
 	private void ResetIdleBehaviour () {
-		Debug.Log("I am resetting the textures");
+		for (int i = 0; i < Config.Cols; i++) {
+			TileCol tileCol = _matrix [i];
+			foreach (Tile tile in tileCol.Tiles) {
+				if (tile.TileGo.GetComponent<TileBehaviour> ().ForceActive) {
+					tile.TileGo.GetComponent<TileBehaviour> ().ForceActive = false;
+					Debug.Log("I am resetting the textures");
+				}
+			}//end foreach
+		} //end for
 		//for each tiles in matrix forceActive
 		//forceActive = false;
 		//remove texture
