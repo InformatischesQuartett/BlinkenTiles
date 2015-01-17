@@ -68,7 +68,7 @@ struct ConfigSet
 
 public struct NetworkSet
 {
-    public bool ChallengeMode
+    public bool ChallengeMode;
 }
 
 public enum Highlighttype
