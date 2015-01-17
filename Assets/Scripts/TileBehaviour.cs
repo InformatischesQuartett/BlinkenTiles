@@ -7,12 +7,6 @@ public class TileBehaviour : MonoBehaviour
     private float _tileHeight;
     private Rect _positionRect;
 
-    private Material _materialTime;
-    private Material _materialDefault;
-    private Material _materialOccupied;
-    private Material _materialPreview;
-    private Material _materialHit;
-
     private Highlighttype _isHighlight;
 
     public bool ForceActive { get; set; }
@@ -46,6 +40,9 @@ public class TileBehaviour : MonoBehaviour
                         break;
                     case Highlighttype.Time:
                         renderer.material.SetColor("_Color", Config.ColorTime);
+                        break;
+                    case Highlighttype.Fail:
+                        renderer.material.SetColor("_Color", Config.ColorFail);
                         break;
                 }
             }
