@@ -415,6 +415,9 @@ public class TileController : MonoBehaviour
             {
                 _writer.Serialize(file, networkSet);
             }
+
+            _currenGuiFunction = EmptyGUI;
+
             songRepo = Config.FreestyleSongs;
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Freestyle;
@@ -428,6 +431,7 @@ public class TileController : MonoBehaviour
             }
 
             _currenGuiFunction = CountdownGUI;
+
             songRepo = Config.ChallengeSongs;
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Challenge;
