@@ -11,6 +11,8 @@ public class TileBehaviour : MonoBehaviour
 	private Texture2D _footprintDino;
 	private Texture2D _footprintDog;
 
+	private Texture2D _tileBorder;
+
     private Highlighttype _isHighlight;
 
     public bool ForceActive { get; set; }
@@ -71,6 +73,8 @@ public class TileBehaviour : MonoBehaviour
 		_footprintDino = (Texture2D) Resources.Load ("Textures/Footprints_dino", typeof(Texture2D));
 		_footprintDog = (Texture2D) Resources.Load ("Textures/Footprints_dog", typeof(Texture2D));
 
+		_tileBorder = (Texture2D) Resources.Load ("Textures/Tile_border", typeof(Texture2D));
+
         var mat = new Material(Shader.Find(Config.ShaderType));
 
         renderer.material = mat;
@@ -110,6 +114,10 @@ public class TileBehaviour : MonoBehaviour
         _shakeDecay = 0.015f;
     }
 
+	public void SetBorder() {
+		renderer.material.SetTexture ("_MainTex", _tileBorder);
+	}
+
 	/**
 	 * Sets random Footprint texture.
 	 **/
@@ -134,7 +142,7 @@ public class TileBehaviour : MonoBehaviour
 	/**
 	 * Resets/removes Footprint texture.
 	 **/
-	public void ResetFootprint () {
+	public void ResetTexture () {
 		renderer.material.SetTexture ("_MainTex", null);
 		ForceActive = false;
 	}
