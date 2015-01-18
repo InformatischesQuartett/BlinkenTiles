@@ -47,7 +47,7 @@ public class TileController : MonoBehaviour
         _networkPath = Application.streamingAssetsPath + @"\Network";
         
 	    LoadCoundtownTextures();
-	    _currenGuiFunction = EmptyGUI;
+	    _currenGuiFunction = null;
 	    _lightController = this.GetComponent<LightController>();
         _tileParent = GameObject.Find("Tiles");
         _tempParent = GameObject.Find("Temp");
@@ -269,7 +269,7 @@ public class TileController : MonoBehaviour
 
             if (_beatCounter > 8)
             {
-                _currenGuiFunction = EmptyGUI;
+                _currenGuiFunction = null;
             }
         }
         else
@@ -292,17 +292,24 @@ public class TileController : MonoBehaviour
 
     private void OnGUI()
     {
-        _currenGuiFunction();
-    }
-
-    private void EmptyGUI()
-    {
+        if (_currenGuiFunction != null)
+            _currenGuiFunction();
     }
 
     private void CountdownGUI()
     {
         GUI.backgroundColor = new Color(1, 1, 1, 0.5f);
         GUI.Box(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height), _numbers[_beatCounter]);
+
+        GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+        GUI.skin.label.fontSize = 400;
+        GUI.color = new Color(0, 0, 0, 0.9f);
+
+        GUI.Label(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height),
+            8 - _beatCounter > 0 ? (8 - _beatCounter).ToString() : "GO");
+
+        GUI.skin.label.fontSize = 12;
+        GUI.skin.label.alignment = TextAnchor.MiddleLeft;
     }
 
     public void BuildTiles()
