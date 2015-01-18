@@ -119,10 +119,9 @@ public class TileController : MonoBehaviour
                         }
                     }
                 }
-
             }
 
-            else if (Config.CurrentGamemode == Gamemode.Challenge)
+            if (Config.CurrentGamemode == Gamemode.Challenge)
             {
                 if (_matrix[_activeCol].ChallengeIndex.Count == 0) {
                     LoadSongRandom();
@@ -135,6 +134,7 @@ public class TileController : MonoBehaviour
                     for (int j = 0; j < Config.Rows; j++)
                     {
                         _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.None;
+                        _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ResetTexture();
                     }
                 }
 
@@ -144,8 +144,9 @@ public class TileController : MonoBehaviour
                     if (_matrix[i].ChallengeIndex.Count > 0)
                     {
                         var previewIndex = _matrix[i].ChallengeIndex[0] - 1;
+                        //Debug.Log("Spalte " + i + ": " + _matrix[i].ChallengeIndex.Count + " -> " + previewIndex);
 
-                        if (previewIndex > Config.Rows)
+                        if (previewIndex >= Config.Rows)
                             previewIndex -= Config.Rows;
 
                         if (previewIndex >= 0)
@@ -186,7 +187,7 @@ public class TileController : MonoBehaviour
                 {
                     var previewIndex = _matrix[_activeCol].ChallengeIndex[0] - 1;
 
-                    if (previewIndex > Config.Rows)
+                    if (previewIndex >= Config.Rows)
                         previewIndex -= Config.Rows;
 
 					var active = _matrix[_activeCol].Tiles[i].Active ||
@@ -214,9 +215,6 @@ public class TileController : MonoBehaviour
                             soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
                         }
                     }
-
-					if (previewIndex == i)
-						_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ResetTexture();
                 }
 
                 //play song after countdown
@@ -232,12 +230,11 @@ public class TileController : MonoBehaviour
     {
         if (_activeCol != _previousActiveCol && _activeCol >= 0)
         {
-            if (_matrix[_activeCol].ChallengeIndex.Count > 0)
-            {
-                _matrix[_activeCol].ChallengeIndex.RemoveAt(0);
-            }
+            if (_matrix[_previousActiveCol].ChallengeIndex.Count > 0)
+                _matrix[_previousActiveCol].ChallengeIndex.RemoveAt(0);
+
+            _previousActiveCol = _activeCol;
         }
-        _previousActiveCol = _activeCol;
 
     	/**
 		 * Check if IdleMode = true.
@@ -322,8 +319,7 @@ public class TileController : MonoBehaviour
         }
 
         GUI.color = new Color(1, 1, 1, Math.Min(0.7f, _countdownTexTimer/8f));
-        GUI.DrawTexture(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height), _countdownTexture,
-            ScaleMode.StretchToFill);
+        GUI.DrawTexture(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height), _countdownTexture);
 
         if (_countdownTexTimer > 2)
         {
@@ -532,8 +528,6 @@ public class TileController : MonoBehaviour
                 goTileFailSounds.transform.position = goTileFailSounds.transform.parent.position;
                 _tempGameObjects.Add(goTileFailSounds);
 
-
-
                 for (int i = 0; i < songRepo[num].TileFailSoundFilePaths.Count; i++)
                 {
                     var tileFailSounds = new GameObject();
@@ -544,9 +538,10 @@ public class TileController : MonoBehaviour
 
                     _tempGameObjects.Add(tileFailSounds);
                 }
+
                 int[] bla = new int[songRepo[num].Tileset.Count + 2*Config.Cols*(Config.PreheatDuration/8) + 1];
                 Array.Clear(bla, 0, bla.Length);
-                songRepo[num].Tileset.CopyTo(bla, (Config.Cols*(Config.PreheatDuration/8)) + 1);
+                songRepo[num].Tileset.CopyTo(bla, (Config.Cols*(Config.PreheatDuration/8)));
 
 
                 for (int i = 0; i < songRepo[num].Tileset.Count + (Config.PreheatDuration/8); i++)
@@ -554,9 +549,9 @@ public class TileController : MonoBehaviour
                     _matrix[i % Config.Cols].ChallengeIndex.Add(bla[i]);
                 }
             }
+
             Config.BPM = songRepo[num].Bpm;
-            
-            
+
             Config.LightColor[0] = (byte) songRepo[num].LightColor[0];
             Config.LightColor[1] = (byte) songRepo[num].LightColor[1];
             Config.LightColor[2] = (byte) songRepo[num].LightColor[2];
