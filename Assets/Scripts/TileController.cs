@@ -30,6 +30,8 @@ public class TileController : MonoBehaviour
     private delegate void GUIFunction();
     private GUIFunction _currenGuiFunction;
 
+    private Font _defaultFont;
+    private Font _countdownFont;
     private float _countdownTexTimer;
     private MovieTexture _countdownTexture;
 
@@ -49,6 +51,9 @@ public class TileController : MonoBehaviour
 
         _currenGuiFunction = null;
 	    _countdownTexTimer = 0;
+
+	    _defaultFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+	    _countdownFont = Resources.Load<Font>("BankGothic");
         _countdownTexture = Resources.Load<MovieTexture>("Textures/ChallengeMode");
         audio.clip = _countdownTexture.audioClip;
 
@@ -324,7 +329,8 @@ public class TileController : MonoBehaviour
         {
             GUI.skin.label.alignment = TextAnchor.MiddleCenter;
             GUI.color = new Color(0, 0, 0, Math.Min(0.9f, (_countdownTexTimer - 2)/8f));
-            GUI.skin.label.fontSize = 300;
+            GUI.skin.label.fontSize = 200;
+            GUI.skin.label.font = _countdownFont;
 
             var lbRect = new Rect(Screen.width/2f, Screen.height - 300, Screen.width/2f, 300);
 
@@ -334,13 +340,14 @@ public class TileController : MonoBehaviour
                 GUI.Label(lbRect, (Config.PreheatDuration - _beatCounter).ToString());
             else
             {
-                GUI.skin.label.fontSize = 100;
+                GUI.skin.label.fontSize = 80;
                 GUI.Label(lbRect, "Paint It Black");
             }
-        }
 
-        GUI.skin.label.fontSize = 12;
-        GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+            GUI.skin.label.font = _defaultFont;
+            GUI.skin.label.fontSize = 12;
+            GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+        }
     }
 
     public void BuildTiles()
