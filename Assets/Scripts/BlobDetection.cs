@@ -140,11 +140,11 @@ public class BlobDetection : MonoBehaviour
 
     private int SettingSlider(int x, int y, string text, int val, int low, int high)
     {
-        GUI.BeginGroup(new Rect(x, y, 250, 40));
-        GUI.Label(new Rect(0, 0, 200, 20), text + ": " + val);
-        val = (int)GUI.HorizontalSlider(new Rect(0, 20, 185, 10), val, low, high);
-        if (GUI.Button(new Rect(193, 15, 20, 20), "+")) val = Mathf.Min(high, val + 1);
-        if (GUI.Button(new Rect(215, 15, 20, 20), "-")) val = Mathf.Max(low, val - 1);
+        GUI.BeginGroup(new Rect(x, y, 500, 55));
+        GUI.Label(new Rect(0, 0, 200, 25), text + ": " + val);
+        val = (int)GUI.HorizontalSlider(new Rect(0, 25, 420, 10), val, low, high);
+        if (GUI.Button(new Rect(428, 20, 20, 20), "+")) val = Mathf.Min(high, val + 1);
+        if (GUI.Button(new Rect(450, 20, 20, 20), "-")) val = Mathf.Max(low, val - 1);
         GUI.EndGroup();
 
         return val;
@@ -156,6 +156,8 @@ public class BlobDetection : MonoBehaviour
         var imgWidth = imgHeight*(_kinectManager.DepthWidth/_kinectManager.DepthHeight);
 
         GUI.DrawTexture(new Rect(0, imgHeight, imgWidth, -imgHeight), _lastRenderImage);
+
+        GUI.skin.label.fontSize = 16;
         GUI.Label(new Rect(5, imgHeight - 40, 200, 20), "RenderImageType " + _dSettings.RenderImgType);
         GUI.Label(new Rect(5, imgHeight - 20, 200, 20), "20.01.2014 / " + DateTime.Now.ToString("HH:mm:ss"));
 
@@ -164,30 +166,32 @@ public class BlobDetection : MonoBehaviour
 
         GUI.backgroundColor = new Color(1, 1, 1, 0.4f);
         GUI.skin.box.normal.background = _whiteTex;
+        GUI.skin.box.fontSize = 16;
 
-		GUI.BeginGroup(new Rect(Screen.width/2 - 265, 20, 265, 500));
-        GUI.Box(new Rect(0, 0, 265, 500), "Blob Detection Settings");
+        GUI.BeginGroup(new Rect(Screen.width/2 - 600, 50, 500, Screen.height - 100));
+        GUI.Box(new Rect(0, 0, 500, Screen.height - 150), "Blob Detection Settings");
 
         GUI.backgroundColor = new Color(0, 0, 0, 1);
 
-        _dSettings.RenderImgType = SettingSlider(15, 40, "RenderImageType", _dSettings.RenderImgType, 1, 6);
-        _dSettings.MinDepth = SettingSlider(15, 100, "Minimum Depth", _dSettings.MinDepth, 0, 8000);
-        _dSettings.MaxDepth = SettingSlider(15, 140, "Maximum Depth", _dSettings.MaxDepth, 0, 8000);
-        _dSettings.MinThreshold = SettingSlider(15, 180, "Minimum Threshold", _dSettings.MinThreshold, 0, 255);
-        _dSettings.MaxThreshold = SettingSlider(15, 220, "Maximum Threshold", _dSettings.MaxThreshold, 0, 255);
+        _dSettings.RenderImgType = SettingSlider(15, 80, "RenderImageType", _dSettings.RenderImgType, 1, 6);
+        _dSettings.MinDepth = SettingSlider(15, 180, "Minimum Depth", _dSettings.MinDepth, 0, 8000);
+        _dSettings.MaxDepth = SettingSlider(15, 240, "Maximum Depth", _dSettings.MaxDepth, 0, 8000);
+        _dSettings.MinThreshold = SettingSlider(15, 300, "Minimum Threshold", _dSettings.MinThreshold, 0, 255);
+        _dSettings.MaxThreshold = SettingSlider(15, 360, "Maximum Threshold", _dSettings.MaxThreshold, 0, 255);
 
-        var gridLocX = SettingSlider(15, 280, "Grid Location (X)", (int) _dSettings.GridLoc.x, 0, 200);
-        var gridLocY = SettingSlider(15, 320, "Grid Location (Y)", (int) _dSettings.GridLoc.y, 0, 200);
+        var gridLocX = SettingSlider(15, 460, "Grid Location (X)", (int) _dSettings.GridLoc.x, 0, 200);
+        var gridLocY = SettingSlider(15, 520, "Grid Location (Y)", (int) _dSettings.GridLoc.y, 0, 200);
         _dSettings.GridLoc = new Vector2(gridLocX, gridLocY);
 
-        var fieldSizeX = SettingSlider(15, 360, "Field Size (X)", (int)_dSettings.FieldSize.x, 0, 200);
-        var fieldSizeY = SettingSlider(15, 400, "Field Size (Y)", (int)_dSettings.FieldSize.y, 0, 200);
+        var fieldSizeX = SettingSlider(15, 620, "Field Size (X)", (int)_dSettings.FieldSize.x, 0, 200);
+        var fieldSizeY = SettingSlider(15, 680, "Field Size (Y)", (int)_dSettings.FieldSize.y, 0, 200);
         _dSettings.FieldSize = new Vector2(fieldSizeX, fieldSizeY);
 
-        var fieldTolX = SettingSlider(15, 440, "Field Tolerance (X)", (int)_dSettings.FieldTolerance.x, 0, 200);
-        var fieldTolY = SettingSlider(15, 480, "Field Tolerance (Y)", (int)_dSettings.FieldTolerance.y, 0, 200);
+        var fieldTolX = SettingSlider(15, 780, "Field Tolerance (X)", (int)_dSettings.FieldTolerance.x, 0, 200);
+        var fieldTolY = SettingSlider(15, 840, "Field Tolerance (Y)", (int)_dSettings.FieldTolerance.y, 0, 200);
         _dSettings.FieldTolerance = new Vector2(fieldTolX, fieldTolY);
 
+        GUI.skin.label.fontSize = 12;
         GUI.EndGroup();
     }
 
