@@ -20,7 +20,7 @@
 "FieldToleranceX":20,
 "FieldToleranceY":20,
 "ImageFileUpdate":15,
-"IdleDelay":20,
+"IdleDelay":1,
 "IdleResetDelay":10,
 "ColorDefault": [1,1,1],
 "ColorHit": [0,1,0],
