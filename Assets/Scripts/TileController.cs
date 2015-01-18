@@ -114,8 +114,10 @@ public class TileController : MonoBehaviour
 
             else if (Config.CurrentGamemode == Gamemode.Challenge)
             {
-                if (_matrix[_activeCol].ChallengeIndex.Count == 0)
+                if (_matrix[_activeCol].ChallengeIndex.Count == 0) {
                     LoadSongRandom();
+					return;
+				}
 
                 //highlight pass
                 for (int i = 0; i < Config.Cols; i++)
