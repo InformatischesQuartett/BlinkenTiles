@@ -301,7 +301,8 @@ public class TileController : MonoBehaviour
 
     private void CountdownGUI()
     {
-         GUI.Box(new Rect(Screen.width/2, 0, Screen.width/2, Screen.height), _numbers[_beatCounter]);
+        GUI.backgroundColor = new Color(1, 1, 1, 0.5f);
+        GUI.Box(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height), _numbers[_beatCounter]);
     }
 
     public void BuildTiles()
@@ -532,7 +533,6 @@ public class TileController : MonoBehaviour
 	private void SetIdleBehaviour() {
 		for (int i = 0; i < _footprintCount; i++)
 		{
-		    Debug.Log("I am setting a footprint tex");
 		    var randRow = Random.Range(0, Config.Rows);
 		    var randColumn = Random.Range(0, Config.Cols);
 
