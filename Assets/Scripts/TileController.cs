@@ -29,7 +29,9 @@ public class TileController : MonoBehaviour
 
     private delegate void GUIFunction();
     private GUIFunction _currenGuiFunction;
-    private Texture2D dummyTexture;//will be replaced by RenderTexture
+
+    private float _countdownTexTimer;
+    private MovieTexture _countdownTexture;
 
 	/*Timer start idle time and set up footprints after this certain time*/
 	private float _idleTimer = 0.0f;
@@ -44,9 +46,12 @@ public class TileController : MonoBehaviour
 	void Start ()
 	{
         _networkPath = Application.streamingAssetsPath + @"\Network";
-        
-	    CoundtownBackgroundTexture();
-	    _currenGuiFunction = null;
+
+        _currenGuiFunction = null;
+	    _countdownTexTimer = 0;
+        _countdownTexture = Resources.Load<MovieTexture>("Textures/ChallengeMode");
+        audio.clip = _countdownTexture.audioClip;
+
 	    _lightController = this.GetComponent<LightController>();
         _tileParent = GameObject.Find("Tiles");
         _tempParent = GameObject.Find("Temp");
@@ -57,7 +62,7 @@ public class TileController : MonoBehaviour
 	    _activeCol = 0;
 
         BuildTiles();
-        LoadSong(Songtype.Challenge, 0);
+        LoadSong(Songtype.Challenge, 1);
     }
 	
 	// Update is called once per frame
@@ -210,7 +215,7 @@ public class TileController : MonoBehaviour
                 }
 
                 //play song after countdown
-                if (Config.CurrentGamemode == Gamemode.Challenge && _activeCol != _previousActiveCol)
+				if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == Config.PreheatDuration+1 && _activeCol != _previousActiveCol)
                 {
                     GameObject.FindGameObjectWithTag("Song").audio.Play();
                 }
@@ -289,11 +294,6 @@ public class TileController : MonoBehaviour
             _lightController.UpdateFaderValues(_activeCol, _timerCol);
     }
 
-    private void CoundtownBackgroundTexture()
-    {
-        dummyTexture = Resources.Load<Texture2D>("Textures/dummy");
-    }
-
     private void OnGUI()
     {
         if (_currenGuiFunction != null)
@@ -303,15 +303,41 @@ public class TileController : MonoBehaviour
     
     private void CountdownGUI()
     {
-        GUI.backgroundColor = new Color(1, 1, 1, 0.5f);
-        GUI.Box(new Rect(Screen.width / 2f, 0, Screen.width / 2f, Screen.height), dummyTexture);
+        _countdownTexTimer += Time.deltaTime;
 
-        GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-        GUI.skin.label.fontSize = 400;
-        GUI.color = new Color(0, 0, 0, 0.9f);
+        if (_countdownTexTimer > 8)
+        {
+            _countdownTexture.Pause();
+            audio.Pause();
+        }
+        else if (!_countdownTexture.isPlaying)
+        {
+            _countdownTexture.Play();
+            audio.Play();
+        }
 
-        GUI.Label(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height),
-            Config.PreheatDuration - _beatCounter < Config.PreheatShowAt ? (Config.PreheatDuration- _beatCounter).ToString() : "GO");
+        GUI.color = new Color(1, 1, 1, Math.Min(0.7f, _countdownTexTimer/8f));
+        GUI.DrawTexture(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height), _countdownTexture,
+            ScaleMode.StretchToFill);
+
+        if (_countdownTexTimer > 2)
+        {
+            GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+            GUI.color = new Color(0, 0, 0, Math.Min(0.9f, (_countdownTexTimer - 2)/8f));
+            GUI.skin.label.fontSize = 300;
+
+            var lbRect = new Rect(Screen.width/2f, Screen.height - 300, Screen.width/2f, 300);
+
+            if (Config.PreheatDuration - _beatCounter == 0)
+                GUI.Label(lbRect, "GO!");
+            else if (Config.PreheatDuration - _beatCounter < Config.PreheatShowAt)
+                GUI.Label(lbRect, (Config.PreheatDuration - _beatCounter).ToString());
+            else
+            {
+                GUI.skin.label.fontSize = 100;
+                GUI.Label(lbRect, "Paint It Black");
+            }
+        }
 
         GUI.skin.label.fontSize = 12;
         GUI.skin.label.alignment = TextAnchor.MiddleLeft;
@@ -586,7 +612,7 @@ public class TileController : MonoBehaviour
             RebuildTiles();
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
-            LoadSong(Songtype.Freestyle, 0);
+            LoadSong(Songtype.Challenge, 1);
 
         if (Input.GetKeyDown(KeyCode.I))
             _idleTimer = 0;
