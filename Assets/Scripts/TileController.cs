@@ -422,16 +422,8 @@ public class TileController : MonoBehaviour
             
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Freestyle;
-            
-            //save values to network.xml
+
             networkSet.ChallengeMode = false;
-            float bmp = songRepo[num].Bpm;
-            float duration = Config.PreheatDuration * (60 / bmp);
-            networkSet.DemoTime = duration;
-            using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
-            {
-                _writer.Serialize(file, networkSet);
-            }
         }
         else if (songType == Songtype.Challenge)
         {
@@ -441,19 +433,16 @@ public class TileController : MonoBehaviour
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Challenge;
 
-
-            //save values to network.xml
             networkSet.ChallengeMode = true;
-            float bmp = songRepo[num].Bpm;
-            float duration = Config.PreheatDuration * (60 / bmp);
-            networkSet.DemoTime = duration;
-            using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
-            {
-                _writer.Serialize(file, networkSet);
-            }
+            
         }
-
-        
+        float bmp = songRepo[num].Bpm;
+        float duration = Config.PreheatDuration * (60 / bmp);
+        networkSet.DemoTime = duration;
+        using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
+        {
+            _writer.Serialize(file, networkSet);
+        }
 
         if (num < songRepo.Count)
         {
