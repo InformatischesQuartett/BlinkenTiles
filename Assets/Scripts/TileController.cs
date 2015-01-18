@@ -153,58 +153,64 @@ public class TileController : MonoBehaviour
                 }
 
                 //people pass
+				var peopleInActiveCol = false;
+
                 for (int i = 0; i < Config.Cols; i++)
                 {
                     for (int j = 0; j < Config.Rows; j++)
                     {
-                        if (_matrix[i].Tiles[j].Active || _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive)
+						if (_matrix[i].Tiles[j].Active || _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive) {
                             _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Occupied;
+
+							if (i == _activeCol)
+								peopleInActiveCol = true;
+						}
                     }
                 }
 
                 //Shake 'n' Play 'n' change preview pass
+				if (_beatCounter <= Config.PreheatDuration)
+					return;
+
                 for (int i = 0; i < Config.Rows; i++)
                 {
-                    var previewIndex = _matrix[_activeCol].ChallengeIndex[0] -1;
+                    var previewIndex = _matrix[_activeCol].ChallengeIndex[0] - 1;
 
                     if (previewIndex > Config.Rows)
                         previewIndex -= Config.Rows;
 
-                    if (previewIndex >= 0)
+					var active = _matrix[_activeCol].Tiles[i].Active ||
+						_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive;
+
+                    if (previewIndex == i && (active || !peopleInActiveCol))
                     {
-						if (_matrix[_activeCol].Tiles[i].Active || _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive)
+                   		_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Hit;
+                        if (_activeCol != _previousActiveCol)
                         {
-                            if (previewIndex == i)
-                            {
-                                _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Hit;
-                                if (_activeCol != _previousActiveCol)
-                                {
-                                    _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
+                            _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
 
-                                    var soundGo = GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
-                                    soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
-                                }
-                            }
-                            else
-                            {
-                                _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Fail;
-                                if (_activeCol != _previousActiveCol)
-                                {
-                                    _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
-
-                                    var soundGo = GameObject.Find("Temp/TileFailSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
-                                    soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
-                                }
-                            }
+                            var soundGo = GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
+                            soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
                         }
-
-						if (previewIndex == i)
-							_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ResetTexture();
                     }
+					else if (active && previewIndex != i)
+                    {
+                        _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Fail;
+                        if (_activeCol != _previousActiveCol)
+                        {
+                            _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
+
+                            var soundGo = GameObject.Find("Temp/TileFailSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
+                            soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
+                        }
+                    }
+
+					if (previewIndex == i)
+						_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ResetTexture();
                 }
 
                 //play song after countdown
-                if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == Config.PreheatDuration && _activeCol != _previousActiveCol)
+                if (Config.CurrentGamemode == Gamemode.Challenge && _activeCol != _previousActiveCol)
                 {
                     GameObject.FindGameObjectWithTag("Song").audio.Play();
                 }
@@ -400,22 +406,14 @@ public class TileController : MonoBehaviour
             LoadSong(songType, Random.Range(0, songRepo.Count - 1));
         }
     }
-
-    
-
     
     public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
     {
-
         XmlSerializer _writer = new XmlSerializer(typeof(NetworkSet));
         NetworkSet networkSet = new NetworkSet();
-
-        Debug.Log(num);
         
         List<Song> songRepo = new List<Song>();
-
-
-        
+   
         if (songType == Songtype.Freestyle)
         {
             _currenGuiFunction = null;
