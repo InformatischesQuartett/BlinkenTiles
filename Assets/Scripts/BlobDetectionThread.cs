@@ -3,6 +3,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using System.Drawing;
+using UnityEngine;
 
 public class BlobDetectionThread
 {
@@ -17,6 +18,7 @@ public class BlobDetectionThread
     private volatile bool _updatedData;
 
     private volatile int _runCounter;
+    private float _lastImageUpdate;
 
     public BlobDetectionThread(KinectManager depthManager, TileController tileCtrl,
         BlobDetectionSettings detectionSettings, RenderDataCallback renderImageCallback)
@@ -31,11 +33,7 @@ public class BlobDetectionThread
         _updatedData = false;
 
         _runCounter = 0;
-    }
-
-    public void SetDetectionSettings(BlobDetectionSettings detectionSettings)
-    {
-        _detectionSettings = detectionSettings;
+        _lastImageUpdate = 0;
     }
 
     public void SetUpdatedData()
@@ -63,7 +61,7 @@ public class BlobDetectionThread
         return PrepareRenderImage(img.Convert<Rgb, byte>());
     }
 
-    private unsafe byte[] PrepareRenderImage(Image<Rgb, byte> img)
+    private byte[] PrepareRenderImage(Image<Rgb, byte> img)
     {
         var linData = new byte[img.Data.Length];
         Buffer.BlockCopy(img.Data, 0, linData, 0, img.Data.Length);
@@ -80,6 +78,8 @@ public class BlobDetectionThread
             }
 
             if (_shouldStop) return;
+
+            var updateImages = (_runCounter % Config.ImageFileUpdate == 0);
 
             lock (_depthManager.DepthData)
             {
@@ -104,6 +104,7 @@ public class BlobDetectionThread
 
                     var imgOrg = depthImgNorm.Convert<Rgb, byte>();
                     var imgGray = filteredImgNorm.Convert<Gray, byte>();
+                    var imgOrgHelper = imgOrg.Clone();
 
                     var renderImage = new byte[0];
 
@@ -112,6 +113,12 @@ public class BlobDetectionThread
 
                     if (_detectionSettings.RenderImgType == 2)
                         renderImage = PrepareRenderImage(imgGray);
+
+                    if (updateImages)
+                    {
+                        imgOrg.Save(@"Assets\StreamingAssets\Network\imgfile1.jpg");
+                        imgGray.Save(@"Assets\StreamingAssets\Network\imgfile2.jpg");
+                    }
 
                     // noise reduction
                     var imgSm = imgGray.PyrDown().PyrUp().SmoothGaussian(3);
@@ -126,6 +133,9 @@ public class BlobDetectionThread
 
                     if (_detectionSettings.RenderImgType == 3)
                         renderImage = PrepareRenderImage(imgThr);
+
+                    if (updateImages)
+                        imgThr.Save(@"Assets\StreamingAssets\Network\imgfile3.jpg");
 
                     // create grid
                     var cols = (int) _detectionSettings.GridSize.x;
@@ -160,12 +170,10 @@ public class BlobDetectionThread
                                 for (int y = 0; y < rows; y++)
                                 {
                                     var grRect = new Rectangle(
-                                        (int) (gridLoc.x + x*fieldSize.x + fieldTol.x),
-                                        (int) (gridLoc.y + y*fieldSize.y + fieldTol.y),
-                                        (int) (fieldSize.x - 2*fieldTol.x),
-                                        (int) (fieldSize.y - 2*fieldTol.y));
-
-                                    imgOrg.Draw(grRect, new Rgb(0, 0, 200), 2);
+                                        (int)(gridLoc.x + x * fieldSize.x + fieldTol.x),
+                                        (int)(gridLoc.y + y * fieldSize.y + fieldTol.y),
+                                        (int)(fieldSize.x - 2 * fieldTol.x),
+                                        (int)(fieldSize.y - 2 * fieldTol.y));
 
                                     if (bdRect.IntersectsWith(grRect))
                                         objGrid[x, y] = true;
@@ -173,39 +181,62 @@ public class BlobDetectionThread
                             }
 
                             imgOrg.Draw(currentContour.BoundingRectangle, new Rgb(0, 255, 255), 2);
+                            imgThr.Draw(currentContour.BoundingRectangle, new Gray(127), 2);
                         }
                     }
 
+                    if (updateImages)
+                        imgThr.Save(@"Assets\StreamingAssets\Network\imgfile4.jpg");
+
                     // set tile status
 	                for (int x = 0; x < cols; x++)
-	                	for (int y = 0; y < rows; y++) {
+	                	for (int y = 0; y < rows; y++)
 	                    	_tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]); 
-						}
+
 					if (_detectionSettings.RenderImgType == 4)
                         renderImage = PrepareRenderImage(imgOrg);
 
                     // draw grid
                     var blendImg = new Image<Rgb, byte>(imgOrg.Width, imgOrg.Height);
+                    var blendImgHelper = blendImg.Clone();
 
                     for (int x = 0; x < cols; x++)
                     {
                         for (int y = 0; y < rows; y++)
                         {
-                            var grRect = new Rectangle(
+                            var nonRect = new Rectangle(
                                 (int) (gridLoc.x + x*fieldSize.x),
                                 (int) (gridLoc.y + y*fieldSize.y),
                                 (int) fieldSize.x,
                                 (int) fieldSize.y);
 
-                            blendImg.Draw(grRect, new Rgb(0, 255, 0), objGrid[x, y] ? -1 : 2);
-                            imgOrg.Draw(grRect, new Rgb(0, 0, 200), 2);
+                            var tolRect = new Rectangle(
+                                (int) (gridLoc.x + x*fieldSize.x + fieldTol.x),
+                                (int) (gridLoc.y + y*fieldSize.y + fieldTol.y),
+                                (int) (fieldSize.x - 2*fieldTol.x),
+                                (int) (fieldSize.y - 2*fieldTol.y));
+
+                            blendImg.Draw(nonRect, new Rgb(0, 255, 0), objGrid[x, y] ? -1 : 2);
+
+                            imgOrg.Draw(nonRect, new Rgb(0, 0, 200), 2);
+                            imgOrg.Draw(tolRect, new Rgb(255, 255, 255), 1);
+
+                            // helper image for presentation purposes
+                            imgOrgHelper.Draw(nonRect, new Rgb(255, 255, 255), 2);
+
+                            if (objGrid[x, y])
+                                blendImgHelper.Draw(nonRect, new Rgb(0, 255, 0), -1);
                         }
                     }
 
                     imgOrg = imgOrg.AddWeighted(blendImg, 0.7f, 0.3f, 0);
+                    imgOrgHelper = imgOrgHelper.AddWeighted(blendImgHelper, 0.7f, 0.3f, 0);
 
                     if (_detectionSettings.RenderImgType == 5)
                         renderImage = PrepareRenderImage(imgOrg);
+
+                    if (updateImages)
+                        imgOrgHelper.Save(@"Assets\StreamingAssets\Network\imgfile5.jpg");
 
                     if (_detectionSettings.RenderImgType == 6)
                     {

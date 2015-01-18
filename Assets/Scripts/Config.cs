@@ -48,6 +48,8 @@ public static class Config
     public static Vector2 FieldSize { get; set; }
     public static Vector2 FieldTolerance { get; set; }
 
+    public static int ImageFileUpdate { get; set; }
+
 	public static bool IdleMode { get; set; }
 	public static float IdleDelay { get; set; }
 	public static float IdleResetDelay { get; set; }
@@ -92,6 +94,8 @@ public static class Config
         GridLoc = new Vector2(conf.GridLocX, conf.GridLocY);
         FieldSize = new Vector2(conf.FieldSizeX, conf.FieldSizeY);
         FieldTolerance = new Vector2(conf.FieldToleranceX, conf.FieldToleranceY);
+
+        ImageFileUpdate = conf.ImageFileUpdate;
 
         // prepare game
         CurrentGamemode = Gamemode.Freestyle;

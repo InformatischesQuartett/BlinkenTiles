@@ -56,7 +56,8 @@ struct ConfigSet
     public float FieldSizeX;
     public float FieldSizeY;
     public float FieldToleranceX;
-    public float FieldToleranceY; 
+    public float FieldToleranceY;
+    public int ImageFileUpdate;
     public float IdleDelay;
 	public float IdleResetDelay;
     public float[] ColorDefault;
