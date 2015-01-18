@@ -218,11 +218,11 @@ public class TileController : MonoBehaviour
         }
         _previousActiveCol = _activeCol;
 
-    /**
+    	/**
 		 * Check if IdleMode = true.
 		 * If IdleMode is active, set footprintCount tiles footprint textures and set them forceActive.
 		 **/
-		if (!Config.IdleMode) {
+		if (!Config.IdleMode && Config.CurrentGamemode == Gamemode.Freestyle) {
 			/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
 			Config.IdleMode = _idleTimer > Config.IdleDelay;
 
@@ -234,7 +234,7 @@ public class TileController : MonoBehaviour
 			}
 		}
 
-		if (Config.IdleMode) {
+		if (Config.IdleMode && Config.CurrentGamemode == Gamemode.Freestyle) {
 			/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
 			Config.IdleMode = _idleTimer > Config.IdleDelay;
 			if (!Config.IdleMode) {
