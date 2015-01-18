@@ -265,6 +265,7 @@ public class TileController : MonoBehaviour
             _timerCol = (_timerCol - (60 / Config.BPM)) + Time.fixedDeltaTime;
             _activeCol++;
             _beatCounter++;
+            
             if (_activeCol >= Config.Cols)
                 _activeCol = 0;
 
@@ -355,6 +356,7 @@ public class TileController : MonoBehaviour
 
         _activeCol = -1;
         _timerCol = 0;
+        
         _beatCounter = 0;
         _matrixReady = true;
         //FieldWidth = Config.Cols*(Config.TileWidth + Config.TileSpaceing);
@@ -437,6 +439,8 @@ public class TileController : MonoBehaviour
         float bmp = songRepo[num].Bpm;
         float duration = Config.PreheatDuration * (60 / bmp);
         networkSet.DemoTime = duration;
+        networkSet.Song.Title = songRepo[num].Titel;
+          
         using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
         {
             _writer.Serialize(file, networkSet);

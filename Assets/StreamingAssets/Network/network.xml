@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <NetworkSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ChallengeMode>true</ChallengeMode>
-  <DemoTime>42</DemoTime>
-</NetworkSet>>
+  <DemoTime>15.2380953</DemoTime>
+  <Song>
+    <Title>One</Title>
+  </Song>
+</NetworkSet>
