@@ -75,6 +75,12 @@ public struct NetworkSet
 {
     public bool ChallengeMode;
     public float DemoTime;
+    public NetworkSong Song;
+    public struct NetworkSong
+    {
+        public string Title;
+
+    }
 }
 
 public enum Highlighttype
