@@ -20,7 +20,6 @@ public class KinectManager
 
     public ushort[] DepthData { get; private set; }
 
-    private float _lastColorData;
     private readonly byte[] _colorData;
     private readonly ColorSpacePoint[] _colorSpacePoints;
 	public byte[, ,] ColorImage { get; private set; }
@@ -36,7 +35,6 @@ public class KinectManager
 
         _sampleMode = (_kinectSensor == null);
 
-		_lastColorData = 0;
         ColorImage = new byte[DepthHeight, DepthWidth, 3];
 
         if (_kinectSensor != null)
@@ -128,8 +126,6 @@ public class KinectManager
 				ColorImage[y, x, 2] = _colorData[colorIndex+2];
 			}
 		}
-
-		_lastColorData = Time.time;
 	}
 
     public void SaveDepthToFile()

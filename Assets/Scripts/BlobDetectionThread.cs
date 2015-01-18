@@ -18,7 +18,6 @@ public class BlobDetectionThread
     private volatile bool _updatedData;
 
     private volatile int _runCounter;
-    private float _lastImageUpdate;
 
     public BlobDetectionThread(KinectManager depthManager, TileController tileCtrl,
         BlobDetectionSettings detectionSettings, RenderDataCallback renderImageCallback)
@@ -33,7 +32,6 @@ public class BlobDetectionThread
         _updatedData = false;
 
         _runCounter = 0;
-        _lastImageUpdate = 0;
     }
 
     public void SetUpdatedData()
