@@ -305,7 +305,6 @@ public class TileController : MonoBehaviour
 
         GUI.Label(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height),
             Config.PreheatDuration - _beatCounter < Config.PreheatShowAt ? (Config.PreheatDuration- _beatCounter).ToString() : "GO");
-        Debug.Log("beatcounter: " +_beatCounter);
 
         GUI.skin.label.fontSize = 12;
         GUI.skin.label.alignment = TextAnchor.MiddleLeft;
@@ -344,12 +343,11 @@ public class TileController : MonoBehaviour
 					currentTile.Active = false;
 
                     currentTile.parentCol = currentTileCol;
-
+                    
                     currentTileCol.Tiles.Add(currentTile);
                 }
                 yStartTmp += yInc;
             }
-
             _matrix.Add(currentTileCol);
             
             xStart += xInc;
@@ -411,6 +409,7 @@ public class TileController : MonoBehaviour
 
         XmlSerializer _writer = new XmlSerializer(typeof(NetworkSet));
         NetworkSet networkSet = new NetworkSet();
+        networkSet.DemoTime = 42.0f;
 
         List<Song> songRepo = new List<Song>();
 
@@ -503,12 +502,12 @@ public class TileController : MonoBehaviour
 
                     _tempGameObjects.Add(tileFailSounds);
                 }
-
-                int[] bla = new int[songRepo[num].Tileset.Count + 2*Config.Cols + 1];
+                int[] bla = new int[songRepo[num].Tileset.Count + 2*Config.Cols*(Config.PreheatDuration/8) + 1];
                 Array.Clear(bla, 0, bla.Length);
-                songRepo[num].Tileset.CopyTo(bla, Config.Cols + 1);
+                songRepo[num].Tileset.CopyTo(bla, (Config.Cols*(Config.PreheatDuration/8)) + 1);
 
-                for (int i = 0; i < songRepo[num].Tileset.Count; i++)
+
+                for (int i = 0; i < songRepo[num].Tileset.Count + (Config.PreheatDuration/8); i++)
                 {
                     _matrix[i % Config.Cols].ChallengeIndex.Add(bla[i]);
                 }
