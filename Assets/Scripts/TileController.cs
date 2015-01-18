@@ -407,38 +407,53 @@ public class TileController : MonoBehaviour
 
         XmlSerializer _writer = new XmlSerializer(typeof(NetworkSet));
         NetworkSet networkSet = new NetworkSet();
-        networkSet.DemoTime = 42.0f;
 
+        Debug.Log(num);
+        
         List<Song> songRepo = new List<Song>();
 
+
+        
         if (songType == Songtype.Freestyle)
         {
-            networkSet.ChallengeMode = false;
-            using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
-            {
-                _writer.Serialize(file, networkSet);
-            }
-
             _currenGuiFunction = null;
 
             songRepo = Config.FreestyleSongs;
+            
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Freestyle;
-        }
-        else if (songType == Songtype.Challenge)
-        {
-            networkSet.ChallengeMode = true;
+            
+            //save values to network.xml
+            networkSet.ChallengeMode = false;
+            float bmp = songRepo[num].Bpm;
+            float duration = Config.PreheatDuration * (60 / bmp);
+            networkSet.DemoTime = duration;
             using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
             {
                 _writer.Serialize(file, networkSet);
             }
-
+        }
+        else if (songType == Songtype.Challenge)
+        {
             _currenGuiFunction = CountdownGUI;
 
             songRepo = Config.ChallengeSongs;
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Challenge;
+
+
+            //save values to network.xml
+            networkSet.ChallengeMode = true;
+            float bmp = songRepo[num].Bpm;
+            float duration = Config.PreheatDuration * (60 / bmp);
+            networkSet.DemoTime = duration;
+            using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
+            {
+                _writer.Serialize(file, networkSet);
+            }
         }
+
+        
 
         if (num < songRepo.Count)
         {
@@ -465,6 +480,7 @@ public class TileController : MonoBehaviour
             goTileSounds.transform.parent = _tempParent.transform;
             goTileSounds.transform.position = goTileSounds.transform.parent.position;
 
+            
             _tempGameObjects.Add(goTileSounds);
 
             for (int i = 0; i < songRepo[num].TileSoundFilePaths.Count; i++)
@@ -490,6 +506,8 @@ public class TileController : MonoBehaviour
                 goTileFailSounds.transform.position = goTileFailSounds.transform.parent.position;
                 _tempGameObjects.Add(goTileFailSounds);
 
+
+
                 for (int i = 0; i < songRepo[num].TileFailSoundFilePaths.Count; i++)
                 {
                     var tileFailSounds = new GameObject();
@@ -511,7 +529,8 @@ public class TileController : MonoBehaviour
                 }
             }
             Config.BPM = songRepo[num].Bpm;
-
+            
+            
             Config.LightColor[0] = (byte) songRepo[num].LightColor[0];
             Config.LightColor[1] = (byte) songRepo[num].LightColor[1];
             Config.LightColor[2] = (byte) songRepo[num].LightColor[2];
