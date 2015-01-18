@@ -74,6 +74,7 @@ struct ConfigSet
 public struct NetworkSet
 {
     public bool ChallengeMode;
+    public float DemoTime;
 }
 
 public enum Highlighttype
