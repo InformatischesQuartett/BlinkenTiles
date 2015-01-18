@@ -140,6 +140,7 @@ public class TileController : MonoBehaviour
                         if (previewIndex >= 0)
                         {
                             _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Preview;
+							_matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().SetBorder();
                         }
                     }
                 }
@@ -170,7 +171,7 @@ public class TileController : MonoBehaviour
 
                     if (previewIndex >= 0)
                     {
-                        if (_matrix[_activeCol].Tiles[i].Active || _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive)
+						if (_matrix[_activeCol].Tiles[i].Active || _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive)
                         {
                             if (previewIndex == i)
                             {
@@ -195,6 +196,9 @@ public class TileController : MonoBehaviour
                                 }
                             }
                         }
+
+						if (previewIndex == i)
+							_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ResetTexture();
                     }
                 }
 
@@ -560,7 +564,7 @@ public class TileController : MonoBehaviour
 			TileCol tileCol = _matrix [i];
 			foreach (Tile tile in tileCol.Tiles) {
 				if (tile.TileGo.GetComponent<TileBehaviour> ().ForceActive) {
-					tile.TileGo.GetComponent<TileBehaviour> ().ResetFootprint ();
+					tile.TileGo.GetComponent<TileBehaviour> ().ResetTexture ();
 				}
 			}//end foreach
 		} //end for
