@@ -31,6 +31,7 @@ public class TileController : MonoBehaviour
 
     private delegate void GUIFunction();
     private GUIFunction _currenGuiFunction;
+    private Texture2D dummyTexture;//will be replaced by RenderTexture
 
 	/*Timer start idle time and set up footprints after this certain time*/
 	private float _idleTimer = 0.0f;
@@ -46,7 +47,7 @@ public class TileController : MonoBehaviour
 	{
         _networkPath = Application.streamingAssetsPath + @"\Network";
         
-	    LoadCoundtownTextures();
+	    CoundtownBackgroundTexture();
 	    _currenGuiFunction = null;
 	    _lightController = this.GetComponent<LightController>();
         _tileParent = GameObject.Find("Tiles");
@@ -203,7 +204,7 @@ public class TileController : MonoBehaviour
                 }
 
                 //play song after countdown
-                if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == 9 && _activeCol != _previousActiveCol)
+                if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == Config.PreheatDuration && _activeCol != _previousActiveCol)
                 {
                     GameObject.FindGameObjectWithTag("Song").audio.Play();
                 }
@@ -249,11 +250,7 @@ public class TileController : MonoBehaviour
 				SetIdleBehaviour();
 				_idleResetTimer = 0.0f;
 			}
-
 		}
-
-
-
 	}
 
     void FixedUpdate()
@@ -271,7 +268,7 @@ public class TileController : MonoBehaviour
             if (_activeCol >= Config.Cols)
                 _activeCol = 0;
 
-            if (_beatCounter > 8)
+            if (_beatCounter > Config.PreheatDuration)
             {
                 _currenGuiFunction = null;
             }
@@ -285,13 +282,9 @@ public class TileController : MonoBehaviour
             _lightController.UpdateFaderValues(_activeCol, _timerCol);
     }
 
-    private void LoadCoundtownTextures()
+    private void CoundtownBackgroundTexture()
     {
-        for (int j = 0,  i = 8; i >= 0; j++,i--)
-        {
-            _numbers[j] = Resources.Load<Texture2D>("Textures/Countdown_" + (i));
-        }
-        _numbers[8] = Resources.Load<Texture2D>("Textures/Countdown_GO");
+        dummyTexture = Resources.Load<Texture2D>("Textures/dummy");
     }
 
     private void OnGUI()
@@ -300,17 +293,19 @@ public class TileController : MonoBehaviour
             _currenGuiFunction();
     }
 
+    
     private void CountdownGUI()
     {
         GUI.backgroundColor = new Color(1, 1, 1, 0.5f);
-        GUI.Box(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height), _numbers[_beatCounter]);
+        GUI.Box(new Rect(Screen.width / 2f, 0, Screen.width / 2f, Screen.height), dummyTexture);
 
         GUI.skin.label.alignment = TextAnchor.MiddleCenter;
         GUI.skin.label.fontSize = 400;
         GUI.color = new Color(0, 0, 0, 0.9f);
 
         GUI.Label(new Rect(Screen.width/2f, 0, Screen.width/2f, Screen.height),
-            8 - _beatCounter > 0 ? (8 - _beatCounter).ToString() : "GO");
+            Config.PreheatDuration - _beatCounter < Config.PreheatShowAt ? (Config.PreheatDuration- _beatCounter).ToString() : "GO");
+        Debug.Log("beatcounter: " +_beatCounter);
 
         GUI.skin.label.fontSize = 12;
         GUI.skin.label.alignment = TextAnchor.MiddleLeft;
