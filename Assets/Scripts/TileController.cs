@@ -27,8 +27,6 @@ public class TileController : MonoBehaviour
 
     private LightController _lightController;
 
-    private Texture2D[] _numbers = new Texture2D[9];
-
     private delegate void GUIFunction();
     private GUIFunction _currenGuiFunction;
     private Texture2D dummyTexture;//will be replaced by RenderTexture
