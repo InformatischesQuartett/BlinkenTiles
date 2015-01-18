@@ -1,13 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Net.Mime;
-using System.Xml;
 using System.Xml.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
-using UnityEditor;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class TileController : MonoBehaviour
@@ -20,6 +15,7 @@ public class TileController : MonoBehaviour
     private int _activeCol;
     private int _previousActiveCol;
     private int _beatCounter;
+    private int _killcounter;
 
     public float TimerField { get; private set; }
     public float FieldWidth { get; private set; }
@@ -62,68 +58,167 @@ public class TileController : MonoBehaviour
 	    _activeCol = 0;
 
         BuildTiles();
-        LoadSong(Songtype.Freestyle, 0);
+        LoadSong(Songtype.Challenge, 0);
     }
 	
 	// Update is called once per frame
-	void Update ()
-	{
+    private void Update()
+    {
         GetInputs();
-	   
-        if (_matrixReady)
+
+        if (_matrixReady && _activeCol >= 0)
         {
-            for (int i = 0; i < Config.Cols; i++)
+            if (Config.CurrentGamemode == Gamemode.Freestyle)
             {
-                TileCol tileCol = _matrix[i];
-                foreach (Tile tile in tileCol.Tiles)
+                //highlight pass
+                for (int i = 0; i < Config.Cols; i++)
                 {
-                    TileBehaviour tileScript = tile.TileGo.GetComponent<TileBehaviour>();
-                    if (i == _activeCol)
+                    for (int j = 0; j < Config.Rows; j++)
                     {
-                        if (tile.Active || tileScript.ForceActive)
-                        {
-                            tileScript.Highlight = Highlighttype.Hit;
-                            if (_activeCol != _previousActiveCol)
-                            {
-                                tileScript.Shake();
-
-                                var soundGo = GameObject.Find("Temp/TileSounds/" + tile.soundIndex);
-                                soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
-                            }
-                        }
-                        else
-                        {
-                            tileScript.Highlight = Highlighttype.Time;
-                        }
-                    }
-                    else
-                    {
-                        if (tile.Active || tileScript.ForceActive)
-                        {
-                            tileScript.Highlight = Highlighttype.Occupied;
-							if (tile.Active) {
-								_idleTimer = 0.0f;
-							}
-                        }
-                        else
-                        {
-                            tileScript.Highlight = Highlighttype.None;
-                        }
-                    }
-
-                    if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == 9 && _activeCol != _previousActiveCol)
-                    {
-                        GameObject.FindGameObjectWithTag("Song").audio.Play();
+                        _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.None;
                     }
                 }
+
+                //timer pass
+                for (int i = 0; i < Config.Rows; i++)
+                {
+                    _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Time;
+                }
+
+                //people pass
+                for (int i = 0; i < Config.Cols; i++)
+                {
+                    for (int j = 0; j < Config.Rows; j++)
+                    {
+                        if (_matrix[i].Tiles[j].Active || _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive)
+                            _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Occupied;
+                    }
+                }
+
+                //Shake 'n' Play pass
+                for (int i = 0; i < Config.Rows; i++)
+                {
+                    if (_matrix[_activeCol].Tiles[i].Active || _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive)
+                    {
+                        _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Hit;
+                        if (_activeCol != _previousActiveCol)
+                        {
+                            _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
+
+                            var soundGo = GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
+                            soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
+                        }
+                    }
+                }
+
             }
-            _previousActiveCol = _activeCol;
-            
+
+            else if (Config.CurrentGamemode == Gamemode.Challenge)
+            {
+                if (_matrix[_activeCol].ChallengeIndex.Count == 0)
+                    LoadSongRandom();
+
+                //highlight pass
+                for (int i = 0; i < Config.Cols; i++)
+                {
+                    for (int j = 0; j < Config.Rows; j++)
+                    {
+                        _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.None;
+                    }
+                }
+
+                //preview pass
+                for (int i = 0; i < Config.Cols; i++)
+                {
+                    if (_matrix[i].ChallengeIndex.Count > 0)
+                    {
+                        var previewIndex = _matrix[i].ChallengeIndex[0] - 1;
+
+                        if (previewIndex > Config.Rows)
+                            previewIndex -= Config.Rows;
+
+                        if (previewIndex >= 0)
+                        {
+                            _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Preview;
+                        }
+                    }
+                }
+
+                //timer pass
+                for (int i = 0; i < Config.Rows; i++)
+                {
+                    _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Time;
+                }
+
+                //people pass
+                for (int i = 0; i < Config.Cols; i++)
+                {
+                    for (int j = 0; j < Config.Rows; j++)
+                    {
+                        if (_matrix[i].Tiles[j].Active || _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive)
+                            _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Occupied;
+                    }
+                }
+
+                //Shake 'n' Play 'n' change preview pass
+                for (int i = 0; i < Config.Rows; i++)
+                {
+                    var previewIndex = _matrix[_activeCol].ChallengeIndex[0] -1;
+
+                    if (previewIndex > Config.Rows)
+                        previewIndex -= Config.Rows;
+
+                    if (previewIndex >= 0)
+                    {
+                        if (_matrix[_activeCol].Tiles[i].Active || _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive)
+                        {
+                            if (previewIndex == i)
+                            {
+                                _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Hit;
+                                if (_activeCol != _previousActiveCol)
+                                {
+                                    _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
+
+                                    var soundGo = GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
+                                    soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
+                                }
+                            }
+                            else
+                            {
+                                _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Fail;
+                                if (_activeCol != _previousActiveCol)
+                                {
+                                    _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
+
+                                    var soundGo = GameObject.Find("Temp/TileFailSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
+                                    soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //play song after countdown
+                if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == 9 && _activeCol != _previousActiveCol)
+                {
+                    GameObject.FindGameObjectWithTag("Song").audio.Play();
+                }
+            }
         }
+    }
 
+    void LateUpdate ()
+    {
+        if (_activeCol != _previousActiveCol && _activeCol >= 0)
+        {
+            if (_matrix[_activeCol].ChallengeIndex.Count > 0)
+            {
+                _matrix[_activeCol].ChallengeIndex.RemoveAt(0);
+            }
+        }
+        _previousActiveCol = _activeCol;
 
-		
-		/**
+    /**
 		 * Check if IdleMode = true.
 		 * If IdleMode is active, set footprintCount tiles footprint textures and set them forceActive.
 		 **/
@@ -278,9 +373,27 @@ public class TileController : MonoBehaviour
         BuildTiles();
     }
 
-    public void LoadSongRandom(Songtype songtype = Songtype.Freestyle)
+    public void LoadSongRandom(Songtype songType = Songtype.Freestyle)
     {
-            
+        List<Song> songRepo = new List<Song>();
+
+        if (songType == Songtype.Freestyle)
+        {
+            songRepo = Config.FreestyleSongs;
+        }
+        else if (songType == Songtype.Challenge)
+        {
+            songRepo = Config.ChallengeSongs;
+        }
+
+        if (songRepo.Count < 1)
+        {
+            LoadSong(Songtype.Freestyle, 0);
+        }
+        else
+        {
+            LoadSong(songType, Random.Range(0, songRepo.Count - 1));
+        }
     }
 
     
@@ -380,9 +493,13 @@ public class TileController : MonoBehaviour
                     _tempGameObjects.Add(tileFailSounds);
                 }
 
+                int[] bla = new int[songRepo[num].Tileset.Count + 2*Config.Cols + 1];
+                Array.Clear(bla, 0, bla.Length);
+                songRepo[num].Tileset.CopyTo(bla, Config.Cols + 1);
+
                 for (int i = 0; i < songRepo[num].Tileset.Count; i++)
                 {
-                    _matrix[i % Config.Cols].ChallengeIndex.Add(songRepo[num].Tileset[i]);
+                    _matrix[i % Config.Cols].ChallengeIndex.Add(bla[i]);
                 }
             }
             Config.BPM = songRepo[num].Bpm;
@@ -395,6 +512,7 @@ public class TileController : MonoBehaviour
             _activeCol = -1;
             _timerCol = 0;
             _beatCounter = 0;
+            _idleTimer = 0;
         }
     }
 
@@ -411,13 +529,14 @@ public class TileController : MonoBehaviour
 	/**
 	 * Changes Texture and forceActive when in IdleMode
 	 **/ 
-	private void SetIdleBehaviour () {
-		for (int i = 0; i < _footprintCount; i++) {
-			Debug.Log ("I am setting a footprint tex");
-			var randRow = Random.Range (0, Config.Rows);
-			var randColumn = Random.Range (0, Config.Cols);
+	private void SetIdleBehaviour() {
+		for (int i = 0; i < _footprintCount; i++)
+		{
+		    Debug.Log("I am setting a footprint tex");
+		    var randRow = Random.Range(0, Config.Rows);
+		    var randColumn = Random.Range(0, Config.Cols);
 
-			_matrix [randColumn].Tiles [randRow].TileGo.GetComponent<TileBehaviour> ().SetFootprint ();
+		    _matrix[randColumn].Tiles[randRow].TileGo.GetComponent<TileBehaviour>().SetFootprint();
 		}
 	}
 
@@ -448,8 +567,9 @@ public class TileController : MonoBehaviour
             RebuildTiles();
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
             LoadSong(Songtype.Freestyle, 0);
-        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+            _idleTimer = 0;
     }
 }
