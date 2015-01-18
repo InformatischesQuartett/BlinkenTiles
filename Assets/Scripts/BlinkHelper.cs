@@ -66,7 +66,10 @@ struct ConfigSet
     public float[] ColorOccupied;
     public float[] ColorPreview;
     public float[] ColorFail;
+    public int PreheatDuration;
+    public int PreheatShowAt;
 }
+
 
 public struct NetworkSet
 {
