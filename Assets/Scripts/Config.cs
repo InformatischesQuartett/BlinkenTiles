@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net.Mail;
 using UnityEngine;
 using Newtonsoft.Json;
 using ZedGraph;
@@ -54,6 +55,9 @@ public static class Config
 	public static float IdleDelay { get; set; }
 	public static float IdleResetDelay { get; set; }
 
+    public static int PreheatDuration { get; set; }
+    public static int PreheatShowAt { get; set; }
+
 
     static Config()
     {
@@ -81,6 +85,9 @@ public static class Config
         LightColor[3] = (byte) conf.LightColor[3];
 
         BPM = conf.BPM;
+
+        PreheatDuration = conf.PreheatDuration;
+        PreheatShowAt = conf.PreheatShowAt;
 
         // blob detection
         MinDepth = conf.MinDepth;
