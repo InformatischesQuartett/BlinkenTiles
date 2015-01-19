@@ -531,7 +531,6 @@ public class TileController : MonoBehaviour
         {
             if (_tempGameObjects.Count > 0)
             {
-
                 foreach (var tgo in _tempGameObjects)
                 {
                     Destroy(tgo);
@@ -564,6 +563,9 @@ public class TileController : MonoBehaviour
 
                 _tempGameObjects.Add(tilesounds);
             }
+
+            Config.PreheatDuration = songRepo[num].PreheatDuration;
+            Config.PreheatShowAt = songRepo[num].PreheatShowAt;
 
             if (songType == Songtype.Freestyle)
             {
