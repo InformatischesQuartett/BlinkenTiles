@@ -1,0 +1,8 @@
+{
+"Titel":"Track3",
+"BPM":170.0,
+"DoubleTiles":false,
+"SoundFilePath":"/Songs/Freestyle/Track3/track3_backing.wav",
+"TileSoundFilePaths":["/Songs/Freestyle/Track3/sound1.wav","/Songs/Freestyle/Track3/sound2.wav","/Songs/Freestyle/Track3/sound3.wav","/Songs/Freestyle/Track3/sound4.wav","/Songs/Freestyle/Track3/sound5.wav"],
+"LightColor":[128,128,0,64]
+}

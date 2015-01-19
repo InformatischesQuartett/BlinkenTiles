@@ -487,11 +487,8 @@ public class TileController : MonoBehaviour
 
     public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
     {
-        
-
         List<Song> songRepo = new List<Song>();
 
-        Debug.Log(songType);
         if (songType == Songtype.Freestyle)
         {
             _currenGuiFunction = null;
@@ -613,6 +610,11 @@ public class TileController : MonoBehaviour
         }
     }
 
+    public string GetSongTitle()
+    {
+        return _networkSet.Song.Title;
+    }
+
 	public void SetTileStatus(int col, int row, bool status)
 	{
 	    lock (_matrix[col].Tiles)
@@ -665,13 +667,13 @@ public class TileController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
             RebuildTiles();
 
-        if (Input.GetKeyDown(KeyCode.Alpha0))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
             LoadSong(Songtype.Challenge, 0);
 
-		if (Input.GetKeyDown(KeyCode.Alpha1))
+		if (Input.GetKeyDown(KeyCode.Alpha2))
 			LoadSong(Songtype.Challenge, 1);
 
-		if (Input.GetKeyDown(KeyCode.Alpha2))
+		if (Input.GetKeyDown(KeyCode.Alpha3))
 			LoadSong(Songtype.Challenge, 2);
 
 		if (Input.GetKeyDown(KeyCode.Alpha4))
@@ -682,6 +684,9 @@ public class TileController : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.Alpha6))
 			LoadSong(Songtype.Freestyle, 2);
+
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+            LoadSong(Songtype.Freestyle, 3);
 		
 		if (Input.GetKeyDown(KeyCode.I))
             _idleTimer = 0;

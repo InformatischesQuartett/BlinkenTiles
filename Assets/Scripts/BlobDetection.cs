@@ -164,6 +164,8 @@ public class BlobDetection : MonoBehaviour
         GUI.Label(new Rect(5, 0, 250, 25), "Performance: " + _mainFPS.ToString("F1") +
                                            " fps / " + _threadFPS.ToString("F1") + " fps");
 
+        GUI.Label(new Rect(5, 25, 250, 25), "Song: " + _tileController.GetSongTitle());
+
         GUI.backgroundColor = new Color(1, 1, 1, 0.4f);
         GUI.skin.box.normal.background = _whiteTex;
         GUI.skin.box.fontSize = 16;
@@ -193,6 +195,9 @@ public class BlobDetection : MonoBehaviour
 
         GUI.skin.label.fontSize = 12;
         GUI.EndGroup();
+
+		/* if (GUI.Button(new Rect(0, 0, 100, 100), "Save"))
+			_kinectManager.SaveDepthToFile(); */
     }
 
     private void OnApplicationQuit()
