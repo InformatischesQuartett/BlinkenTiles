@@ -58,6 +58,7 @@ public static class Config
     public static int PreheatDuration { get; set; }
     public static int PreheatShowAt { get; set; }
 
+    public static float SongLength { get; set; }
 
     static Config()
     {
