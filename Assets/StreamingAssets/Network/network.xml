@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <NetworkSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <ChallengeMode>True</ChallengeMode>
-  <DemoTime>6.193548</DemoTime>
-  <Song>Paint It Black</Song>
-  <Length>99.096</Length>
+  <ChallengeMode>False</ChallengeMode>
+  <DemoTime>0</DemoTime>
+  <Song>Track3</Song>
+  <Length>0</Length>
 </NetworkSet>
