@@ -23,6 +23,9 @@ public class TileBehaviour : MonoBehaviour
     private float _shakeDecay;
     private float _shakeIntensity;
 
+    public GameObject ExplosionGo;
+    private Vector3 _explosionOffset;
+
     public Highlighttype Highlight
     {
         get { return _isHighlight; }
@@ -84,6 +87,8 @@ public class TileBehaviour : MonoBehaviour
 	    _originPosition = transform.position;
         _originRotation = transform.rotation;
 
+        _explosionOffset = new Vector3(0,0,-2);
+
         ForceActive = false;
     }
 
@@ -112,6 +117,10 @@ public class TileBehaviour : MonoBehaviour
     {
         _shakeIntensity = 0.8f;
         _shakeDecay = 0.015f;
+
+        var splosion = Instantiate(ExplosionGo, transform.position + _explosionOffset, Quaternion.identity) as GameObject;
+        splosion.transform.parent = this.transform;
+
     }
 
 	public void SetBorder() {
