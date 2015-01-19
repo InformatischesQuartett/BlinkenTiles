@@ -78,8 +78,8 @@ public struct NetworkSet
     public NetworkSong Song;
     public struct NetworkSong
     {
-        public string Title;
-        public float Length;
+        public string Title; //name of the Song
+        public float Length; //length of the Song in seconds
     }
 }
 

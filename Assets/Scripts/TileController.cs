@@ -46,6 +46,7 @@ public class TileController : MonoBehaviour
 
     private string _networkPath;
     private NetworkSet _networkSet;
+    private float _timeSongStart;
 	// Use this for initialization
 	void Start ()
 	{
@@ -224,6 +225,7 @@ public class TileController : MonoBehaviour
                 {
                     GameObject.FindGameObjectWithTag("Song").audio.Play();
                     _networkSet.Song.Length = GameObject.FindGameObjectWithTag("Song").audio.clip.length;
+                    _timeSongStart = Time.time;
                     UpdateNeworkXML();
 
                 }
@@ -473,9 +475,12 @@ public class TileController : MonoBehaviour
                 case "Length":
                     element.InnerText = _networkSet.Song.Length.ToString();
                     break;
+                case "TimeRemaining":
+                    element.InnerText = _networkSet.Song.TimeRemaining.ToString();
+                    break;
 
                 default:
-                    Debug.Log("Warning: Ran into default Case in Config::Config()");
+                    Debug.Log("Illegal element");
                     break;
             }//end switch
         }//end foreach
@@ -506,8 +511,6 @@ public class TileController : MonoBehaviour
             _networkSet.DemoTime = duration;
             _networkSet.Song.Title = songRepo[num].Titel;
             _networkSet.Song.Length = 0;
-
-           
         }
         else if (songType == Songtype.Challenge)
         {
@@ -522,7 +525,7 @@ public class TileController : MonoBehaviour
             float duration = Config.PreheatDuration * (60 / bmp);
             _networkSet.DemoTime = duration;
             _networkSet.Song.Title = songRepo[num].Titel;
-            _networkSet.Song.Length = 0;//Config.SongLength;
+            _networkSet.Song.Length = 0;//Will be replace by the actual length of thesong, once itios loaded (after Coundown is over)
         }
 
         UpdateNeworkXML();
