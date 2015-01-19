@@ -309,7 +309,6 @@ public class TileController : MonoBehaviour
             _currenGuiFunction();
     }
 
-    
     private void CountdownGUI()
     {
         _countdownTexTimer += Time.deltaTime;
@@ -318,11 +317,6 @@ public class TileController : MonoBehaviour
         {
             _countdownTexture.Pause();
             audio.Pause();
-        }
-        else if (!_countdownTexture.isPlaying)
-        {
-            _countdownTexture.Play();
-            audio.Play();
         }
 
         GUI.color = new Color(1, 1, 1, Math.Min(0.7f, _countdownTexTimer/8f));
@@ -424,8 +418,6 @@ public class TileController : MonoBehaviour
 
     public void LoadSongRandom(Songtype songType = Songtype.Freestyle)
     {
-       
-
         List<Song> songRepo = new List<Song>();
 
         if (songType == Songtype.Freestyle)
@@ -493,6 +485,10 @@ public class TileController : MonoBehaviour
         {
             _currenGuiFunction = null;
 
+            for (int i = 0; i < Config.Cols; i++)
+                for (int j = 0; j < Config.Rows; j++)
+                    _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ResetTexture();
+
             songRepo = Config.FreestyleSongs;
             
             if (num < songRepo.Count)
@@ -507,6 +503,14 @@ public class TileController : MonoBehaviour
         }
         else if (songType == Songtype.Challenge)
         {
+            _countdownTexTimer = 0;
+
+            _countdownTexture.Stop();
+            _countdownTexture.Play();
+
+            audio.Stop();
+            audio.Play();
+
             _currenGuiFunction = CountdownGUI;
 
             songRepo = Config.ChallengeSongs;
@@ -548,7 +552,6 @@ public class TileController : MonoBehaviour
             goTileSounds.transform.parent = _tempParent.transform;
             goTileSounds.transform.position = goTileSounds.transform.parent.position;
 
-            
             _tempGameObjects.Add(goTileSounds);
 
             for (int i = 0; i < songRepo[num].TileSoundFilePaths.Count; i++)
@@ -585,15 +588,15 @@ public class TileController : MonoBehaviour
                     _tempGameObjects.Add(tileFailSounds);
                 }
 
-                int[] bla = new int[songRepo[num].Tileset.Count + 2*Config.Cols*(Config.PreheatDuration/8) + 1];
-                Array.Clear(bla, 0, bla.Length);
-                songRepo[num].Tileset.CopyTo(bla, (Config.Cols*(Config.PreheatDuration/8)));
+                int[] tileSet = new int[songRepo[num].Tileset.Count + 2*Config.Cols*(Config.PreheatDuration/8) + 1];
+                Array.Clear(tileSet, 0, tileSet.Length);
+                songRepo[num].Tileset.CopyTo(tileSet, (Config.Cols*(Config.PreheatDuration/8)));
 
+                foreach (var mat in _matrix)
+                    mat.ChallengeIndex.Clear();
 
                 for (int i = 0; i < songRepo[num].Tileset.Count + (Config.PreheatDuration/8); i++)
-                {
-                    _matrix[i % Config.Cols].ChallengeIndex.Add(bla[i]);
-                }
+                    _matrix[i % Config.Cols].ChallengeIndex.Add(tileSet[i]);
             }
 
             Config.BPM = songRepo[num].Bpm;

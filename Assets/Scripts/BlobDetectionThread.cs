@@ -132,9 +132,6 @@ public class BlobDetectionThread
                     if (_detectionSettings.RenderImgType == 3)
                         renderImage = PrepareRenderImage(imgThr);
 
-                    if (updateImages)
-                        imgThr.Save(@"Assets\StreamingAssets\Network\imgfile3.jpg");
-
                     // create grid
                     var cols = (int) _detectionSettings.GridSize.x;
                     var rows = (int) _detectionSettings.GridSize.y;
@@ -179,12 +176,12 @@ public class BlobDetectionThread
                             }
 
                             imgOrg.Draw(currentContour.BoundingRectangle, new Rgb(0, 255, 255), 2);
-                            imgThr.Draw(currentContour.BoundingRectangle, new Gray(127), 2);
+                            imgGray.Draw(currentContour.BoundingRectangle, new Gray(127), 2);
                         }
                     }
 
                     if (updateImages)
-                        imgThr.Save(@"Assets\StreamingAssets\Network\imgfile4.jpg");
+                        imgGray.Save(@"Assets\StreamingAssets\Network\imgfile3.jpg");
 
                     // set tile status
 	                for (int x = 0; x < cols; x++)
@@ -234,7 +231,7 @@ public class BlobDetectionThread
                         renderImage = PrepareRenderImage(imgOrg);
 
                     if (updateImages)
-                        imgOrgHelper.Save(@"Assets\StreamingAssets\Network\imgfile5.jpg");
+                        imgOrgHelper.Save(@"Assets\StreamingAssets\Network\imgfile4.jpg");
 
                     if (_detectionSettings.RenderImgType == 6)
                     {
