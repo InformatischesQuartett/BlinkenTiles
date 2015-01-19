@@ -475,10 +475,6 @@ public class TileController : MonoBehaviour
                 case "Length":
                     element.InnerText = _networkSet.Song.Length.ToString();
                     break;
-                case "TimeRemaining":
-                    element.InnerText = _networkSet.Song.TimeRemaining.ToString();
-                    break;
-
                 default:
                     Debug.Log("Illegal element");
                     break;
