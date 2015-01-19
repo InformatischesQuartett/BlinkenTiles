@@ -79,7 +79,7 @@ public struct NetworkSet
     public struct NetworkSong
     {
         public string Title;
-
+        public float Length;
     }
 }
 
