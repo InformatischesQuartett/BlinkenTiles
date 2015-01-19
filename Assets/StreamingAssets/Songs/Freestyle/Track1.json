@@ -1,6 +1,6 @@
 {
 "Titel":"Track1",
-"BPM":120.0,
+"BPM":180.0,
 "DoubleTiles":false,
 "SoundFilePath":"/Songs/Freestyle/Track1/track1_backing_e.wav",
 "TileSoundFilePaths":["/Songs/Freestyle/Track1/track1_sound1.wav","/Songs/Freestyle/Track1/track1_sound2.wav","/Songs/Freestyle/Track1/track1_sound3.wav","/Songs/Freestyle/Track1/track1_sound4.wav","/Songs/Freestyle/Track1/track1_sound5.wav"],
