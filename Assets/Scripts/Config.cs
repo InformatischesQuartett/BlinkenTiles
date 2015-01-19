@@ -87,9 +87,6 @@ public static class Config
 
         BPM = conf.BPM;
 
-        PreheatDuration = conf.PreheatDuration;
-        PreheatShowAt = conf.PreheatShowAt;
-
         // blob detection
         MinDepth = conf.MinDepth;
         MaxDepth = conf.MaxDepth;

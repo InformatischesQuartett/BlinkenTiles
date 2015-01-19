@@ -33,6 +33,8 @@ public struct Song
     public List<string> TileSoundFilePaths;
     public List<string> TileFailSoundFilePaths;
     public int[] LightColor;
+    public int PreheatDuration;
+    public int PreheatShowAt;
 }
 
 struct ConfigSet
@@ -66,8 +68,6 @@ struct ConfigSet
     public float[] ColorOccupied;
     public float[] ColorPreview;
     public float[] ColorFail;
-    public int PreheatDuration;
-    public int PreheatShowAt;
 }
 
 
