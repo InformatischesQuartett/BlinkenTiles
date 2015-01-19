@@ -1,10 +1,9 @@
 {
-"Titel":"One",
-"BPM":126.0,
-"DoubleTiles":false,
-"Tileset":[1,2,3,4,5,4,3,2,1,0,1,0,2,3,4,5,4,3,2,1,2,3,4,5,4,3,2,1,2,3,4,5,4,3,2,1,2,3,4,5,4,3,2,1,0,0,0,0,0,0,0,0,1,2,3,4,5,4,3,2,1,0,1,0,2,3,4,5,4,3,2,1,2,3,4,5,4,3,2,1,2,3,4,5,4,3,2,1,2,3,4,5,4,3,2,1,0,0,0,0,0,0,0,0],
-"SoundFilePath":"/Songs/Challenge/One/Beat.ogg",
-"TileSoundFilePaths":["/Songs/Challenge/One/One01.wav","/Songs/Challenge/One/One02.wav","/Songs/Challenge/One/One03.wav","/Songs/Challenge/One/One04.wav","/Songs/Challenge/One/One05.wav"],
-"TileFailSoundFilePaths":["/Songs/Freestyle/Lorde/Lorde05.wav","/Songs/Freestyle/Lorde/Lorde05.wav","/Songs/Freestyle/Lorde/Lorde05.wav","/Songs/Freestyle/Lorde/Lorde05.wav","/Songs/Freestyle/Lorde/Lorde05.wav"],
-"LightColor":[255,0,255,0]
+"Titel":"Swedish House Mafia - One",
+"BPM":508.0,
+"Tileset":[1,0,0,2,0,0,3,0,0,4,0,0,5,0,0,5,0,0,5,0,0,5,0,0,5,0,0,0,5,0,5,0,1,0,0,2,0,0,3,0,0,4,0,0,5,0,0,5,0,0,5,0,0,5,0,0,5,0,0,0,5,0,5,0,1,0,0,2,0,0,3,0,0,4,0,0,5,0,0,5,0,0,5,0,0,5,0,0,5,0,0,0,5,0,5,0,1,0,0,2,0,0,3,0,0,4,0,0,5,0,0,5,0,0,5,0,0,5,0,0,5,0,0,0,5,0,5,0,1,0,0,2,0,0,3,0,0,4,0,0,5,0,0,5,0,0,5,0,0,5,0,0,5,0,0,0,5,0,5,0,1,0,0,2,0,0,3,0,0,4,0,0,5,0,0,5,0,0,5,0,0,5,0,0,5,0,0,0,5,0,5,0,1,0,0,2,0,0,3,0,0,4,0,0,3,0,0,3,0,0,3,0,0,3,0,0,3,0,0,0,3,0,3,0,1,0,0,2,0,0,3,0,0,4,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,0,2,0,2,0,1,0,0,2,0,0,3,0,0,4,0,0,3,0,0,3,0,0,3,0,0,3,0,0,3,0,0,0,3,0,3,0,1,0,0,2,0,0,3,0,0,4,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,0,2,0,2,0,1,0,0,2,0,0,3,0,0,4,0,0,3,0,0,3,0,0,3,0,0,3,0,0,3,0,0,0,3,0,3,0,1,0,0,2,0,0,3,0,0,4,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,0,2,0,2,0,1,0,0,2,0,0,3,0,0,4,0,0,3,0,0,3,0,0,3,0,0,3,0,0,3,0,0,0,3,0,3,0,1,0,0,2,0,0,3,0,0,4,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,0,2,0,2,0,],
+"SoundFilePath":"/Songs/Challenge/One/one_backing.wav",
+"TileSoundFilePaths":["/Songs/Challenge/One/sound1.wav","/Songs/Challenge/One/sound2.wav","/Songs/Challenge/One/sound3.wav","/Songs/Challenge/One/sound4.wav","/Songs/Challenge/One/sound5.wav"],
+"TileFailSoundFilePaths":["/Songs/Challenge/Smoke/smoke_fail1.wav","/Songs/Challenge/Smoke/smoke_fail2.wav","/Songs/Challenge/Smoke/smoke_fail3.wav","/Songs/Challenge/Smoke/smoke_fail4.wav","/Songs/Challenge/Smoke/smoke_fail5.wav"],
+"LightColor":[128,128,0,64]
 }
