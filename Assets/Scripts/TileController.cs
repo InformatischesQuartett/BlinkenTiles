@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,7 +48,7 @@ public class TileController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-        _networkPath = Application.streamingAssetsPath + @"\Network";
+        _networkPath = Application.streamingAssetsPath + @"\Network\network.xml";
 
         _currenGuiFunction = null;
 	    _countdownTexTimer = 0;
@@ -417,6 +418,8 @@ public class TileController : MonoBehaviour
 
     public void LoadSongRandom(Songtype songType = Songtype.Freestyle)
     {
+       
+
         List<Song> songRepo = new List<Song>();
 
         if (songType == Songtype.Freestyle)
@@ -442,9 +445,13 @@ public class TileController : MonoBehaviour
     {
         XmlSerializer _writer = new XmlSerializer(typeof(NetworkSet));
         NetworkSet networkSet = new NetworkSet();
-        
+
+        XmlDocument xml = new XmlDocument();
+        xml.Load(_networkPath);
+
         List<Song> songRepo = new List<Song>();
-   
+
+        Debug.Log(songType);
         if (songType == Songtype.Freestyle)
         {
             _currenGuiFunction = null;
@@ -455,6 +462,40 @@ public class TileController : MonoBehaviour
                 Config.CurrentGamemode = Gamemode.Freestyle;
 
             networkSet.ChallengeMode = false;
+            float bmp = songRepo[num].Bpm;
+            float duration = Config.PreheatDuration * (60 / bmp);
+            networkSet.DemoTime = duration;
+            networkSet.Song.Title = songRepo[num].Titel;
+            networkSet.Song.Length = 000;//Config.SongLength;
+
+           //gets firs 
+		    XmlNodeList nodes = xml.GetElementsByTagName ("NetworkSet");
+		    foreach (XmlNode element in nodes[0].ChildNodes) {
+			
+			    switch (element.Name) {
+				    case "ChallengeMode":
+                            element.InnerText = "false";
+						    break;
+		
+				    case "DemoTime":
+						    element.InnerText = duration.ToString();
+						    break;
+		
+				    case "Song":
+                            element.InnerText = songRepo[num].Titel;
+						    break;
+                    case "Length":
+                            element.InnerText = 0.ToString();
+                            break;
+		
+				    default:
+						    Debug.Log ("Warning: Ran into default Case in Config::Config()");
+						    break;
+			    }//end switch
+		    }//end foreach
+
+
+            xml.Save(_networkPath);
         }
         else if (songType == Songtype.Challenge)
         {
@@ -465,17 +506,43 @@ public class TileController : MonoBehaviour
                 Config.CurrentGamemode = Gamemode.Challenge;
 
             networkSet.ChallengeMode = true;
-            
+            float bmp = songRepo[num].Bpm;
+            float duration = Config.PreheatDuration * (60 / bmp);
+            networkSet.DemoTime = duration;
+            networkSet.Song.Title = songRepo[num].Titel;
+            networkSet.Song.Length = 888;//Config.SongLength;
+
+
+            XmlNodeList nodes = xml.GetElementsByTagName("NetworkSet");
+            foreach (XmlNode element in nodes[0].ChildNodes)
+            {
+
+                switch (element.Name)
+                {
+                    case "ChallengeMode":
+                        element.InnerText = "true";
+                        break;
+
+                    case "DemoTime":
+                        element.InnerText = duration.ToString();
+                        break;
+
+                    case "Song":
+                        element.InnerText = songRepo[num].Titel;
+                        break;
+                    case "Length":
+                        element.InnerText = 444.ToString();
+                        break;
+
+                    default:
+                        Debug.Log("Warning: Ran into default Case in Config::Config()");
+                        break;
+                }//end switch
+            }//end foreach
+
+            xml.Save(_networkPath);
         }
-        float bmp = songRepo[num].Bpm;
-        float duration = Config.PreheatDuration * (60 / bmp);
-        networkSet.DemoTime = duration;
-        networkSet.Song.Title = songRepo[num].Titel;
-          
-        using (FileStream file = File.OpenWrite(_networkPath + @"\network.xml"))
-        {
-            _writer.Serialize(file, networkSet);
-        }
+        
 
         if (num < songRepo.Count)
         {

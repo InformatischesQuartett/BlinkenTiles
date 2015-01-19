@@ -22,6 +22,7 @@ public class AudioClipLoader : MonoBehaviour {
     {
         yield return www;
         audio.clip = www.audioClip;
+        Config.SongLength = audio.clip.length;
     }
 
     public void Update()
