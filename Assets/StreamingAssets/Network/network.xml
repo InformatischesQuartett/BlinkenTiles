@@ -2,6 +2,6 @@
 <NetworkSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ChallengeMode>False</ChallengeMode>
   <DemoTime>0</DemoTime>
-  <Song>Track3</Song>
+  <Song>Track2</Song>
   <Length>0</Length>
 </NetworkSet>
