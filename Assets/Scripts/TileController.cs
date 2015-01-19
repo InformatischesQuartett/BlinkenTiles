@@ -69,7 +69,7 @@ public class TileController : MonoBehaviour
 	    _activeCol = 0;
 
         BuildTiles();
-        LoadSong(Songtype.Challenge, 1);
+        LoadSong(Songtype.Freestyle, 2);
     }
 	
 	// Update is called once per frame
@@ -341,8 +341,8 @@ public class TileController : MonoBehaviour
                 GUI.Label(lbRect, (Config.PreheatDuration - _beatCounter).ToString());
             else
             {
-                GUI.skin.label.fontSize = 80;
-                GUI.Label(lbRect, "Paint It Black");
+                GUI.skin.label.fontSize = 70;
+                GUI.Label(lbRect, _networkSet.Song.Title);
             }
 
             GUI.skin.label.font = _defaultFont;
@@ -621,6 +621,9 @@ public class TileController : MonoBehaviour
 	        var tile = _matrix[col].Tiles[row];
 	        tile.Active = status;
 	        _matrix[col].Tiles[row] = tile;
+
+            if (status)
+                _idleTimer = 0;
 	    }
 	}
 
@@ -664,9 +667,24 @@ public class TileController : MonoBehaviour
             RebuildTiles();
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
-            LoadSong(Songtype.Challenge, 1);
+            LoadSong(Songtype.Challenge, 0);
 
-        if (Input.GetKeyDown(KeyCode.I))
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+			LoadSong(Songtype.Challenge, 1);
+
+		if (Input.GetKeyDown(KeyCode.Alpha2))
+			LoadSong(Songtype.Challenge, 2);
+
+		if (Input.GetKeyDown(KeyCode.Alpha4))
+			LoadSong(Songtype.Freestyle, 0);
+
+		if (Input.GetKeyDown(KeyCode.Alpha5))
+			LoadSong(Songtype.Freestyle, 1);
+
+		if (Input.GetKeyDown(KeyCode.Alpha6))
+			LoadSong(Songtype.Freestyle, 2);
+		
+		if (Input.GetKeyDown(KeyCode.I))
             _idleTimer = 0;
     }
 }
