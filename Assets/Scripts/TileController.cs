@@ -45,11 +45,12 @@ public class TileController : MonoBehaviour
 
 
     private string _networkPath;
+    private NetworkSet _networkSet;
 	// Use this for initialization
 	void Start ()
 	{
         _networkPath = Application.streamingAssetsPath + @"\Network\network.xml";
-
+        _networkSet = new NetworkSet();
         _currenGuiFunction = null;
 	    _countdownTexTimer = 0;
 
@@ -222,6 +223,9 @@ public class TileController : MonoBehaviour
 				if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == Config.PreheatDuration+1 && _activeCol != _previousActiveCol)
                 {
                     GameObject.FindGameObjectWithTag("Song").audio.Play();
+                    _networkSet.Song.Length = GameObject.FindGameObjectWithTag("Song").audio.clip.length;
+                    UpdateNeworkXML();
+
                 }
             }
         }
@@ -440,14 +444,49 @@ public class TileController : MonoBehaviour
             LoadSong(songType, Random.Range(0, songRepo.Count - 1));
         }
     }
-    
-    public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
+
+    private void UpdateNeworkXML()
     {
         XmlSerializer _writer = new XmlSerializer(typeof(NetworkSet));
-        NetworkSet networkSet = new NetworkSet();
 
         XmlDocument xml = new XmlDocument();
         xml.Load(_networkPath);
+
+        //gets firs 
+        XmlNodeList nodes = xml.GetElementsByTagName("NetworkSet");
+        foreach (XmlNode element in nodes[0].ChildNodes)
+        {
+
+            switch (element.Name)
+            {
+                case "ChallengeMode":
+                    element.InnerText = _networkSet.ChallengeMode.ToString();
+                    break;
+
+                case "DemoTime":
+                    element.InnerText = _networkSet.DemoTime.ToString();
+                    break;
+
+                case "Song":
+                    element.InnerText = _networkSet.Song.Title;
+                    break;
+                case "Length":
+                    element.InnerText = _networkSet.Song.Length.ToString();
+                    break;
+
+                default:
+                    Debug.Log("Warning: Ran into default Case in Config::Config()");
+                    break;
+            }//end switch
+        }//end foreach
+
+
+        xml.Save(_networkPath);
+    }
+
+    public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
+    {
+        
 
         List<Song> songRepo = new List<Song>();
 
@@ -461,41 +500,14 @@ public class TileController : MonoBehaviour
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Freestyle;
 
-            networkSet.ChallengeMode = false;
+            _networkSet.ChallengeMode = false;
             float bmp = songRepo[num].Bpm;
             float duration = Config.PreheatDuration * (60 / bmp);
-            networkSet.DemoTime = duration;
-            networkSet.Song.Title = songRepo[num].Titel;
-            networkSet.Song.Length = 000;//Config.SongLength;
+            _networkSet.DemoTime = duration;
+            _networkSet.Song.Title = songRepo[num].Titel;
+            _networkSet.Song.Length = 0;
 
-           //gets firs 
-		    XmlNodeList nodes = xml.GetElementsByTagName ("NetworkSet");
-		    foreach (XmlNode element in nodes[0].ChildNodes) {
-			
-			    switch (element.Name) {
-				    case "ChallengeMode":
-                            element.InnerText = "false";
-						    break;
-		
-				    case "DemoTime":
-						    element.InnerText = duration.ToString();
-						    break;
-		
-				    case "Song":
-                            element.InnerText = songRepo[num].Titel;
-						    break;
-                    case "Length":
-                            element.InnerText = 0.ToString();
-                            break;
-		
-				    default:
-						    Debug.Log ("Warning: Ran into default Case in Config::Config()");
-						    break;
-			    }//end switch
-		    }//end foreach
-
-
-            xml.Save(_networkPath);
+           
         }
         else if (songType == Songtype.Challenge)
         {
@@ -505,44 +517,15 @@ public class TileController : MonoBehaviour
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Challenge;
 
-            networkSet.ChallengeMode = true;
+            _networkSet.ChallengeMode = true;
             float bmp = songRepo[num].Bpm;
             float duration = Config.PreheatDuration * (60 / bmp);
-            networkSet.DemoTime = duration;
-            networkSet.Song.Title = songRepo[num].Titel;
-            networkSet.Song.Length = 888;//Config.SongLength;
-
-
-            XmlNodeList nodes = xml.GetElementsByTagName("NetworkSet");
-            foreach (XmlNode element in nodes[0].ChildNodes)
-            {
-
-                switch (element.Name)
-                {
-                    case "ChallengeMode":
-                        element.InnerText = "true";
-                        break;
-
-                    case "DemoTime":
-                        element.InnerText = duration.ToString();
-                        break;
-
-                    case "Song":
-                        element.InnerText = songRepo[num].Titel;
-                        break;
-                    case "Length":
-                        element.InnerText = 444.ToString();
-                        break;
-
-                    default:
-                        Debug.Log("Warning: Ran into default Case in Config::Config()");
-                        break;
-                }//end switch
-            }//end foreach
-
-            xml.Save(_networkPath);
+            _networkSet.DemoTime = duration;
+            _networkSet.Song.Title = songRepo[num].Titel;
+            _networkSet.Song.Length = 0;//Config.SongLength;
         }
-        
+
+        UpdateNeworkXML();
 
         if (num < songRepo.Count)
         {
