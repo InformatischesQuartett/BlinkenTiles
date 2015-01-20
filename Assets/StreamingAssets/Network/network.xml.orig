@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<NetworkSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ChallengeMode>False</ChallengeMode>
+  <DemoTime>0</DemoTime>
+  <Song>Track2</Song>
+  <Length>0</Length>
+<<<<<<< HEAD
+  <Points>0</Points>
+=======
+>>>>>>> f256f549574004314a7a9be945b67b202e68f680
+</NetworkSet>

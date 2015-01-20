@@ -165,10 +165,10 @@ public class BlobDetectionThread
                                 for (int y = 0; y < rows; y++)
                                 {
                                     var grRect = new Rectangle(
-                                        (int)(gridLoc.x + x * fieldSize.x + fieldTol.x),
-                                        (int)(gridLoc.y + y * fieldSize.y + fieldTol.y),
-                                        (int)(fieldSize.x - 2 * fieldTol.x),
-                                        (int)(fieldSize.y - 2 * fieldTol.y));
+                                        (int) (gridLoc.x + x*fieldSize.x + fieldTol.x/2f),
+                                        (int) (gridLoc.y + y*fieldSize.y + fieldTol.y/2f),
+                                        (int) (fieldSize.x - fieldTol.x),
+                                        (int) (fieldSize.y - fieldTol.y));
 
                                     if (bdRect.IntersectsWith(grRect))
                                         objGrid[x, y] = true;
@@ -206,10 +206,10 @@ public class BlobDetectionThread
                                 (int) fieldSize.y);
 
                             var tolRect = new Rectangle(
-                                (int) (gridLoc.x + x*fieldSize.x + fieldTol.x),
-                                (int) (gridLoc.y + y*fieldSize.y + fieldTol.y),
-                                (int) (fieldSize.x - 2*fieldTol.x),
-                                (int) (fieldSize.y - 2*fieldTol.y));
+                                (int) (gridLoc.x + x*fieldSize.x + fieldTol.x/2f),
+                                (int) (gridLoc.y + y*fieldSize.y + fieldTol.y/2f),
+                                (int) (fieldSize.x - fieldTol.x),
+                                (int) (fieldSize.y - fieldTol.y));
 
                             blendImg.Draw(nonRect, new Rgb(0, 255, 0), objGrid[x, y] ? -1 : 2);
 
