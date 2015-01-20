@@ -72,8 +72,9 @@ public class TileController : MonoBehaviour
         BuildTiles();
         LoadSong(Songtype.Freestyle, 2);
     }
-	
-	// Update is called once per frame
+
+    private int points = 0;
+    // Update is called once per frame
     private void Update()
     {
         GetInputs();
@@ -127,6 +128,7 @@ public class TileController : MonoBehaviour
             if (Config.CurrentGamemode == Gamemode.Challenge)
             {
                 if (_matrix[_activeCol].ChallengeIndex.Count == 0) {
+                    UpdateNeworkXML();
                     LoadSongRandom();
 					return;
 				}
@@ -175,12 +177,18 @@ public class TileController : MonoBehaviour
                     {
 						if (_matrix[i].Tiles[j].Active || _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive) {
                             _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Occupied;
+                            
+						    if (i == _activeCol)
+						    {
+						        peopleInActiveCol = true;
+                                
+						    }
 
-							if (i == _activeCol)
-								peopleInActiveCol = true;
 						}
                     }
                 }
+
+                
 
                 //Shake 'n' Play 'n' change preview pass
 				if (_beatCounter <= Config.PreheatDuration)
@@ -198,6 +206,7 @@ public class TileController : MonoBehaviour
 
                     if (previewIndex == i && (active || !peopleInActiveCol))
                     {
+                        
                    		_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Hit;
                         if (_activeCol != _previousActiveCol)
                         {
@@ -205,6 +214,15 @@ public class TileController : MonoBehaviour
 
                             var soundGo = GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
                             soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
+                            if (peopleInActiveCol)
+                            {
+                                //Count good points
+                                points++;
+                                _networkSet.Song.Points = points;
+                                UpdateNeworkXML();
+                                Debug.Log(_networkSet.Song.Points);
+                            }
+                            
                         }
                     }
 					else if (active && previewIndex != i)
@@ -222,7 +240,8 @@ public class TileController : MonoBehaviour
 
                 //play song after countdown
 				if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == Config.PreheatDuration+1 && _activeCol != _previousActiveCol)
-                {
+				{
+				    _networkSet.Song.Points = 0;
                     GameObject.FindGameObjectWithTag("Song").audio.Play();
                     _networkSet.Song.Length = GameObject.FindGameObjectWithTag("Song").audio.clip.length;
                     _timeSongStart = Time.time;
@@ -467,6 +486,9 @@ public class TileController : MonoBehaviour
                 case "Length":
                     element.InnerText = _networkSet.Song.Length.ToString();
                     break;
+                case "Points":
+                    element.InnerText = _networkSet.Song.Points.ToString();
+                    break;
                 default:
                     Debug.Log("Illegal element");
                     break;
@@ -496,10 +518,12 @@ public class TileController : MonoBehaviour
 
             _networkSet.ChallengeMode = false;
             float bmp = songRepo[num].Bpm;
-            float duration = Config.PreheatDuration * (60 / bmp);
+            float duration = songRepo[num].PreheatDuration * (60 / bmp);
             _networkSet.DemoTime = duration;
             _networkSet.Song.Title = songRepo[num].Titel;
+            
             _networkSet.Song.Length = 0;
+            _networkSet.Song.Points = 0;
         }
         else if (songType == Songtype.Challenge)
         {
@@ -519,10 +543,12 @@ public class TileController : MonoBehaviour
 
             _networkSet.ChallengeMode = true;
             float bmp = songRepo[num].Bpm;
-            float duration = Config.PreheatDuration * (60 / bmp);
+            float duration = songRepo[num].PreheatDuration * (60 / bmp);
+            Debug.Log(duration);
             _networkSet.DemoTime = duration;
             _networkSet.Song.Title = songRepo[num].Titel;
             _networkSet.Song.Length = 0;//Will be replace by the actual length of thesong, once itios loaded (after Coundown is over)
+            _networkSet.Song.Points = 0;
         }
 
         UpdateNeworkXML();
