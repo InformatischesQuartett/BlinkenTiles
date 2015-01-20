@@ -15,7 +15,7 @@ public class splosion : MonoBehaviour
 	void Update ()
 	{
 	    _lifetime -= Time.deltaTime;
-	    Debug.Log(_lifetime);
+
         if (_lifetime < 0)
             Destroy(gameObject);
 	}
