@@ -1,30 +1,25 @@
 ﻿using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class TileBehaviour : MonoBehaviour
 {
-    private float _tileWidth;
-    private float _tileHeight;
-    private Rect _positionRect;
-
-	private Texture2D _footprintHuman;
-	private Texture2D _footprintDino;
-	private Texture2D _footprintDog;
-
-	private Texture2D _tileBorder;
+    public GameObject ExplosionGo;
+    private Vector3 _explosionOffset;
+    private Texture2D _footprintDino;
+    private Texture2D _footprintDog;
+    private Texture2D _footprintHuman;
 
     private Highlighttype _isHighlight;
-
-    public bool ForceActive { get; set; }
 
     //Shake stuff
     private Vector3 _originPosition;
     private Quaternion _originRotation;
+    private Rect _positionRect;
     private float _shakeDecay;
     private float _shakeIntensity;
-
-    public GameObject ExplosionGo;
-    private Vector3 _explosionOffset;
+    private Texture2D _tileBorder;
+    private float _tileHeight;
+    private float _tileWidth;
+    public bool ForceActive { get; set; }
 
     public Highlighttype Highlight
     {
@@ -72,11 +67,11 @@ public class TileBehaviour : MonoBehaviour
         _positionRect.width = _tileWidth;
         _positionRect.height = _tileHeight;
 
-		_footprintHuman = (Texture2D) Resources.Load ("Textures/Footprints_human", typeof(Texture2D));
-		_footprintDino = (Texture2D) Resources.Load ("Textures/Footprints_dino", typeof(Texture2D));
-		_footprintDog = (Texture2D) Resources.Load ("Textures/Footprints_dog", typeof(Texture2D));
+        _footprintHuman = (Texture2D) Resources.Load("Textures/Footprints_human", typeof (Texture2D));
+        _footprintDino = (Texture2D) Resources.Load("Textures/Footprints_dino", typeof (Texture2D));
+        _footprintDog = (Texture2D) Resources.Load("Textures/Footprints_dog", typeof (Texture2D));
 
-		_tileBorder = (Texture2D) Resources.Load ("Textures/Tile_border", typeof(Texture2D));
+        _tileBorder = (Texture2D) Resources.Load("Textures/Tile_border", typeof (Texture2D));
 
         var mat = new Material(Shader.Find(Config.ShaderType));
 
@@ -84,10 +79,10 @@ public class TileBehaviour : MonoBehaviour
         renderer.material.SetColor("_Color", Config.ColorDefault);
         Highlight = Highlighttype.None;
 
-	    _originPosition = transform.position;
+        _originPosition = transform.position;
         _originRotation = transform.rotation;
 
-        _explosionOffset = new Vector3(0,0,-2);
+        _explosionOffset = new Vector3(0, 0, -2);
 
         ForceActive = false;
     }
@@ -110,51 +105,56 @@ public class TileBehaviour : MonoBehaviour
             transform.position = _originPosition;
             transform.rotation = _originRotation;
         }
-
-   }
+    }
 
     public void Shake()
     {
         _shakeIntensity = 0.8f;
         _shakeDecay = 0.015f;
 
-        var splosion = Instantiate(ExplosionGo, transform.position + _explosionOffset, Quaternion.identity) as GameObject;
-        splosion.transform.parent = this.transform;
-
+        var splosion =
+            Instantiate(ExplosionGo, transform.position + _explosionOffset, Quaternion.identity) as GameObject;
+        splosion.transform.parent = transform;
     }
 
-	public void SetBorder() {
-		renderer.material.SetTexture ("_MainTex", _tileBorder);
-	}
+    public void SetBorder()
+    {
+        renderer.material.SetTexture("_MainTex", _tileBorder);
+    }
 
-	/**
+    /**
 	 * Sets random Footprint texture.
 	 **/
-	public void SetFootprint () {
-		var randNumber = Random.Range (1, 4);
 
-		switch (randNumber) {
-			case 1:
-				renderer.material.SetTexture ("_MainTex", _footprintHuman);
-				break;
-			case 2:
-				renderer.material.SetTexture ("_MainTex", _footprintDino);
-				break;
-			case 3:
-				renderer.material.SetTexture ("_MainTex", _footprintDog);
-				break;
-		}
+    public void SetFootprint()
+    {
+        int randNumber = Random.Range(1, 4);
 
-		ForceActive = true;
-	}
+        switch (randNumber)
+        {
+            case 1:
+                renderer.material.SetTexture("_MainTex", _footprintHuman);
+                break;
+            case 2:
+                renderer.material.SetTexture("_MainTex", _footprintDino);
+                break;
+            case 3:
+                renderer.material.SetTexture("_MainTex", _footprintDog);
+                break;
+        }
 
-	/**
+        ForceActive = true;
+    }
+
+    /**
 	 * Resets/removes Footprint texture.
 	 **/
-	public void ResetTexture () {
-		renderer.material.SetTexture ("_MainTex", null);
-		ForceActive = false;
-	}
+
+    public void ResetTexture()
+    {
+        renderer.material.SetTexture("_MainTex", null);
+        ForceActive = false;
+    }
 
     private void OnMouseDown()
     {

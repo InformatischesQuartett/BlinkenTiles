@@ -1,79 +1,70 @@
 ﻿using System;
-using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class TileController : MonoBehaviour
 {
     public GameObject TilePrefab;
-    private GameObject _tileParent;
-    private GameObject _tempParent;
-
-    private float _timerCol;
     private int _activeCol;
-    private int _previousActiveCol;
     private int _beatCounter;
-    private int _killcounter;
-
-    public float TimerField { get; private set; }
-    public float FieldWidth { get; private set; }
-
-    private bool _matrixReady;
-    private List<TileCol> _matrix;
-
-    private List<GameObject> _tempGameObjects;
-
-    private LightController _lightController;
-
-    private delegate void GUIFunction();
-    private GUIFunction _currenGuiFunction;
-
-    private Font _defaultFont;
     private Font _countdownFont;
     private float _countdownTexTimer;
     private MovieTexture _countdownTexture;
+    private GUIFunction _currenGuiFunction;
 
-	/*Timer start idle time and set up footprints after this certain time*/
-	private float _idleTimer = 0.0f;
-	/*Timer to reset idlemode footprints after this certain time*/
-	private float _idleResetTimer = 0.0f;
-	/*Determines how many footprints are allowed on the field*/
-	private int _footprintCount = 4;
+    private Font _defaultFont;
+
+    /*Timer start idle time and set up footprints after this certain time*/
+    /*Determines how many footprints are allowed on the field*/
+    private int _footprintCount = 4;
+    private float _idleResetTimer;
+    private float _idleTimer;
+    private int _killcounter;
+    private LightController _lightController;
+    private List<TileCol> _matrix;
+    private bool _matrixReady;
 
 
     private string _networkPath;
     private NetworkSet _networkSet;
-    private float _timeSongStart;
-	// Use this for initialization
-	void Start ()
-	{
+    private int _previousActiveCol;
+    private List<GameObject> _tempGameObjects;
+    private GameObject _tempParent;
+    private GameObject _tileParent;
+    private float _timerCol;
+    // Use this for initialization
+
+    private int points;
+    public float TimerField { get; private set; }
+    public float FieldWidth { get; private set; }
+
+    private void Start()
+    {
         _networkPath = Application.streamingAssetsPath + @"\Network\network.xml";
         _networkSet = new NetworkSet();
         _currenGuiFunction = null;
-	    _countdownTexTimer = 0;
+        _countdownTexTimer = 0;
 
-	    _defaultFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
-	    _countdownFont = Resources.Load<Font>("BankGothic");
+        _defaultFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        _countdownFont = Resources.Load<Font>("BankGothic");
         _countdownTexture = Resources.Load<MovieTexture>("Textures/ChallengeMode");
         audio.clip = _countdownTexture.audioClip;
 
-	    _lightController = this.GetComponent<LightController>();
+        _lightController = GetComponent<LightController>();
         _tileParent = GameObject.Find("Tiles");
         _tempParent = GameObject.Find("Temp");
 
         _matrix = new List<TileCol>();
         _tempGameObjects = new List<GameObject>();
 
-	    _activeCol = 0;
+        _activeCol = 0;
 
         BuildTiles();
         LoadSong(Songtype.Freestyle, 2);
     }
 
-    private int points = 0;
     // Update is called once per frame
     private void Update()
     {
@@ -103,7 +94,8 @@ public class TileController : MonoBehaviour
                 {
                     for (int j = 0; j < Config.Rows; j++)
                     {
-                        if (_matrix[i].Tiles[j].Active || _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive)
+                        if (_matrix[i].Tiles[j].Active ||
+                            _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive)
                             _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Occupied;
                     }
                 }
@@ -111,14 +103,16 @@ public class TileController : MonoBehaviour
                 //Shake 'n' Play pass
                 for (int i = 0; i < Config.Rows; i++)
                 {
-                    if (_matrix[_activeCol].Tiles[i].Active || _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive)
+                    if (_matrix[_activeCol].Tiles[i].Active ||
+                        _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive)
                     {
                         _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Hit;
                         if (_activeCol != _previousActiveCol)
                         {
                             _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
 
-                            var soundGo = GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
+                            GameObject soundGo =
+                                GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
                             soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
                         }
                     }
@@ -127,11 +121,12 @@ public class TileController : MonoBehaviour
 
             if (Config.CurrentGamemode == Gamemode.Challenge)
             {
-                if (_matrix[_activeCol].ChallengeIndex.Count == 0) {
+                if (_matrix[_activeCol].ChallengeIndex.Count == 0)
+                {
                     UpdateNeworkXML();
                     LoadSongRandom();
-					return;
-				}
+                    return;
+                }
 
                 //highlight pass
                 for (int i = 0; i < Config.Cols; i++)
@@ -148,7 +143,7 @@ public class TileController : MonoBehaviour
                 {
                     if (_matrix[i].ChallengeIndex.Count > 0)
                     {
-                        var previewIndex = _matrix[i].ChallengeIndex[0] - 1;
+                        int previewIndex = _matrix[i].ChallengeIndex[0] - 1;
                         //Debug.Log("Spalte " + i + ": " + _matrix[i].ChallengeIndex.Count + " -> " + previewIndex);
 
                         if (previewIndex >= Config.Rows)
@@ -156,8 +151,9 @@ public class TileController : MonoBehaviour
 
                         if (previewIndex >= 0)
                         {
-                            _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Preview;
-							_matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().SetBorder();
+                            _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().Highlight =
+                                Highlighttype.Preview;
+                            _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().SetBorder();
                         }
                     }
                 }
@@ -169,50 +165,49 @@ public class TileController : MonoBehaviour
                 }
 
                 //people pass
-				var peopleInActiveCol = false;
+                bool peopleInActiveCol = false;
 
                 for (int i = 0; i < Config.Cols; i++)
                 {
                     for (int j = 0; j < Config.Rows; j++)
                     {
-						if (_matrix[i].Tiles[j].Active || _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive) {
+                        if (_matrix[i].Tiles[j].Active ||
+                            _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ForceActive)
+                        {
                             _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Occupied;
-                            
-						    if (i == _activeCol)
-						    {
-						        peopleInActiveCol = true;
-                                
-						    }
 
-						}
+                            if (i == _activeCol)
+                            {
+                                peopleInActiveCol = true;
+                            }
+                        }
                     }
                 }
 
-                
 
                 //Shake 'n' Play 'n' change preview pass
-				if (_beatCounter <= Config.PreheatDuration)
-					return;
+                if (_beatCounter <= Config.PreheatDuration)
+                    return;
 
                 for (int i = 0; i < Config.Rows; i++)
                 {
-                    var previewIndex = _matrix[_activeCol].ChallengeIndex[0] - 1;
+                    int previewIndex = _matrix[_activeCol].ChallengeIndex[0] - 1;
 
                     if (previewIndex >= Config.Rows)
                         previewIndex -= Config.Rows;
 
-					var active = _matrix[_activeCol].Tiles[i].Active ||
-						_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive;
+                    bool active = _matrix[_activeCol].Tiles[i].Active ||
+                                  _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().ForceActive;
 
                     if (previewIndex == i && (active || !peopleInActiveCol))
                     {
-                        
-                   		_matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Hit;
+                        _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Hit;
                         if (_activeCol != _previousActiveCol)
                         {
                             _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
 
-                            var soundGo = GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
+                            GameObject soundGo =
+                                GameObject.Find("Temp/TileSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
                             soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
                             if (peopleInActiveCol)
                             {
@@ -222,37 +217,36 @@ public class TileController : MonoBehaviour
                                 UpdateNeworkXML();
                                 Debug.Log(_networkSet.Song.Points);
                             }
-                            
                         }
                     }
-					else if (active && previewIndex != i)
+                    else if (active && previewIndex != i)
                     {
                         _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Highlight = Highlighttype.Fail;
                         if (_activeCol != _previousActiveCol)
                         {
                             _matrix[_activeCol].Tiles[i].TileGo.GetComponent<TileBehaviour>().Shake();
 
-                            var soundGo = GameObject.Find("Temp/TileFailSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
+                            GameObject soundGo =
+                                GameObject.Find("Temp/TileFailSounds/" + _matrix[_activeCol].Tiles[i].soundIndex);
                             soundGo.GetComponent<AudioClipLoader>().Play(AudioPlayMode.Once);
                         }
                     }
                 }
 
                 //play song after countdown
-				if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == Config.PreheatDuration+1 && _activeCol != _previousActiveCol)
-				{
-				    _networkSet.Song.Points = 0;
+                if (Config.CurrentGamemode == Gamemode.Challenge && _beatCounter == Config.PreheatDuration + 1 &&
+                    _activeCol != _previousActiveCol)
+                {
+                    _networkSet.Song.Points = 0;
                     GameObject.FindGameObjectWithTag("Song").audio.Play();
                     _networkSet.Song.Length = GameObject.FindGameObjectWithTag("Song").audio.clip.length;
-                    _timeSongStart = Time.time;
                     UpdateNeworkXML();
-
                 }
             }
         }
     }
 
-    void LateUpdate ()
+    private void LateUpdate()
     {
         if (_activeCol != _previousActiveCol && _activeCol >= 0)
         {
@@ -262,49 +256,55 @@ public class TileController : MonoBehaviour
             _previousActiveCol = _activeCol;
         }
 
-    	/**
+        /**
 		 * Check if IdleMode = true.
 		 * If IdleMode is active, set footprintCount tiles footprint textures and set them forceActive.
 		 **/
-		if (!Config.IdleMode && Config.CurrentGamemode == Gamemode.Freestyle) {
-			/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
-			Config.IdleMode = _idleTimer > Config.IdleDelay;
-
-			/*Set Idle Behaviour if IdleMode is activated --> creates footprints*/
-			if (Config.IdleMode) {
-				SetIdleBehaviour ();
-				//reset idleResetTimer
-				_idleResetTimer = 0.0f;
-			}
-		}
-
-		if (Config.IdleMode && Config.CurrentGamemode == Gamemode.Freestyle) {
-			/*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
-			Config.IdleMode = _idleTimer > Config.IdleDelay;
-			if (!Config.IdleMode) {
-				RemoveIdleBehaviour ();
-			} else if (_idleResetTimer > Config.IdleResetDelay) {
-				/*Resetting footprint positions after a certain amount of time*/
-				RemoveIdleBehaviour ();
-				SetIdleBehaviour();
-				_idleResetTimer = 0.0f;
-			}
-		}
-	}
-
-    void FixedUpdate()
-    {
-		//IdleTimer
-		_idleTimer+= Time.fixedDeltaTime;
-		
-		_idleResetTimer+= Time.fixedDeltaTime;
-
-        if (_timerCol > 60 / Config.BPM)
+        if (!Config.IdleMode && Config.CurrentGamemode == Gamemode.Freestyle)
         {
-            _timerCol = (_timerCol - (60 / Config.BPM)) + Time.fixedDeltaTime;
+            /*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
+            Config.IdleMode = _idleTimer > Config.IdleDelay;
+
+            /*Set Idle Behaviour if IdleMode is activated --> creates footprints*/
+            if (Config.IdleMode)
+            {
+                SetIdleBehaviour();
+                //reset idleResetTimer
+                _idleResetTimer = 0.0f;
+            }
+        }
+
+        if (Config.IdleMode && Config.CurrentGamemode == Gamemode.Freestyle)
+        {
+            /*set IdleMode true if _idleTimer gets above IdleDelay value - set it to false if it falls below*/
+            Config.IdleMode = _idleTimer > Config.IdleDelay;
+            if (!Config.IdleMode)
+            {
+                RemoveIdleBehaviour();
+            }
+            else if (_idleResetTimer > Config.IdleResetDelay)
+            {
+                /*Resetting footprint positions after a certain amount of time*/
+                RemoveIdleBehaviour();
+                SetIdleBehaviour();
+                _idleResetTimer = 0.0f;
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        //IdleTimer
+        _idleTimer += Time.fixedDeltaTime;
+
+        _idleResetTimer += Time.fixedDeltaTime;
+
+        if (_timerCol > 60/Config.BPM)
+        {
+            _timerCol = (_timerCol - (60/Config.BPM)) + Time.fixedDeltaTime;
             _activeCol++;
             _beatCounter++;
-            
+
             if (_activeCol >= Config.Cols)
                 _activeCol = 0;
 
@@ -377,13 +377,15 @@ public class TileController : MonoBehaviour
         {
             float yStartTmp = yStart;
 
-            TileCol currentTileCol = new TileCol();
+            var currentTileCol = new TileCol();
             currentTileCol.Tiles = new List<Tile>();
             currentTileCol.ChallengeIndex = new List<int>();
 
             for (int j = 0; j < Config.Rows; j++)
             {
-                GameObject current = Instantiate(TilePrefab, new Vector3(xStart, yStartTmp, 0), Quaternion.Euler(270, 0, 0)) as GameObject;
+                var current =
+                    Instantiate(TilePrefab, new Vector3(xStart, yStartTmp, 0), Quaternion.Euler(270, 0, 0)) as
+                        GameObject;
 
                 if (current != null)
                 {
@@ -392,26 +394,26 @@ public class TileController : MonoBehaviour
 
                     current.name = "Tile-" + i + "x" + j;
 
-                    Tile currentTile = new Tile();
+                    var currentTile = new Tile();
                     currentTile.TileGo = current;
                     currentTile.soundIndex = j;
 
-					currentTile.Active = false;
+                    currentTile.Active = false;
 
                     currentTile.parentCol = currentTileCol;
-                    
+
                     currentTileCol.Tiles.Add(currentTile);
                 }
                 yStartTmp += yInc;
             }
             _matrix.Add(currentTileCol);
-            
+
             xStart += xInc;
         }
 
         _activeCol = -1;
         _timerCol = 0;
-        
+
         _beatCounter = 0;
         _matrixReady = true;
         //FieldWidth = Config.Cols*(Config.TileWidth + Config.TileSpaceing);
@@ -437,7 +439,7 @@ public class TileController : MonoBehaviour
 
     public void LoadSongRandom(Songtype songType = Songtype.Freestyle)
     {
-        List<Song> songRepo = new List<Song>();
+        var songRepo = new List<Song>();
 
         if (songType == Songtype.Freestyle)
         {
@@ -460,16 +462,13 @@ public class TileController : MonoBehaviour
 
     private void UpdateNeworkXML()
     {
-        XmlSerializer _writer = new XmlSerializer(typeof(NetworkSet));
-
-        XmlDocument xml = new XmlDocument();
+        var xml = new XmlDocument();
         xml.Load(_networkPath);
 
         //gets firs 
         XmlNodeList nodes = xml.GetElementsByTagName("NetworkSet");
         foreach (XmlNode element in nodes[0].ChildNodes)
         {
-
             switch (element.Name)
             {
                 case "ChallengeMode":
@@ -492,16 +491,16 @@ public class TileController : MonoBehaviour
                 default:
                     Debug.Log("Illegal element");
                     break;
-            }//end switch
-        }//end foreach
+            } //end switch
+        } //end foreach
 
 
         xml.Save(_networkPath);
     }
 
-    public void LoadSong(Songtype songType=Songtype.Challenge, int num=0)
+    public void LoadSong(Songtype songType = Songtype.Challenge, int num = 0)
     {
-        List<Song> songRepo = new List<Song>();
+        var songRepo = new List<Song>();
 
         if (songType == Songtype.Freestyle)
         {
@@ -512,16 +511,16 @@ public class TileController : MonoBehaviour
                     _matrix[i].Tiles[j].TileGo.GetComponent<TileBehaviour>().ResetTexture();
 
             songRepo = Config.FreestyleSongs;
-            
+
             if (num < songRepo.Count)
                 Config.CurrentGamemode = Gamemode.Freestyle;
 
             _networkSet.ChallengeMode = false;
             float bmp = songRepo[num].Bpm;
-            float duration = songRepo[num].PreheatDuration * (60 / bmp);
+            float duration = songRepo[num].PreheatDuration*(60/bmp);
             _networkSet.DemoTime = duration;
             _networkSet.Song.Title = songRepo[num].Titel;
-            
+
             _networkSet.Song.Length = 0;
             _networkSet.Song.Points = 0;
         }
@@ -543,11 +542,12 @@ public class TileController : MonoBehaviour
 
             _networkSet.ChallengeMode = true;
             float bmp = songRepo[num].Bpm;
-            float duration = songRepo[num].PreheatDuration * (60 / bmp);
+            float duration = songRepo[num].PreheatDuration*(60/bmp);
             Debug.Log(duration);
             _networkSet.DemoTime = duration;
             _networkSet.Song.Title = songRepo[num].Titel;
-            _networkSet.Song.Length = 0;//Will be replace by the actual length of thesong, once itios loaded (after Coundown is over)
+            _networkSet.Song.Length = 0;
+            //Will be replace by the actual length of thesong, once itios loaded (after Coundown is over)
             _networkSet.Song.Points = 0;
         }
 
@@ -557,7 +557,7 @@ public class TileController : MonoBehaviour
         {
             if (_tempGameObjects.Count > 0)
             {
-                foreach (var tgo in _tempGameObjects)
+                foreach (GameObject tgo in _tempGameObjects)
                 {
                     Destroy(tgo);
                 }
@@ -616,15 +616,15 @@ public class TileController : MonoBehaviour
                     _tempGameObjects.Add(tileFailSounds);
                 }
 
-                int[] tileSet = new int[songRepo[num].Tileset.Count + 2*Config.Cols*(Config.PreheatDuration/8) + 1];
+                var tileSet = new int[songRepo[num].Tileset.Count + 2*Config.Cols*(Config.PreheatDuration/8) + 1];
                 Array.Clear(tileSet, 0, tileSet.Length);
                 songRepo[num].Tileset.CopyTo(tileSet, (Config.Cols*(Config.PreheatDuration/8)));
 
-                foreach (var mat in _matrix)
+                foreach (TileCol mat in _matrix)
                     mat.ChallengeIndex.Clear();
 
                 for (int i = 0; i < songRepo[num].Tileset.Count + (Config.PreheatDuration/8); i++)
-                    _matrix[i % Config.Cols].ChallengeIndex.Add(tileSet[i]);
+                    _matrix[i%Config.Cols].ChallengeIndex.Add(tileSet[i]);
             }
 
             Config.BPM = songRepo[num].Bpm;
@@ -646,46 +646,53 @@ public class TileController : MonoBehaviour
         return _networkSet.Song.Title;
     }
 
-	public void SetTileStatus(int col, int row, bool status)
-	{
-	    lock (_matrix[col].Tiles)
-	    {
-	        var tile = _matrix[col].Tiles[row];
-	        tile.Active = status;
-	        _matrix[col].Tiles[row] = tile;
+    public void SetTileStatus(int col, int row, bool status)
+    {
+        lock (_matrix[col].Tiles)
+        {
+            Tile tile = _matrix[col].Tiles[row];
+            tile.Active = status;
+            _matrix[col].Tiles[row] = tile;
 
             if (status)
                 _idleTimer = 0;
-	    }
-	}
+        }
+    }
 
-	/**
+    /**
 	 * Changes Texture and forceActive when in IdleMode
-	 **/ 
-	private void SetIdleBehaviour() {
-		for (int i = 0; i < _footprintCount; i++)
-		{
-		    var randRow = Random.Range(0, Config.Rows);
-		    var randColumn = Random.Range(0, Config.Cols);
+	 **/
 
-		    _matrix[randColumn].Tiles[randRow].TileGo.GetComponent<TileBehaviour>().SetFootprint();
-		}
-	}
+    private void SetIdleBehaviour()
+    {
+        for (int i = 0; i < _footprintCount; i++)
+        {
+            int randRow = Random.Range(0, Config.Rows);
+            int randColumn = Random.Range(0, Config.Cols);
 
-	/**
+            _matrix[randColumn].Tiles[randRow].TileGo.GetComponent<TileBehaviour>().SetFootprint();
+        }
+    }
+
+    /**
 	 * Searches for tiles with forceActive = true
 	 * Removes Footprint Texture and sets forceActive to false when exiting IdleMode
-	 **/ 
-	private void RemoveIdleBehaviour () {
-		for (int i = 0; i < Config.Cols; i++) {
-			TileCol tileCol = _matrix [i];
-			foreach (Tile tile in tileCol.Tiles) {
-				if (tile.TileGo.GetComponent<TileBehaviour> ().ForceActive) {
-					tile.TileGo.GetComponent<TileBehaviour> ().ResetTexture ();
-				}
-			}//end foreach
-		} //end for
-	}
+	 **/
+
+    private void RemoveIdleBehaviour()
+    {
+        for (int i = 0; i < Config.Cols; i++)
+        {
+            TileCol tileCol = _matrix[i];
+            foreach (Tile tile in tileCol.Tiles)
+            {
+                if (tile.TileGo.GetComponent<TileBehaviour>().ForceActive)
+                {
+                    tile.TileGo.GetComponent<TileBehaviour>().ResetTexture();
+                }
+            } //end foreach
+        } //end for
+    }
 
     private void GetInputs()
     {
@@ -701,25 +708,27 @@ public class TileController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
             LoadSong(Songtype.Challenge, 0);
 
-		if (Input.GetKeyDown(KeyCode.Alpha2))
-			LoadSong(Songtype.Challenge, 1);
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            LoadSong(Songtype.Challenge, 1);
 
-		if (Input.GetKeyDown(KeyCode.Alpha3))
-			LoadSong(Songtype.Challenge, 2);
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            LoadSong(Songtype.Challenge, 2);
 
-		if (Input.GetKeyDown(KeyCode.Alpha4))
-			LoadSong(Songtype.Freestyle, 0);
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+            LoadSong(Songtype.Freestyle, 0);
 
-		if (Input.GetKeyDown(KeyCode.Alpha5))
-			LoadSong(Songtype.Freestyle, 1);
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+            LoadSong(Songtype.Freestyle, 1);
 
-		if (Input.GetKeyDown(KeyCode.Alpha6))
-			LoadSong(Songtype.Freestyle, 2);
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+            LoadSong(Songtype.Freestyle, 2);
 
         if (Input.GetKeyDown(KeyCode.Alpha7))
             LoadSong(Songtype.Freestyle, 3);
-		
-		if (Input.GetKeyDown(KeyCode.I))
+
+        if (Input.GetKeyDown(KeyCode.I))
             _idleTimer = 0;
     }
+
+    private delegate void GUIFunction();
 }

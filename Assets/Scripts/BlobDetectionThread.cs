@@ -1,23 +1,21 @@
 ﻿using System;
-using Emgu.CV;
-using Emgu.CV.Structure;
-using Emgu.CV.CvEnum;
 using System.Drawing;
+using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 using UnityEngine;
 
 public class BlobDetectionThread
 {
-    private volatile BlobDetectionSettings _detectionSettings;
-
     private readonly KinectManager _depthManager;
-    private readonly TileController _tileCtrl;
 
     private readonly RenderDataCallback _renderImageCallback;
+    private readonly TileController _tileCtrl;
+    private volatile BlobDetectionSettings _detectionSettings;
+    private volatile int _runCounter;
 
     private volatile bool _shouldStop;
     private volatile bool _updatedData;
-
-    private volatile int _runCounter;
 
     public BlobDetectionThread(KinectManager depthManager, TileController tileCtrl,
         BlobDetectionSettings detectionSettings, RenderDataCallback renderImageCallback)
@@ -77,19 +75,19 @@ public class BlobDetectionThread
 
             if (_shouldStop) return;
 
-            var updateImages = (_runCounter % Config.ImageFileUpdate == 0);
+            bool updateImages = (_runCounter%Config.ImageFileUpdate == 0);
 
             lock (_depthManager.DepthData)
             {
                 fixed (ushort* dataPtr = _depthManager.DepthData)
                 {
-                    var dWidth = _depthManager.DepthWidth;
-                    var dHeight = _depthManager.DepthHeight;
+                    int dWidth = _depthManager.DepthWidth;
+                    int dHeight = _depthManager.DepthHeight;
 
                     var depthImg = new Image<Gray, short>(dWidth, dHeight, 1024, new IntPtr(dataPtr));
                     var depthImgNorm = new Image<Gray, short>(dWidth, dHeight);
 
-                    var filteredImg = depthImg.ThresholdToZero(new Gray(_detectionSettings.MinDepth));
+                    Image<Gray, short> filteredImg = depthImg.ThresholdToZero(new Gray(_detectionSettings.MinDepth));
                     filteredImg = filteredImg.ThresholdToZeroInv(new Gray(_detectionSettings.MaxDepth));
                     filteredImg = filteredImg.Sub(new Gray(_detectionSettings.MinDepth));
                     filteredImg = filteredImg.ThresholdToZero(new Gray(0));
@@ -100,9 +98,9 @@ public class BlobDetectionThread
                     CvInvoke.cvNormalize(filteredImg, filteredImgNorm, 0, short.MaxValue, NORM_TYPE.CV_MINMAX,
                         IntPtr.Zero);
 
-                    var imgOrg = depthImgNorm.Convert<Rgb, byte>();
-                    var imgGray = filteredImgNorm.Convert<Gray, byte>();
-                    var imgOrgHelper = imgOrg.Clone();
+                    Image<Rgb, byte> imgOrg = depthImgNorm.Convert<Rgb, byte>();
+                    Image<Gray, byte> imgGray = filteredImgNorm.Convert<Gray, byte>();
+                    Image<Rgb, byte> imgOrgHelper = imgOrg.Clone();
 
                     var renderImage = new byte[0];
 
@@ -119,14 +117,14 @@ public class BlobDetectionThread
                     }
 
                     // noise reduction
-                    var imgSm = imgGray.PyrDown().PyrUp().SmoothGaussian(3);
+                    Image<Gray, byte> imgSm = imgGray.PyrDown().PyrUp().SmoothGaussian(3);
 
                     var element = new StructuringElementEx(5, 5, 2, 2, CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
                     CvInvoke.cvErode(imgSm, imgSm, element, 2);
                     CvInvoke.cvDilate(imgSm, imgSm, element, 2);
 
                     // filtering
-                    var imgThr = imgSm.InRange(new Gray(_detectionSettings.MinThreshold),
+                    Image<Gray, byte> imgThr = imgSm.InRange(new Gray(_detectionSettings.MinThreshold),
                         new Gray(_detectionSettings.MaxThreshold));
 
                     if (_detectionSettings.RenderImgType == 3)
@@ -142,20 +140,20 @@ public class BlobDetectionThread
                             objGrid[x, y] = false;
 
                     // find contours
-                    var gridLoc = _detectionSettings.GridLoc;
-                    var fieldSize = _detectionSettings.FieldSize;
-                    var fieldTol = _detectionSettings.FieldTolerance;
+                    Vector2 gridLoc = _detectionSettings.GridLoc;
+                    Vector2 fieldSize = _detectionSettings.FieldSize;
+                    Vector2 fieldTol = _detectionSettings.FieldTolerance;
 
-                    using (MemStorage storage = new MemStorage())
+                    using (var storage = new MemStorage())
                     {
-                        for (var contours = imgThr.FindContours(CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
+                        for (Contour<Point> contours = imgThr.FindContours(CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
                             RETR_TYPE.CV_RETR_TREE, storage);
                             contours != null;
                             contours = contours.HNext)
                         {
                             Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter*0.015, storage);
 
-                            var bdRect = currentContour.BoundingRectangle;
+                            Rectangle bdRect = currentContour.BoundingRectangle;
                             if (bdRect.Width < 20 || bdRect.Height < 20)
                                 continue;
 
@@ -184,16 +182,16 @@ public class BlobDetectionThread
                         imgGray.Save(@"Assets\StreamingAssets\Network\imgfile3.jpg");
 
                     // set tile status
-	                for (int x = 0; x < cols; x++)
-	                	for (int y = 0; y < rows; y++)
-	                    	_tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]); 
+                    for (int x = 0; x < cols; x++)
+                        for (int y = 0; y < rows; y++)
+                            _tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]);
 
-					if (_detectionSettings.RenderImgType == 4)
+                    if (_detectionSettings.RenderImgType == 4)
                         renderImage = PrepareRenderImage(imgOrg);
 
                     // draw grid
                     var blendImg = new Image<Rgb, byte>(imgOrg.Width, imgOrg.Height);
-                    var blendImgHelper = blendImg.Clone();
+                    Image<Rgb, byte> blendImgHelper = blendImg.Clone();
 
                     for (int x = 0; x < cols; x++)
                     {

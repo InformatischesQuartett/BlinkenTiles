@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
-public class AudioClipLoader : MonoBehaviour {
-
+public class AudioClipLoader : MonoBehaviour
+{
+    private bool loop;
+    private bool playOnce;
     public string url;
     private WWW www;
-    private bool playOnce = false;
-    private bool loop = false;
 
 
     public void Start()
@@ -39,9 +39,8 @@ public class AudioClipLoader : MonoBehaviour {
         }
     }
 
-    public void Play(AudioPlayMode audioPlayMode=AudioPlayMode.Once)
+    public void Play(AudioPlayMode audioPlayMode = AudioPlayMode.Once)
     {
-
         switch (audioPlayMode)
         {
             case AudioPlayMode.Loop:
