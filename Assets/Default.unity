@@ -172,9 +172,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a09b9a4457e17943a7551345519a598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GridLoc: {x: 124.400002, y: 108.57}
   FieldSize: {x: 35.0999985, y: 28.5}
   FieldTolerance: {x: 0, y: 0}
+  GridLoc: {x: 124.400002, y: 108.57}
 --- !u!114 &163530856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,33 +186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2bade05b6a41e64fbb5f0976660ec98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &288667554
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 288667555}
-  m_Layer: 0
-  m_Name: DMX
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &288667555
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 288667554}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
 --- !u!1 &1460930565
 GameObject:
   m_ObjectHideFlags: 0
