@@ -1,0 +1,10 @@
+{
+"Titel":"Track2",
+"BPM":200.0,
+"PreheatDuration":0,
+"PreheatShowAt":0,
+"DoubleTiles":false,
+"SoundFilePath":"/Songs/Freestyle/Track2/piano200back.wav",
+"TileSoundFilePaths":["/Songs/Freestyle/Track2/piano1.wav","/Songs/Freestyle/Track2/piano2.wav","/Songs/Freestyle/Track2/piano3.wav","/Songs/Freestyle/Track2/piano4.wav","/Songs/Freestyle/Track2/piano5.wav"],
+"LightColor":[0,0,255,0]
+}

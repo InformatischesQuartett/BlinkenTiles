@@ -1,0 +1,10 @@
+{
+"Titel":"Lorde",
+"BPM":120.0,
+"PreheatDuration":32,
+"PreheatShowAt":8,
+"DoubleTiles":false,
+"SoundFilePath":"/Songs/Freestyle/Lorde/Spiedkiks_-_06_-_Drinks_4am_rmx_by_Dominik_Berlin_CCBYSA.ogg",
+"TileSoundFilePaths":["/Songs/Freestyle/Lorde/Lorde01.wav","/Songs/Freestyle/Lorde/Lorde02.wav","/Songs/Freestyle/Lorde/Lorde03.wav","/Songs/Freestyle/Lorde/Lorde04.wav","/Songs/Freestyle/Lorde/Lorde05.wav"],
+"LightColor":[0,0,255,0]
+}

@@ -1,0 +1,107 @@
+Initialize engine version: 4.6.1f1 (d1db7a1b5196)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 9.0c [nvumdshim.dll 9.18.13.4084]
+    Renderer: NVIDIA Quadro 2000M 
+    Vendor:   NVIDIA
+    VRAM:     1998 MB (via DXGI)
+    Caps:     Shader=30 DepthRT=1 NativeDepth=1 NativeShadow=1 DF16=0 INTZ=1 RAWZ=0 NULL=1 RESZ=0 SlowINTZ=0
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.GPU.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.GPU.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.ML.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.ML.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.OCR.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.OCR.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.OpenCL.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.OpenCL.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.Stitching.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.Stitching.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.UI.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.VideoStab.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.CV.VideoStab.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.Util.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Emgu.Util.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\LetThereBeLight.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\LetThereBeLight.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Newtonsoft.Json.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\Newtonsoft.Json.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\System.Drawing.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\System.Drawing.dll into Unity Child Domain
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\ZedGraph.dll (this message is harmless)
+Loading C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\ZedGraph.dll into Unity Child Domain
+- Completed reload, in  0.115 seconds
+desktop: 1920x1080 60Hz; virtual: 3840x1138 at 0,-58
+<RI> Initializing input.
+<RI> Input initialized.
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\System.dll (this message is harmless)
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\System.Xml.dll (this message is harmless)
+Platform assembly: C:\Users\Linda\Documents\GitHub\BlinkenTiles\Build\BlinkenTiles_Data\Managed\System.Data.dll (this message is harmless)
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_imgproc290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/c
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\c
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/c
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libc
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libc
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libc
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/.\libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
+Fallback handler could not load library C:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Mono/libC:/Users/Linda/Documents/GitHub/BlinkenTiles/Build/BlinkenTiles_Data/Plugins/opencv_core290.dll
