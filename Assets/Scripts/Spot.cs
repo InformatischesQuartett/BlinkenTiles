@@ -2,15 +2,24 @@
 
 public class Spot
 {
-    private int _position;
-    private List<byte> _valueList;
-    private byte _red, _green, _blue;
-    private byte _intensity;
-    private CurrentCollor _currentcolor;
     public enum CurrentCollor
     {
-        Red,Green,Blue,White, Black
+        Red,
+        Green,
+        Blue,
+        White,
+        Black
     }
+
+    private readonly byte _intensity;
+
+    private readonly int _position;
+    private readonly List<byte> _valueList;
+    private byte _blue;
+    private CurrentCollor _currentcolor;
+    private byte _green;
+    private byte _red;
+
     public Spot(int p, ref List<byte> vList)
     {
         _position = p;
@@ -19,7 +28,7 @@ public class Spot
         _red = _blue = _green = 0;
         _intensity = 20;
 
-        SetRowToColor(0,CurrentCollor.Black);
+        SetRowToColor(0, CurrentCollor.Black);
         SetRowToColor(1, CurrentCollor.Black);
         SetRowToColor(2, CurrentCollor.Black);
     }
@@ -58,7 +67,7 @@ public class Spot
         }
     }
 
-    
+
     //can be used to set spot to one of the predefined Colors
     public void SetColor(CurrentCollor color)
     {
@@ -94,9 +103,9 @@ public class Spot
                 SetRowToColor(1, CurrentCollor.Black);
                 SetRowToColor(2, CurrentCollor.Black);
                 break;
-        }   
-    }   
- 
+        }
+    }
+
     public void SetRowToColor(int row, CurrentCollor color)
     {
         switch (color)
@@ -127,15 +136,15 @@ public class Spot
         switch (row)
         {
             case 0:
-                _valueList[_position+0] = _red;
+                _valueList[_position + 0] = _red;
                 _valueList[_position + 1] = _green;
                 _valueList[_position + 2] = _blue;
                 _valueList[_position + 3] = 0;
                 break;
             case 1:
-                _valueList[_position+4] = _red;
-                _valueList[_position+5] = _green;
-                _valueList[_position+6] = _blue;
+                _valueList[_position + 4] = _red;
+                _valueList[_position + 5] = _green;
+                _valueList[_position + 6] = _blue;
                 _valueList[_position + 7] = 0;
                 break;
             case 2:
