@@ -1,6 +1,6 @@
 ﻿using System;
-using UnityEngine;
 using System.Threading;
+using UnityEngine;
 
 public delegate void RenderDataCallback(byte[] data);
 
@@ -22,49 +22,41 @@ public class BlobDetectionSettings
 
 public class BlobDetection : MonoBehaviour
 {
-    public Vector2 GridLoc;
+    private const float FPSUpdateRate = 4.0f;
     public Vector2 FieldSize;
     public Vector2 FieldTolerance;
+    public Vector2 GridLoc;
+    private BlobDetectionSettings _dSettings;
+    private float _deltaTime;
+    private KinectManager _kinectManager;
 
     private byte[] _lastRenderData;
     private Texture2D _lastRenderImage;
+    private float _mainFPS;
+    private int _mainFrameCount;
     private bool _renderDataUpdate;
+    private float _threadFPS;
+    private int _threadFrameCount;
 
-    private KinectManager _kinectManager;
     private TileController _tileController;
-    private BlobDetectionSettings _dSettings;
+    private Texture2D _whiteTex;
 
     private BlobDetectionThread _workerObject;
     private Thread _workerThread;
 
     // fps calculations
-    private const float FPSUpdateRate = 4.0f;
-    private float _deltaTime;
-
-    private int _mainFrameCount;
-    private float _mainFPS;
-
-    private int _threadFrameCount;
-    private float _threadFPS;
-
-	// gui
-	private Texture2D _whiteTex;
 
     private void Start()
     {
         _dSettings = new BlobDetectionSettings
         {
             RenderImgType = Config.RenderImageType,
-
             MinDepth = Config.MinDepth,
             MaxDepth = Config.MaxDepth,
-
             MinThreshold = Config.MinThreshold,
             MaxThreshold = Config.MaxThreshold,
-
             GridSize = new Vector2(Config.Cols, Config.Rows),
             GridLoc = Config.GridLoc,
-
             FieldSize = Config.FieldSize,
             FieldTolerance = Config.FieldTolerance
         };
@@ -81,11 +73,11 @@ public class BlobDetection : MonoBehaviour
         _kinectManager.WorkerThread = _workerObject;
 
         // render data
-        var imgWidth = _kinectManager.DepthWidth;
-        var imgHeight = _kinectManager.DepthHeight;
+        int imgWidth = _kinectManager.DepthWidth;
+        int imgHeight = _kinectManager.DepthHeight;
 
-        _lastRenderImage = new Texture2D(imgWidth, imgHeight, TextureFormat.RGB24,false);
-        _lastRenderData = new byte[4 * imgWidth * imgHeight];
+        _lastRenderImage = new Texture2D(imgWidth, imgHeight, TextureFormat.RGB24, false);
+        _lastRenderData = new byte[4*imgWidth*imgHeight];
         _renderDataUpdate = false;
 
         // fps caluclations
@@ -97,10 +89,10 @@ public class BlobDetection : MonoBehaviour
         _threadFrameCount = 0;
         _threadFPS = 0.0f;
 
-		// gui
-		_whiteTex = new Texture2D(1, 1);
-		_whiteTex.SetPixel(0, 0, Color.white);
-		_whiteTex.Apply();
+        // gui
+        _whiteTex = new Texture2D(1, 1);
+        _whiteTex.SetPixel(0, 0, Color.white);
+        _whiteTex.Apply();
     }
 
     private void Update()
@@ -120,12 +112,12 @@ public class BlobDetection : MonoBehaviour
 
         if (_deltaTime > 1.0f/FPSUpdateRate)
         {
-            var mainDiff = Time.frameCount - _mainFrameCount;
-            _mainFPS = mainDiff / _deltaTime;
+            int mainDiff = Time.frameCount - _mainFrameCount;
+            _mainFPS = mainDiff/_deltaTime;
             _mainFrameCount = Time.frameCount;
 
-            var threadDiff = _workerObject.GetRunCount() - _threadFrameCount;
-            _threadFPS = threadDiff / _deltaTime;
+            int threadDiff = _workerObject.GetRunCount() - _threadFrameCount;
+            _threadFPS = threadDiff/_deltaTime;
             _threadFrameCount = _workerObject.GetRunCount();
 
             _deltaTime -= 1.0f/FPSUpdateRate;
@@ -142,7 +134,7 @@ public class BlobDetection : MonoBehaviour
     {
         GUI.BeginGroup(new Rect(x, y, 500, 55));
         GUI.Label(new Rect(0, 0, 200, 25), text + ": " + val);
-        val = (int)GUI.HorizontalSlider(new Rect(0, 25, 420, 10), val, low, high);
+        val = (int) GUI.HorizontalSlider(new Rect(0, 25, 420, 10), val, low, high);
         if (GUI.Button(new Rect(428, 20, 20, 20), "+")) val = Mathf.Min(high, val + 1);
         if (GUI.Button(new Rect(450, 20, 20, 20), "-")) val = Mathf.Max(low, val - 1);
         GUI.EndGroup();
@@ -152,8 +144,8 @@ public class BlobDetection : MonoBehaviour
 
     private void OnGUI()
     {
-        var imgHeight = Screen.height;
-        var imgWidth = imgHeight*(_kinectManager.DepthWidth/_kinectManager.DepthHeight);
+        int imgHeight = Screen.height;
+        int imgWidth = imgHeight*(_kinectManager.DepthWidth/_kinectManager.DepthHeight);
 
         GUI.DrawTexture(new Rect(0, imgHeight, imgWidth, -imgHeight), _lastRenderImage);
 
@@ -181,22 +173,22 @@ public class BlobDetection : MonoBehaviour
         _dSettings.MinThreshold = SettingSlider(15, 300, "Minimum Threshold", _dSettings.MinThreshold, 0, 255);
         _dSettings.MaxThreshold = SettingSlider(15, 360, "Maximum Threshold", _dSettings.MaxThreshold, 0, 255);
 
-        var gridLocX = SettingSlider(15, 460, "Grid Location (X)", (int) _dSettings.GridLoc.x, 0, 200);
-        var gridLocY = SettingSlider(15, 520, "Grid Location (Y)", (int) _dSettings.GridLoc.y, 0, 200);
+        int gridLocX = SettingSlider(15, 460, "Grid Location (X)", (int) _dSettings.GridLoc.x, 0, 200);
+        int gridLocY = SettingSlider(15, 520, "Grid Location (Y)", (int) _dSettings.GridLoc.y, 0, 200);
         _dSettings.GridLoc = new Vector2(gridLocX, gridLocY);
 
-        var fieldSizeX = SettingSlider(15, 620, "Field Size (X)", (int)_dSettings.FieldSize.x, 0, 200);
-        var fieldSizeY = SettingSlider(15, 680, "Field Size (Y)", (int)_dSettings.FieldSize.y, 0, 200);
+        int fieldSizeX = SettingSlider(15, 620, "Field Size (X)", (int) _dSettings.FieldSize.x, 0, 200);
+        int fieldSizeY = SettingSlider(15, 680, "Field Size (Y)", (int) _dSettings.FieldSize.y, 0, 200);
         _dSettings.FieldSize = new Vector2(fieldSizeX, fieldSizeY);
 
-        var fieldTolX = SettingSlider(15, 780, "Field Tolerance (X)", (int)_dSettings.FieldTolerance.x, 0, 200);
-        var fieldTolY = SettingSlider(15, 840, "Field Tolerance (Y)", (int)_dSettings.FieldTolerance.y, 0, 200);
+        int fieldTolX = SettingSlider(15, 780, "Field Tolerance (X)", (int) _dSettings.FieldTolerance.x, 0, 200);
+        int fieldTolY = SettingSlider(15, 840, "Field Tolerance (Y)", (int) _dSettings.FieldTolerance.y, 0, 200);
         _dSettings.FieldTolerance = new Vector2(fieldTolX, fieldTolY);
 
         GUI.skin.label.fontSize = 12;
         GUI.EndGroup();
 
-		/* if (GUI.Button(new Rect(0, 0, 100, 100), "Save"))
+        /* if (GUI.Button(new Rect(0, 0, 100, 100), "Save"))
 			_kinectManager.SaveDepthToFile(); */
     }
 
