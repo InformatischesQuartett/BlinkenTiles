@@ -150,7 +150,7 @@ public class KinectManager
     private void ReadDepthFromFile()
     {
         var randObj = new Random();
-        var name = randObj.Next(1, 15);
+        int name = randObj.Next(1, 15);
         string path = Application.streamingAssetsPath + "/Samples/DepthSample" + name;
         FileStream file = File.Open(path, FileMode.Open);
 

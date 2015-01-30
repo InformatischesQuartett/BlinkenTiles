@@ -36,7 +36,7 @@ public class TileController : MonoBehaviour
     private float _timerCol;
     // Use this for initialization
 
-    private int points;
+    private int _points;
     public float TimerField { get; private set; }
     public float FieldWidth { get; private set; }
 
@@ -212,8 +212,8 @@ public class TileController : MonoBehaviour
                             if (peopleInActiveCol)
                             {
                                 //Count good points
-                                points++;
-                                _networkSet.Song.Points = points;
+                                _points++;
+                                _networkSet.Song.Points = _points;
                                 UpdateNeworkXML();
                                 Debug.Log(_networkSet.Song.Points);
                             }
@@ -568,7 +568,7 @@ public class TileController : MonoBehaviour
             go.tag = "Song";
             go.transform.parent = _tempParent.transform;
             go.AddComponent<AudioSource>();
-            go.AddComponent<AudioClipLoader>().url = songRepo[num].SoundFilePath;
+            go.AddComponent<AudioClipLoader>().Url = songRepo[num].SoundFilePath;
 
             _tempGameObjects.Add(go);
 
@@ -585,7 +585,7 @@ public class TileController : MonoBehaviour
                 tilesounds.name = i.ToString();
                 tilesounds.transform.parent = goTileSounds.transform;
                 tilesounds.AddComponent<AudioSource>();
-                tilesounds.AddComponent<AudioClipLoader>().url = songRepo[num].TileSoundFilePaths[i];
+                tilesounds.AddComponent<AudioClipLoader>().Url = songRepo[num].TileSoundFilePaths[i];
 
                 _tempGameObjects.Add(tilesounds);
             }
@@ -611,7 +611,7 @@ public class TileController : MonoBehaviour
                     tileFailSounds.name = i.ToString();
                     tileFailSounds.transform.parent = goTileFailSounds.transform;
                     tileFailSounds.AddComponent<AudioSource>();
-                    tileFailSounds.AddComponent<AudioClipLoader>().url = songRepo[num].TileFailSoundFilePaths[i];
+                    tileFailSounds.AddComponent<AudioClipLoader>().Url = songRepo[num].TileFailSoundFilePaths[i];
 
                     _tempGameObjects.Add(tileFailSounds);
                 }
