@@ -3,16 +3,16 @@ using UnityEngine;
 
 public class AudioClipLoader : MonoBehaviour
 {
-    private bool loop;
-    private bool playOnce;
-    public string url;
-    private WWW www;
+    public string Url;
+    private bool _loop;
+    private bool _playOnce;
+    private WWW _www;
 
 
     public void Start()
     {
-        url = "file://" + Application.streamingAssetsPath + url;
-        www = new WWW(url);
+        Url = "file://" + Application.streamingAssetsPath + Url;
+        _www = new WWW(Url);
         StartCoroutine(WaitForAudioClip());
 
         transform.position = transform.parent.position;
@@ -20,22 +20,22 @@ public class AudioClipLoader : MonoBehaviour
 
     public IEnumerator WaitForAudioClip()
     {
-        yield return www;
-        audio.clip = www.audioClip;
+        yield return _www;
+        audio.clip = _www.audioClip;
         Config.SongLength = audio.clip.length;
     }
 
     public void Update()
     {
-        if (audio.clip != null && audio.clip.isReadyToPlay && playOnce)
+        if (audio.clip != null && audio.clip.isReadyToPlay && _playOnce)
         {
             audio.Play();
-            playOnce = false;
+            _playOnce = false;
         }
-        if (audio.clip != null && !audio.isPlaying && audio.clip.isReadyToPlay && loop)
+        if (audio.clip != null && !audio.isPlaying && audio.clip.isReadyToPlay && _loop)
         {
             audio.Play();
-            playOnce = false;
+            _playOnce = false;
         }
     }
 
@@ -44,10 +44,10 @@ public class AudioClipLoader : MonoBehaviour
         switch (audioPlayMode)
         {
             case AudioPlayMode.Loop:
-                loop = true;
+                _loop = true;
                 break;
             case AudioPlayMode.Once:
-                playOnce = true;
+                _playOnce = true;
                 break;
         }
     }

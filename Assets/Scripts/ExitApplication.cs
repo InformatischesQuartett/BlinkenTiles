@@ -4,20 +4,21 @@ public class ExitApplication : MonoBehaviour
 {
     // Use this for initialization
 
+    private float _buttonHeight;
+    private float _buttonWidth;
     private ExitMenu _exitMenu;
-    private float _menuHeight, _menuWidth;
-    private float _buttonWidth, _buttonHeight;
+    private float _menuHeight;
     private Vector2 _menuPos;
+    private float _menuWidth;
 
     private void Start()
     {
         _exitMenu = null;
-        _menuWidth = (Screen.width * 0.5f) * 0.75f;
-        _menuHeight = Screen.height * 0.3f;
+        _menuWidth = (Screen.width*0.5f)*0.75f;
+        _menuHeight = Screen.height*0.3f;
         _buttonWidth = _menuWidth/3.0f;
         _buttonHeight = _menuHeight/3;
-        _menuPos = new Vector2(((Screen.width * 0.5f) -_menuWidth)*0.5f, (Screen.height * 0.5f) - _menuHeight * 0.5f); 
-        
+        _menuPos = new Vector2(((Screen.width*0.5f) - _menuWidth)*0.5f, (Screen.height*0.5f) - _menuHeight*0.5f);
     }
 
     private void OnGUI()
@@ -30,14 +31,16 @@ public class ExitApplication : MonoBehaviour
 
     private void ShowExitMenu()
     {
-
         GUI.BeginGroup(new Rect(_menuPos.x, _menuPos.y, _menuWidth, _menuHeight));
         GUI.Box(new Rect(0, _menuHeight*0.2f, _menuWidth, _menuHeight), "Are you sure sou want to quit the application?");
-        if (GUI.Button(new Rect(_buttonWidth * 0.5f, (_menuHeight * 0.5f) , _buttonWidth, _buttonHeight), "Yes"))
+        if (GUI.Button(new Rect(_buttonWidth*0.5f, (_menuHeight*0.5f), _buttonWidth, _buttonHeight), "Yes"))
         {
             Application.Quit();
         }
-        if (GUI.Button(new Rect((_menuWidth * 0.5f) + (_buttonWidth * 0.5f) * 0.5f, (_menuHeight * 0.5f), _buttonWidth, _buttonHeight), "No"))
+        if (
+            GUI.Button(
+                new Rect((_menuWidth*0.5f) + (_buttonWidth*0.5f)*0.5f, (_menuHeight*0.5f), _buttonWidth, _buttonHeight),
+                "No"))
         {
             _exitMenu = null;
         }

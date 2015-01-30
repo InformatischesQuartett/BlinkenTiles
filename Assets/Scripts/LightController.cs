@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LightController : MonoBehaviour
 {
-    private readonly Spot[] spotList = new Spot[8];
+    private readonly Spot[] _spotList = new Spot[8];
     private int _column;
     private int _curSpot;
     private List<byte> _fValues = new List<byte>();
@@ -21,7 +21,7 @@ public class LightController : MonoBehaviour
         }
         for (int i = 0; i < 8; i++)
         {
-            spotList[i] = new Spot(i*12, ref _fValues);
+            _spotList[i] = new Spot(i*12, ref _fValues);
         }
         UpdateArray();
         Talker.MessageFunction(_faderValues, 1);
@@ -52,9 +52,9 @@ public class LightController : MonoBehaviour
             _column = 2;
         }
 
-        spotList[_curSpot].LightItUp(_column);
+        _spotList[_curSpot].LightItUp(_column);
         _faderValues = _fValues.ToArray();
-        spotList[_curSpot].SetColor(Spot.CurrentCollor.Black);
+        _spotList[_curSpot].SetColor(Spot.CurrentCollor.Black);
     }
 
     private void UpdateArray()

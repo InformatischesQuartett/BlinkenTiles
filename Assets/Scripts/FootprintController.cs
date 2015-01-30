@@ -2,5 +2,5 @@ using UnityEngine;
 
 public class FootprintController : MonoBehaviour
 {
-    public Texture2D footprintImg;
+    public Texture2D FootprintImg;
 }
