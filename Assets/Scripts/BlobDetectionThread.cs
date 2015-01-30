@@ -186,7 +186,7 @@ public class BlobDetectionThread
                     // set tile status
 	                for (int x = 0; x < cols; x++)
 	                	for (int y = 0; y < rows; y++)
-	                    	_tileCtrl.SetTileStatus(cols - x - 1, rows - y - 1, objGrid[x, y]); 
+	                    	_tileCtrl.SetTileStatus(x, y, objGrid[x, y]); 
 
 					if (_detectionSettings.RenderImgType == 4)
                         renderImage = PrepareRenderImage(imgOrg);
