@@ -21,20 +21,20 @@ public class AudioClipLoader : MonoBehaviour
     public IEnumerator WaitForAudioClip()
     {
         yield return _www;
-        audio.clip = _www.audioClip;
-        Config.SongLength = audio.clip.length;
+        GetComponent<AudioSource>().clip = _www.audioClip;
+        Config.SongLength = GetComponent<AudioSource>().clip.length;
     }
 
     public void Update()
     {
-        if (audio.clip != null && audio.clip.isReadyToPlay && _playOnce)
+        if (GetComponent<AudioSource>().clip != null && GetComponent<AudioSource>().clip.isReadyToPlay && _playOnce)
         {
-            audio.Play();
+            GetComponent<AudioSource>().Play();
             _playOnce = false;
         }
-        if (audio.clip != null && !audio.isPlaying && audio.clip.isReadyToPlay && _loop)
+        if (GetComponent<AudioSource>().clip != null && !GetComponent<AudioSource>().isPlaying && GetComponent<AudioSource>().clip.isReadyToPlay && _loop)
         {
-            audio.Play();
+            GetComponent<AudioSource>().Play();
             _playOnce = false;
         }
     }

@@ -50,7 +50,7 @@ public class TileController : MonoBehaviour
         _defaultFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
         _countdownFont = Resources.Load<Font>("BankGothic");
         _countdownTexture = Resources.Load<MovieTexture>("Textures/ChallengeMode");
-        audio.clip = _countdownTexture.audioClip;
+        GetComponent<AudioSource>().clip = _countdownTexture.audioClip;
 
         _lightController = GetComponent<LightController>();
         _tileParent = GameObject.Find("Tiles");
@@ -238,8 +238,8 @@ public class TileController : MonoBehaviour
                     _activeCol != _previousActiveCol)
                 {
                     _networkSet.Song.Points = 0;
-                    GameObject.FindGameObjectWithTag("Song").audio.Play();
-                    _networkSet.Song.Length = GameObject.FindGameObjectWithTag("Song").audio.clip.length;
+                    GameObject.FindGameObjectWithTag("Song").GetComponent<AudioSource>().Play();
+                    _networkSet.Song.Length = GameObject.FindGameObjectWithTag("Song").GetComponent<AudioSource>().clip.length;
                     UpdateNeworkXML();
                 }
             }
@@ -335,7 +335,7 @@ public class TileController : MonoBehaviour
         if (_countdownTexTimer > 8)
         {
             _countdownTexture.Pause();
-            audio.Pause();
+            GetComponent<AudioSource>().Pause();
         }
 
         GUI.color = new Color(1, 1, 1, Math.Min(0.7f, _countdownTexTimer/8f));
@@ -531,8 +531,8 @@ public class TileController : MonoBehaviour
             _countdownTexture.Stop();
             _countdownTexture.Play();
 
-            audio.Stop();
-            audio.Play();
+            GetComponent<AudioSource>().Stop();
+            GetComponent<AudioSource>().Play();
 
             _currenGuiFunction = CountdownGUI;
 
