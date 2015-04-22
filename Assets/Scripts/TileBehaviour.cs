@@ -31,22 +31,22 @@ public class TileBehaviour : MonoBehaviour
                 switch (value)
                 {
                     case Highlighttype.None:
-                        renderer.material.SetColor("_Color", Config.ColorDefault);
+                        GetComponent<Renderer>().material.SetColor("_Color", Config.ColorDefault);
                         break;
                     case Highlighttype.Occupied:
-                        renderer.material.SetColor("_Color", Config.ColorOccupied);
+                        GetComponent<Renderer>().material.SetColor("_Color", Config.ColorOccupied);
                         break;
                     case Highlighttype.Hit:
-                        renderer.material.SetColor("_Color", Config.ColorHit);
+                        GetComponent<Renderer>().material.SetColor("_Color", Config.ColorHit);
                         break;
                     case Highlighttype.Preview:
-                        renderer.material.SetColor("_Color", Config.ColorPreview);
+                        GetComponent<Renderer>().material.SetColor("_Color", Config.ColorPreview);
                         break;
                     case Highlighttype.Time:
-                        renderer.material.SetColor("_Color", Config.ColorTime);
+                        GetComponent<Renderer>().material.SetColor("_Color", Config.ColorTime);
                         break;
                     case Highlighttype.Fail:
-                        renderer.material.SetColor("_Color", Config.ColorFail);
+                        GetComponent<Renderer>().material.SetColor("_Color", Config.ColorFail);
                         break;
                 }
             }
@@ -75,8 +75,8 @@ public class TileBehaviour : MonoBehaviour
 
         var mat = new Material(Shader.Find(Config.ShaderType));
 
-        renderer.material = mat;
-        renderer.material.SetColor("_Color", Config.ColorDefault);
+        GetComponent<Renderer>().material = mat;
+        GetComponent<Renderer>().material.SetColor("_Color", Config.ColorDefault);
         Highlight = Highlighttype.None;
 
         _originPosition = transform.position;
@@ -119,7 +119,7 @@ public class TileBehaviour : MonoBehaviour
 
     public void SetBorder()
     {
-        renderer.material.SetTexture("_MainTex", _tileBorder);
+        GetComponent<Renderer>().material.SetTexture("_MainTex", _tileBorder);
     }
 
     /**
@@ -133,13 +133,13 @@ public class TileBehaviour : MonoBehaviour
         switch (randNumber)
         {
             case 1:
-                renderer.material.SetTexture("_MainTex", _footprintHuman);
+                GetComponent<Renderer>().material.SetTexture("_MainTex", _footprintHuman);
                 break;
             case 2:
-                renderer.material.SetTexture("_MainTex", _footprintDino);
+                GetComponent<Renderer>().material.SetTexture("_MainTex", _footprintDino);
                 break;
             case 3:
-                renderer.material.SetTexture("_MainTex", _footprintDog);
+                GetComponent<Renderer>().material.SetTexture("_MainTex", _footprintDog);
                 break;
         }
 
@@ -152,7 +152,7 @@ public class TileBehaviour : MonoBehaviour
 
     public void ResetTexture()
     {
-        renderer.material.SetTexture("_MainTex", null);
+        GetComponent<Renderer>().material.SetTexture("_MainTex", null);
         ForceActive = false;
     }
 
