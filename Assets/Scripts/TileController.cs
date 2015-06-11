@@ -175,6 +175,8 @@ public class TileController : MonoBehaviour
                             _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().Highlight =
                                 Highlighttype.Preview;
                             _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().SetBorder();
+                            //set footprints on preview
+                            _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().SetSingleFootprint();
                         }
                     }
                 }

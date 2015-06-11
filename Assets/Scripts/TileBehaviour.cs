@@ -153,6 +153,11 @@ public class TileBehaviour : MonoBehaviour
         ForceActive = true;
     }
 
+    public void SetSingleFootprint()
+    {
+        GetComponent<Renderer>().material.SetTexture("_MainTex", _footprintDog);
+    }
+
     /**
 	 * Resets/removes Footprint texture.
 	 **/
