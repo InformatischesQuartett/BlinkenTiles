@@ -547,7 +547,7 @@ public class TileController : MonoBehaviour
             _networkSet.DemoTime = duration;
             _networkSet.Song.Title = songRepo[num].Titel;
             _networkSet.Song.Length = 0;
-            //Will be replace by the actual length of thesong, once itios loaded (after Coundown is over)
+            //Will be replace by the actual length of thesong, once itios loaded (after Coundown is over) <-- go home you're drunk, comment!
             _networkSet.Song.Points = 0;
         }
 
