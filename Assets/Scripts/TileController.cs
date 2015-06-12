@@ -26,6 +26,10 @@ public class TileController : MonoBehaviour
     private List<TileCol> _matrix;
     private bool _matrixReady;
 
+    /*Advertisment*/
+    private bool _showAd = false;
+    private Texture2D _mediaCampLogoL;
+    private Texture2D _hearthstone;
 
     private string _networkPath;
     private NetworkSet _networkSet;
@@ -50,6 +54,8 @@ public class TileController : MonoBehaviour
         _defaultFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
         _countdownFont = Resources.Load<Font>("BankGothic");
         _countdownTexture = Resources.Load<MovieTexture>("Textures/ChallengeMode");
+        _mediaCampLogoL = (Texture2D)Resources.Load("Textures/mediacamp_l", typeof(Texture2D));
+        _hearthstone = (Texture2D)Resources.Load("Textures/hearthstoneBanner", typeof(Texture2D));
         GetComponent<AudioSource>().clip = _countdownTexture.audioClip;
 
         _lightController = GetComponent<LightController>();
@@ -117,10 +123,25 @@ public class TileController : MonoBehaviour
                         }
                     }
                 }
-            }
+
+                //set ad boolean to show advertisments when idle mode is activated
+                if (Config.IdleMode)
+                {
+                    _showAd = true;
+                }
+                else
+                {
+                    _showAd = false;
+                }
+
+
+            } // Gamemode Freestyle end
 
             if (Config.CurrentGamemode == Gamemode.Challenge)
             {
+                //disable advertisments
+                _showAd = false;
+
                 if (_matrix[_activeCol].ChallengeIndex.Count == 0)
                 {
                     UpdateNeworkXML();
@@ -154,6 +175,8 @@ public class TileController : MonoBehaviour
                             _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().Highlight =
                                 Highlighttype.Preview;
                             _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().SetBorder();
+                            //set footprints on preview
+                            _matrix[i].Tiles[previewIndex].TileGo.GetComponent<TileBehaviour>().SetSingleFootprint();
                         }
                     }
                 }
@@ -296,6 +319,7 @@ public class TileController : MonoBehaviour
     {
         //IdleTimer
         _idleTimer += Time.fixedDeltaTime;
+        //Debug.Log(_idleTimer);
 
         _idleResetTimer += Time.fixedDeltaTime;
 
@@ -326,6 +350,27 @@ public class TileController : MonoBehaviour
     {
         if (_currenGuiFunction != null)
             _currenGuiFunction();
+
+        /*Show Advertisments*/
+        if (_showAd)
+        {
+            var time = (int)_idleTimer % 20;
+            if (time > 10)
+            {
+                 GUI.DrawTexture(new Rect(Screen.width * 0.515f, Screen.height / 3.5f, (Screen.height / 3) * 4.5f, Screen.height / 3), _hearthstone);
+            }
+            else
+            {
+                if (time > 5) {
+                    GUI.DrawTexture(new Rect(Screen.width*0.6f, (Screen.height/2f)-(Screen.width/10f), Screen.width/5, Screen.width/5 ), _mediaCampLogoL);
+                }
+                else {
+
+                    //show no Advertisment
+             
+                }
+            }
+        }
     }
 
     private void CountdownGUI()
@@ -547,7 +592,7 @@ public class TileController : MonoBehaviour
             _networkSet.DemoTime = duration;
             _networkSet.Song.Title = songRepo[num].Titel;
             _networkSet.Song.Length = 0;
-            //Will be replace by the actual length of thesong, once itios loaded (after Coundown is over)
+            //Will be replace by the actual length of thesong, once itios loaded (after Coundown is over) <-- go home you're drunk, comment!
             _networkSet.Song.Points = 0;
         }
 
