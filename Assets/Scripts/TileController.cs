@@ -357,17 +357,17 @@ public class TileController : MonoBehaviour
             var time = (int)_idleTimer % 20;
             if (time > 10)
             {
-                //show no Advertisment
+                 GUI.DrawTexture(new Rect(Screen.width * 0.515f, Screen.height / 3.5f, (Screen.height / 3) * 4.5f, Screen.height / 3), _hearthstone);
             }
             else
             {
                 if (time > 5) {
-                    GUI.DrawTexture(new Rect(Screen.width/2f, 0, Screen.width, Screen.height ), _mediaCampLogoL);
-                    Debug.Log("Show Image2");
+                    GUI.DrawTexture(new Rect(Screen.width*0.6f, (Screen.height/2f)-(Screen.width/10f), Screen.width/5, Screen.width/5 ), _mediaCampLogoL);
                 }
                 else {
-                    GUI.DrawTexture(new Rect(Screen.width / 2f, 0, Screen.width, Screen.height), _hearthstone);
-                    Debug.Log("Show Image1");
+
+                    //show no Advertisment
+             
                 }
             }
         }
