@@ -32,7 +32,7 @@ public class ExitApplication : MonoBehaviour
     private void ShowExitMenu()
     {
         GUI.BeginGroup(new Rect(_menuPos.x, _menuPos.y, _menuWidth, _menuHeight));
-        GUI.Box(new Rect(0, _menuHeight*0.2f, _menuWidth, _menuHeight), "Are you sure sou want to quit the application?");
+        GUI.Box(new Rect(0, _menuHeight*0.2f, _menuWidth, _menuHeight), "Are you sure you want to quit the application?");
         if (GUI.Button(new Rect(_buttonWidth*0.5f, (_menuHeight*0.5f), _buttonWidth, _buttonHeight), "Yes"))
         {
             Application.Quit();
