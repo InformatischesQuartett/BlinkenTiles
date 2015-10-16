@@ -37,8 +37,10 @@ public class BlobDetection : MonoBehaviour
     private bool _renderDataUpdate;
     private float _threadFPS;
     private int _threadFrameCount;
+	private bool _GUIVisible;
 
     private TileController _tileController;
+    private Texture2D _blackTex;
     private Texture2D _whiteTex;
 
     private BlobDetectionThread _workerObject;
@@ -90,6 +92,12 @@ public class BlobDetection : MonoBehaviour
         _threadFPS = 0.0f;
 
         // gui
+		_GUIVisible = false;
+
+        _blackTex = new Texture2D(1, 1);
+        _blackTex.SetPixel(0, 0, Color.black);
+        _blackTex.Apply();
+
         _whiteTex = new Texture2D(1, 1);
         _whiteTex.SetPixel(0, 0, Color.white);
         _whiteTex.Apply();
@@ -122,6 +130,9 @@ public class BlobDetection : MonoBehaviour
 
             _deltaTime -= 1.0f/FPSUpdateRate;
         }
+
+		if (Input.GetKeyDown(KeyCode.O))
+			_GUIVisible = !_GUIVisible;
     }
 
     private void SetRenderImage(byte[] data)
@@ -144,7 +155,15 @@ public class BlobDetection : MonoBehaviour
 
     private void OnGUI()
     {
-        int imgHeight = Screen.height;
+		if (!_GUIVisible)
+			return;
+
+		GUI.BeginGroup(new Rect(250, 100, Screen.width-250, Screen.height-200));
+
+		var guiColor = GUI.color;
+		GUI.color = new Color (guiColor.r, guiColor.g, guiColor.b, 0.9f);
+
+        int imgHeight = Screen.height-200;
         int imgWidth = imgHeight*(_kinectManager.DepthWidth/_kinectManager.DepthHeight);
 
         GUI.DrawTexture(new Rect(0, imgHeight, imgWidth, -imgHeight), _lastRenderImage);
@@ -158,35 +177,47 @@ public class BlobDetection : MonoBehaviour
 
         GUI.Label(new Rect(5, 25, 250, 25), "Song: " + _tileController.GetSongTitle());
 
-        GUI.backgroundColor = new Color(1, 1, 1, 0.4f);
-        GUI.skin.box.normal.background = _whiteTex;
+        var bgColor = GUI.backgroundColor;
+        GUI.backgroundColor = new Color(1, 1, 1, 0.9f);
+
+        var bgTex = GUI.skin.box.normal.background;
+        GUI.skin.box.normal.background = _blackTex;
         GUI.skin.box.fontSize = 16;
 
-        GUI.BeginGroup(new Rect(Screen.width/2 - 600, 50, 500, Screen.height - 100));
+        GUI.BeginGroup(new Rect(700, 0, 500, Screen.height - 200));
         GUI.Box(new Rect(0, 0, 500, Screen.height - 150), "Blob Detection Settings");
 
-        GUI.backgroundColor = new Color(0, 0, 0, 1);
+        GUI.backgroundColor = bgColor;
+
+        GUI.skin.horizontalSlider.normal.background = _whiteTex;
 
         _dSettings.RenderImgType = SettingSlider(15, 80, "RenderImageType", _dSettings.RenderImgType, 1, 6);
-        _dSettings.MinDepth = SettingSlider(15, 180, "Minimum Depth", _dSettings.MinDepth, 0, 8000);
-        _dSettings.MaxDepth = SettingSlider(15, 240, "Maximum Depth", _dSettings.MaxDepth, 0, 8000);
-        _dSettings.MinThreshold = SettingSlider(15, 300, "Minimum Threshold", _dSettings.MinThreshold, 0, 255);
-        _dSettings.MaxThreshold = SettingSlider(15, 360, "Maximum Threshold", _dSettings.MaxThreshold, 0, 255);
 
-        int gridLocX = SettingSlider(15, 460, "Grid Location (X)", (int) _dSettings.GridLoc.x, 0, 200);
-        int gridLocY = SettingSlider(15, 520, "Grid Location (Y)", (int) _dSettings.GridLoc.y, 0, 200);
+        _dSettings.MinDepth = SettingSlider(15, 170, "Minimum Depth", _dSettings.MinDepth, 0, 8000);
+        _dSettings.MaxDepth = SettingSlider(15, 230, "Maximum Depth", _dSettings.MaxDepth, 0, 8000);
+        _dSettings.MinThreshold = SettingSlider(15, 290, "Minimum Threshold", _dSettings.MinThreshold, 0, 255);
+        _dSettings.MaxThreshold = SettingSlider(15, 350, "Maximum Threshold", _dSettings.MaxThreshold, 0, 255);
+
+        int gridLocX = SettingSlider(15, 440, "Grid Location (X)", (int) _dSettings.GridLoc.x, 0, 200);
+        int gridLocY = SettingSlider(15, 500, "Grid Location (Y)", (int) _dSettings.GridLoc.y, 0, 200);
         _dSettings.GridLoc = new Vector2(gridLocX, gridLocY);
 
-        int fieldSizeX = SettingSlider(15, 620, "Field Size (X)", (int) _dSettings.FieldSize.x, 0, 200);
-        int fieldSizeY = SettingSlider(15, 680, "Field Size (Y)", (int) _dSettings.FieldSize.y, 0, 200);
+        int fieldSizeX = SettingSlider(15, 590, "Field Size (X)", (int) _dSettings.FieldSize.x, 0, 200);
+        int fieldSizeY = SettingSlider(15, 650, "Field Size (Y)", (int) _dSettings.FieldSize.y, 0, 200);
         _dSettings.FieldSize = new Vector2(fieldSizeX, fieldSizeY);
 
-        int fieldTolX = SettingSlider(15, 780, "Field Tolerance (X)", (int) _dSettings.FieldTolerance.x, 0, 200);
-        int fieldTolY = SettingSlider(15, 840, "Field Tolerance (Y)", (int) _dSettings.FieldTolerance.y, 0, 200);
+        int fieldTolX = SettingSlider(15, 740, "Field Tolerance (X)", (int) _dSettings.FieldTolerance.x, 0, 200);
+        int fieldTolY = SettingSlider(15, 800, "Field Tolerance (Y)", (int) _dSettings.FieldTolerance.y, 0, 200);
         _dSettings.FieldTolerance = new Vector2(fieldTolX, fieldTolY);
 
         GUI.skin.label.fontSize = 12;
+        GUI.skin.box.normal.background = bgTex;
+
         GUI.EndGroup();
+
+		GUI.color = guiColor;
+		
+		GUI.EndGroup ();
 
         /* if (GUI.Button(new Rect(0, 0, 100, 100), "Save"))
 			_kinectManager.SaveDepthToFile(); */
