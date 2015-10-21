@@ -127,7 +127,7 @@ public class TileController : MonoBehaviour
                 //set ad boolean to show advertisments when idle mode is activated
                 if (Config.IdleMode)
                 {
-                    _showAd = true;
+                    _showAd = false;
                 }
                 else
                 {

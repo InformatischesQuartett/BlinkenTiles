@@ -7,7 +7,6 @@ public class TileBehaviour : MonoBehaviour
     private Texture2D _footprintDino;
     private Texture2D _footprintDog;
     private Texture2D _footprintHuman;
-    private Texture2D _mediaCampLogo;
 
     private Highlighttype _isHighlight;
 
@@ -71,7 +70,6 @@ public class TileBehaviour : MonoBehaviour
         _footprintHuman = (Texture2D) Resources.Load("Textures/Footprints_human", typeof (Texture2D));
         _footprintDino = (Texture2D) Resources.Load("Textures/Footprints_dino", typeof (Texture2D));
         _footprintDog = (Texture2D) Resources.Load("Textures/Footprints_dog", typeof (Texture2D));
-		_mediaCampLogo = (Texture2D) Resources.Load("Textures/mediacamp", typeof (Texture2D));
 
         _tileBorder = (Texture2D) Resources.Load("Textures/Tile_border", typeof (Texture2D));
 
@@ -142,11 +140,6 @@ public class TileBehaviour : MonoBehaviour
                 break;
             case 3:
                 GetComponent<Renderer>().material.SetTexture("_MainTex", _footprintDog);
-                break;
-            case 4:
-                //fall through to case 5 to increase chance of mecia camp logo to appear
-            case 5:
-                GetComponent<Renderer>().material.SetTexture("_MainTex", _mediaCampLogo);
                 break;
         }
 
