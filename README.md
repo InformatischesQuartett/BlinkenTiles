@@ -1,14 +1,14 @@
 BlinkenTiles
 ============
 
-BlinkenTiles is a highly versatile and interactive installation which allows for users to make music with their own body. This is achieved by using a sound matrix projected onto the ground. Users are then tracked via a Microsoft Kinect and a sound is played depending on their location on the matrix. Among other things, I was in charge of the multithreaded real-time image processing functionality. The corresponding software was developed in Unity3D, using OpenCV/EmguCV and C#.
+BlinkenTiles is a highly versatile and interactive installation which allows for users to make music with their own body. This is achieved by using a sound matrix projected onto the ground. Users are then tracked via a Microsoft Kinect and a sound is played depending on their location on the matrix. The corresponding software was developed in Unity3D, using OpenCV/EmguCV and C#.
 
-__Teaser:__ https://www.youtube.com/watch?v=oIt5Z8fHog0
+__Teaser:__ http://blinkentiles.de/
 
 __Screenshots / Photos:__
 
-![](http://www.fabian-gaertner.de/images/screen_blinken.jpg)
+![](http://blinkentiles.de/img/tracking.jpg)
 
-![](http://www.fabian-gaertner.de/images/photo_blinken1.jpg)
+![](http://blinkentiles.de/img/beamer.jpg)
 
-![](http://www.fabian-gaertner.de/images/photo_blinken2.jpg)
+![](http://blinkentiles.de/img/topview.jpg)
