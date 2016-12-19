@@ -27,12 +27,12 @@ public class AudioClipLoader : MonoBehaviour
 
     public void Update()
     {
-        if (GetComponent<AudioSource>().clip != null && GetComponent<AudioSource>().clip.isReadyToPlay && _playOnce)
+        if (GetComponent<AudioSource>().clip != null && GetComponent<AudioSource>().clip.loadState == AudioDataLoadState.Loaded && _playOnce)
         {
             GetComponent<AudioSource>().Play();
             _playOnce = false;
         }
-        if (GetComponent<AudioSource>().clip != null && !GetComponent<AudioSource>().isPlaying && GetComponent<AudioSource>().clip.isReadyToPlay && _loop)
+        if (GetComponent<AudioSource>().clip != null && !GetComponent<AudioSource>().isPlaying && GetComponent<AudioSource>().clip.loadState == AudioDataLoadState.Loaded && _loop)
         {
             GetComponent<AudioSource>().Play();
             _playOnce = false;
