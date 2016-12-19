@@ -22,8 +22,14 @@ public class KinectManager
     {
         DetectionSettings = detectionSettings;
 
-        if (SystemInfo.operatingSystem.Contains("Windows 8"))
+        if (SystemInfo.operatingSystem.Contains("Windows 8") || SystemInfo.operatingSystem.Contains("Windows 10"))
+        {
             _kinectSensor = KinectSensor.GetDefault();
+        }
+        else
+        {
+            Debug.LogError("Unsupported Operating System: " + SystemInfo.operatingSystem);
+        }
 
         _sampleMode = (_kinectSensor == null);
 
